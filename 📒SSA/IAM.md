@@ -32,7 +32,7 @@ Identity Access Management (IAM) offers the following features;
 - 필요한 경우 사용자/기기 및 서비스에 대한 임시 액세스 제공
 - 고유한 암호 순환 정책 설정 가능
 - 다양한 AWS 서비스와의 통합
-- PCI DSS 컴플라이언스 지원
+- PCI DSS Compliance 지원
 
 
 
