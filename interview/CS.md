@@ -24,9 +24,11 @@ RPC(Remote Procedure Call)란 프로세스간 통신을 위해 사용하는 IPC(
 
 ###  REST (REpresentational State Transfer)
 
-URI를 통해 모든 자원(Resource)을 명시하고 HTTP Method를 통해 처리하는 아키텍쳐.
+**URI를 통해 모든 자원(Resource)을 명시하고 HTTP Method를 통해 CRUD Operation을 처리하는 아키텍쳐.**
 
 자원 그 자체를 표현하기에 직관적이고, HTTP를 그대로 계승하였기에 별도 작업 없이도 쉽게 사용할 수 있다는 장점으로 현대에 매우 보편화. 
+
+사람이 읽을 수 있는 API. HTTP를 사용하기 때문에 HTTP의 특성을 그대로 반영. 또한 별도의 인프라 구축이 필요없음.
 
 #### 단점
 
@@ -53,4 +55,8 @@ Protocol Buffer는 google 사에서 개발한 구조화된 데이터를 직렬�
 직렬화란, 데이터 표현을 바이트 단위로 변환하는 작업을 의미합니다. 아래 예제처럼 같은 정보를 저장해도 text 기반인 json인 경우 82 byte가 소요되는데 반해, 직렬화 된 protocol buffer는 필드 번호, 필드 유형 등을 1byte로 받아서 식별하고, 주어진 length 만큼만 읽도록 하여 단지 33 byte만 필요하게 됩니다.
 
 ![img](https://miro.medium.com/max/1400/0*EqWBu3VDbav3svJk)
+
+
+
+[Naver Cloude Platform - 시대의 흐름, gRPC 깊게 파고들기](https://medium.com/naver-cloud-platform/nbp-%EA%B8%B0%EC%88%A0-%EA%B2%BD%ED%97%98-%EC%8B%9C%EB%8C%80%EC%9D%98-%ED%9D%90%EB%A6%84-grpc-%EA%B9%8A%EA%B2%8C-%ED%8C%8C%EA%B3%A0%EB%93%A4%EA%B8%B0-1-39e97cb3460)
 
