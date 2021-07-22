@@ -58,5 +58,18 @@ Protocol Buffer는 google 사에서 개발한 구조화된 데이터를 직렬�
 
 
 
+가벼워서 더 빠르게 전달할 수 있고 처리할 수 있으며 별도의 파싱없이 사용할 수 없어서 더 빠르다는 장점이 있습니다.
+
+하지만, 프로토콜 버퍼에서 쓰이는 스키마 파일 즉, .proto 파일을 작성할 줄 알아야하며 정의된 proto파일은 수정을 포함하여 지속적으로 공유되어야 합니다.
+
+
+
 [Naver Cloude Platform - 시대의 흐름, gRPC 깊게 파고들기](https://medium.com/naver-cloud-platform/nbp-%EA%B8%B0%EC%88%A0-%EA%B2%BD%ED%97%98-%EC%8B%9C%EB%8C%80%EC%9D%98-%ED%9D%90%EB%A6%84-grpc-%EA%B9%8A%EA%B2%8C-%ED%8C%8C%EA%B3%A0%EB%93%A4%EA%B8%B0-1-39e97cb3460)
 
+
+
+
+
+## Fault tolerance
+
+Fault-tolerant(무정지) 시스템으로 가기 위해 필요한 방법에 대한 생각을 말해주세요.
