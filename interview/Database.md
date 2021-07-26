@@ -188,6 +188,20 @@ PK의 범위를 기준으로 DB를 특정하는 방식
 
 
 
+### JOIN
+
+![img](https://t1.daumcdn.net/cfile/tistory/99473C435C0D1ECD07)
+
+
+
++ 교차 조인
+
+  ![img](https://t1.daumcdn.net/cfile/tistory/99FE21365C0D1ECE14)
+
+
+
+클러스터드 인덱스 VS 언클러스터드 인덱스
+
 
 
 
