@@ -60,7 +60,7 @@ Docker가 생기기 전, 각각의 application을 원하는 환경에서 실행�
 
 
 
-![Virtual Machine과 docker의 차이](file:///Users/gyeongseon/Git/TIL/docker/img/image-20211113165001804.png?lastModify=1636792417)
+![Virtual Machine과 docker의 차이](./img/image-20211113165001804.png)
 
 
 
