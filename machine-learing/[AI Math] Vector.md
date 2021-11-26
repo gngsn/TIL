@@ -1,6 +1,4 @@
-#Mathematics for Artificial Intelligence
-
-
+<small>Mathematics for Artificial Intelligence</small>
 
 ## Vector
 
@@ -16,7 +14,7 @@
 
 <br/>
 
-### 벡터 ? 
+### Vector ? 
 
 ✔️ 벡터는 공간에서 **한 점**을 나타냄
 
@@ -105,13 +103,13 @@ def l2_norm(x):
 
 <br/><br/>
 
-#### $L_1\ norm$ , $L_2\ norm$ 어떤 걸 사용해야할까?
+#### $L_1\ norm$  vs $L_2\ norm$ 
 
 <br/>
 
-노름의 종류에 따라 **기하학적 성질**이 달라진다. 머신러닝에선 각 성질들이 필요할 때가 있으므로 **둘 다 사용**.
+노름의 종류에 따라 **기하학적 성질**이 달라진다. 
 
-
+머신러닝에선 각 성질들이 필요할 때가 있으므로 **둘 다 사용**.
 
 <br/>
 
@@ -121,9 +119,9 @@ def l2_norm(x):
 
 기계학습에서 사용되는 **목적**에 따라 달라짐.
 
-$L_1\ norm$ : $Robust$학습,$Lasso$회귀 등에 사용됨
+✔️ $L_1\ norm$ : $Robust$ 학습, $Lasso$ 회귀 등에 사용
 
-$L_2\ norm$ : $Laplace$근사,$Ridge$회귀 등에 사용됨
+✔️ $L_2\ norm$ : $Laplace$ 근사, $Ridge$ 회귀 등에 사용
 
 <br/><br/>
 
@@ -137,21 +135,92 @@ $L_2\ norm$ : $Laplace$근사,$Ridge$회귀 등에 사용됨
 
 ✔️ **X와 Y사이의 거리** : 두 노름의 차
 
-
+<br/><br/>
 
 ### 두 벡터 사이의 각도
 
 각도는 $L_2\ norm$에서만 연산 가능 👉🏻 $d$ 차원에서 계산할 수 있도록 사용
 
+**제 2 코사인 법칙**에 의해 두 벡터 사이의 각도를 계산할 수 있음
+
+분자를 쉽게 계산하는 방법이 **내적**
+
+<br/>
+
+<img src="./img/vector9.png" alt="vector9" style="zoom:30%;" />
+
+<br/>
+
+#### 제 2 코사인 법칙
+
+<br/>
+
+<p align="center">
+
+$ \overline{XY}^2 = \overline{OX}^2 + \overline{OY}^2 -2\ \overline{OX}\ \overline{OY} \cos \theta$ 
+
+</p>
+
+<br/>
+
+위의 식을 $\cos \theta$ 에 대해 정리하면 아래와 같습니다.
+
+<p align="center">
+
+$\cos \theta = \Large{ \overline{OX}^2 + \overline{OY}^2 -\overline{XY}^2 \over 2\ \overline{OX}\ \overline{OY}}$
+
+<br/>
+
+즉, $\cos \theta = \Large{
+{||x||_{2}^2 + ||y||_{2}^2 - ||x-y||_{2}^2 }
+\over{2\ ||x||_2 ||y||_2} }$ $= \Large{{2\ \normalsize{\langle X, Y\rangle}}\over{2\ ||x||_2 ||y||_2}}$
+
+이때, $\langle X, Y\rangle = \Large{\sum_{i=1}^{d} x_i y_i}$
+
+</p>
+
+``` python
+def angle(x, y):
+  v = np.inner(x, y) / (l2_norm(x) * l2_norm(y))
+  theta = np.arcos(v)
+  return theta
+```
+
+다시 한 번 강조하자면 L2 norm에서만 계산 가능하다
+
+<br/>
+
+#### 내적?
+
+**정사영(orthogonal projection)된 벡터의 길이**와 관련 있음
+
+Proj(x)는 벡터 $y$로 정사영된 벡터 $x$의  그림자를 의미하는데, **Proj(X)의 길이**는 코사인 법칙에 의해 $||x|| \ cos \theta $
+
+<br/>
+
+<img src="./img/vector10.png" alt="vector10" style="zoom:25%;" />
 
 
 
+<br/>
 
+내적은 정사영의 길이를 벡터 y의 길이 $||y||$ 만큼 조정한 값
 
+ $\langle X, Y\rangle = ||y||Proj(x) = ||x||_2 ||y||_2 \cos \theta$
 
+<br/>
 
+<img src="./img/vector11.png" alt="vector11" style="zoom:20%;" />
 
+<br/>
 
+내적은 두 벡터의 **유사도(similarity)**를 측정하는데 사용 가능하다.
+
+머신러닝이나 딥러닝에서는 두 데이터나 두 패턴이 얼마나 유사한지를 측정하는데 사용하곤 함.
+
+<br/><br/>
+
+머신러닝이나 딥러닝에서 Numpy를 통해 자유자재로 사용하게될 개념이기 때문에 정확히 알고 넘어가는 것이 중요
 
 
 
