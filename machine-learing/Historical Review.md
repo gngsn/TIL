@@ -204,56 +204,146 @@ loss function을 최소화하기 위한 알고리즘이 필요함.
 
 학습이 오히려 잘 안되게 하는 방법을 추가하기도 하는데, 그 이유는 loss function을 무식하게 줄이는 것보다 학습하지 않은 데이터에서 잘 동작하는 것이 목적. 
 
+<br/><br/><br/>
+
+## Overview
+
+<img src="/Users/gyeongseon/Library/Application Support/typora-user-images/스크린샷 2021-11-25 오후 4.50.01.png" alt="스크린샷 2021-11-25 오후 4.50.01" style="zoom:50%;" />
+
 <br/><br/>
 
+### 2012 - AlexNet
+
+2024 x 2024 이미지가 들어왔을 때 분류하는 것이 목표인 대회. AlexNet이 1등을 함.
+
+그 전에는 고전적인 머신러닝의 조합이 1등을 했는데, AlexNet은 딥러닝을 사용해서 1등을 하고 나서 black magic ~ 
+
+<br/>
+
+<img src="/Users/gyeongseon/Library/Application Support/typora-user-images/스크린샷 2021-11-25 오후 4.50.57.png" alt="스크린샷 2021-11-25 오후 4.50.57" style="zoom:33%;" />
 
 
 
+<br/><br/>
+
+### 2013 - DQN
+
+알파고를 만든 Deepmind
+
+ 논문
+
+<img src="/Users/gyeongseon/Library/Application Support/typora-user-images/스크린샷 2021-11-25 오후 4.52.16.png" alt="스크린샷 2021-11-25 오후 4.52.16" style="zoom:33%;" />
+
+<br/><br/>
+
+### 2014 - Encoder / Decoder
+
+<img src="/Users/gyeongseon/Library/Application Support/typora-user-images/스크린샷 2021-11-25 오후 4.53.06.png" alt="스크린샷 2021-11-25 오후 4.53.06" style="zoom:33%;" />
+
+단어의 연속이 주어졌을 때 다른 언어의 단어의 연속으로 바꿔주는 것.
+
+중국어 단어 Sequence -> 영어 단어 Sequence
+
+<br/><br/>
+
+### 2014 - Adam Opimizer
+
+<img src="/Users/gyeongseon/Library/Application Support/typora-user-images/스크린샷 2021-11-25 오후 4.54.16.png" alt="스크린샷 2021-11-25 오후 4.54.16" style="zoom:33%;" />
+
+왜 아담을 사용할까?
+
+결과가 잘나와서.. 일반적인 딥러닝 논문을 읽다보면 희한한 짓을 하는데,,, 
+
+그렇게 하지 않으면 같은 결과가 복원이 안됨 (더 안좋은 성능이 나올 수 있음) .. Hyper parameter
+
+-> 웬만하면 잘된다.
+
+<br/><br/>
+
+### 2015 - Generative Adverdarial Network
 
 
 
+<img src="/Users/gyeongseon/Library/Application Support/typora-user-images/스크린샷 2021-11-25 오후 4.58.10.png" alt="스크린샷 2021-11-25 오후 4.58.10" style="zoom:33%;" />
 
 
 
+이미지를 어떻게 만들지 ~ 굉장히 중요.
+
+<br/><br/>
+
+### 2015 - Residual Networks
+
+딥러닝의 딥러닝이 가능하게 해줌
+
+<br/>
+
+<img src="/Users/gyeongseon/Library/Application Support/typora-user-images/스크린샷 2021-11-25 오후 4.59.44.png" alt="스크린샷 2021-11-25 오후 4.59.44" style="zoom:33%;" />
+
+<br/>
+
+너무 깊게 쌓으면 좋지 않은 성능이 나온다. 
+
+근데 Residual Networks이 나온 다음엔 테스트 데이터의 성능이 좋게끔 만들어줌
+
+-> 깊게 쌓을 수 있게 만들어줌
+
+<br/><br/>
+
+### 2017 - Transformer
+
+<br/>
+
+<img src="/Users/gyeongseon/Library/Application Support/typora-user-images/스크린샷 2021-11-25 오후 5.01.22.png" alt="스크린샷 2021-11-25 오후 5.01.22" style="zoom:33%;" />
+
+<br/><br/>
+
+### 2018 - BERT <small>(fine-tuned NLP models)</small>
+
+<br/>
+
+<img src="/Users/gyeongseon/Library/Application Support/typora-user-images/스크린샷 2021-11-25 오후 5.03.30.png" alt="스크린샷 2021-11-25 오후 5.03.30" style="zoom:33%;" />
+
+<br/>
+
+fine-tuned NLP models . Language Model
+
+이전의 단어로 다음 단어를 예측하는 것.
+
+만약 정말 멋진 뉴스를 쓰고 싶다. 근데 세상엔 뉴스에 대한 데이터가 그렇게 많지 않음. 이 때, 위키피디아와 같은 대용량 말뭉치 데이터를 사용해서 pretrained를 진행하고 fine tuning을 하는 것
+
+<br/><br/>
+
+### 2019 - BIG Language Models
+
+<br/>
+
+<img src="/Users/gyeongseon/Library/Application Support/typora-user-images/스크린샷 2021-11-25 오후 5.06.00.png" alt="스크린샷 2021-11-25 오후 5.06.00" style="zoom:33%;" />
+
+<br/>
+
+BERT의 끝판왕. Language Model
+
+아주 큰 파라미터를 가짐..그래서 Big -
+
+<br/><br/>
+
+### 2020 - Self Supevised Learning
+
+<br/>
+
+<img src="/Users/gyeongseon/Library/Application Support/typora-user-images/스크린샷 2021-11-25 오후 5.06.53.png" alt="스크린샷 2021-11-25 오후 5.06.53" style="zoom:33%;" />
 
 
 
+2020년도의 트렌드를 하나만 꼽으라면 단연코 "Self Supevised Learning"
 
+이 방법론은 이미지와 분류와 같은 분류 문제를 풀고 싶은데 학습데이터는 한정되어있음.
 
+학습데이터 외에 라벨을 모르는 unsupevised 모델을 사용하겠다는 것.
 
+라벨을 모르는 이미지라는 것들을 가지고 와서 강아지와 고양이를 구별하는 학습하는 것에 추가하겠다.
 
+SimCLR이 굉장히 성공하고 그 이후 많은 연구들이 진행되고 있음
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-### Neural Networks & Muti-Layer Perceptron
-
-
-
-
-
-### Optimization Methods
+한가지 트렌드 - 이미지가 주어졌을 때 도메인 지식이나 시뮬레이터를 사용해서 데이터셋을 오히려 만들어내는 연구
