@@ -14,15 +14,37 @@
 
 ### 설계 원칙 SOLID
 
-✔️ SRP, Single Responsibility Principle. 단일 책임 원칙
+✔️ **SRP, Single Responsibility Principle. 단일 책임 원칙** 
 
-✔️ OCP, Open/Closed Principle. 개방 폐쇄 원칙
+하나의 클래스는 하나의 책임만을 가져야 한다
 
-✔️ LSP, Liskov Substitution Principle. 리스코브 치환 원칙
 
-✔️ ISP, Interface Segregation Principle. 인터페이스 분리의 원칙
 
-✔️ DIP, Dependency Inversion Principle. 의존 관계 역전의 원칙
+✔️ **OCP, Open/Closed Principle. 개방 폐쇄 원칙**
+
+소프웨어 요소는 확장에는 열려있으나, 변경에는 닫혀 있어야 한다
+
+
+
+✔️ **LSP, Liskov Substitution Principle. 리스코브 치환 원칙**
+
+프로그램의 객체는 프로그램의 정확성을 깨뜨리지 않으면서 하위 타입의 인스턴스로 바꿀 수 있어야 한다
+
+
+
+✔️ **ISP, Interface Segregation Principle. 인터페이스 분리의 원칙**
+
+특정 클라이언트를 위한 인터페이스 여러개가 범용 인터페이스 하나보다 낫다
+
+
+
+✔️ **DIP, Dependency Inversion Principle. 의존 관계 역전의 원칙**
+
+추상화에 의존해야지 구체화에 의존하면 안된다
+
+cf. 의존성 주입
+
+
 
 각각의 원칙을 코드의 목적에 맞게 적절히 사용할줄 알아야 함.
 
