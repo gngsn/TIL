@@ -1,4 +1,4 @@
-## CHAPTER 7. 어댑터 패턴
+## Adapter Pattern
 
 <small>*p.170*</small>
 
@@ -6,15 +6,98 @@
 
 코드를 재사용하기 위해 구조를 변경하는 패턴
 
+<br/>
+
+
+### 예제 코드
+
+예제 소개 : 전체, 이미지, 뉴스, 지도 탭 검색바(`Search`)에 **동영상**(`FindMovieAlgorithm`)을 추가하려고 하는데 다른 회사에서 만들어서 호환이 되지 않음.
+
+-> `SearchFindAdapter` 객체를 제작해 기존의 코드(FindMovieAlgorithm)를 재활용
+
+<details>
+<summary> Client Code </summary>
+
+``` java
+package strategy.after;
+
+interface ISearch {
+  public void search ();
+}
+
+class Search implements ISearch {
+  public void search () {
+      System.out.println("SEARCH ALL");
+  }
+}
+
+class SearchStratagyImage implements ISearch {
+  public void search () {
+      System.out.println("SEARCH IMAGE");
+      // 이미지검색하는 코드
+  }
+}
+
+class SearchStratagyNews implements ISearch {
+  public void search () {
+      System.out.println("SEARCH NEWS");
+      // 뉴스검색하는 코드
+  }
+}
+
+
+```
+
+</details>
+
+<details> 
+<summary> Adaptee Code </summary>
+
+``` java
+package adapter.search;
+
+interface FindAlgorithm {
+  public void find (boolean global);
+}
+
+class FindMovieAlgorithm implements FindAlgorithm {
+  public void find (boolean global) {
+      System.out.println(
+        "find movie" + (global ? " globally" : "")
+      );
+      // 동영상검색하는 코드
+  }
+}
+```
+
+</details>
+
+<details> 
+<summary> Adapter Code </summary>
+
+``` java
+class SearchFindAdapter implements SearchStrategy {
+  private FindAlgorithm findAlgorithm;
+
+  public SearchFindAdapter (FindAlgorithm _findAlgorithm) {
+    findAlgorithm = _findAlgorithm;
+  }
+  public void search () {
+    findAlgorithm.find(true);
+  }
+}
+```
+</details>
+
 <br />
 
-### 7.1.1. 오래된 코드
+### 7.1.1 오래된 코드
 
 뉴턴과 거인의 어깨 이야기 → 대부분의 현대 기술은 이전 세대의 노력으로 만들어짐. 어느날 갑자기 창조된 것이 아니다.혀재의 코드는 처음 컴퓨터가 탄생한 순간부터 누적된 코드라고 할 수 있음. 새로운 기능을 만들기 위해 오래된 코드를 참고하거나 기존의 코드를 재사용. 즉, 이전 코드를 재사용하면서 새로운 코드를 재창조하는 것
 
 <br />
 
-### 7.1.2. 코드의 변화
+### 7.1.2 코드의 변화
 
 컴퓨터의 기능과 코드는 단계별로 발전. 기능이 진화하면서 기존 콘드를 재사용 → 코드를 재사용하면 기능 구현 시 많은 시간과 노력을 줄일 수 있음
 
@@ -26,13 +109,13 @@
 
 <br />
 
-### 7.1.3. 재사용을 위한 코드 변환
+### 7.1.3 재사용을 위한 코드 변환
 
 코드 재사용의 방법 중 하나가 변환
 
 <br />
 
-### 7.1.4. 인터페이스
+### 7.1.4 인터페이스
 
 인터페이스의 차이가 있다면 기존 코드를 사용할 수 없음
 
@@ -40,13 +123,13 @@
 
 <br />
 
-## 7.2. 잘못된 코드
+## 7.2 잘못된 코드
 
 개발을 하다보면 개발 당시에는 발견하지 못했던 문제가 나중에 발견되기도 하고, 그 당시에는 정상적이었던 동작이 환경 변화로 인해 문제가 되는 경우도 많다.
 
 <br />
 
-### 7.2.3. 보정 코드
+### 7.2.3 보정 코드
 
 보정 코드는 발생한 오류를 수정하고 기능을 변경하는데, 만듲는 방법은 매우 다양함.
 
@@ -59,13 +142,13 @@
 <br />
 
 
-## 7.3. 어댑터
+## 7.3 어댑터
 
 코드를 재사용하기 위한 인터페이스를 처리하고 인터페이스를 활용해 보정 코드를 작성
 
 <br />
 
-### 7.3.1. 코드의 래퍼 처리
+### 7.3.1 코드의 래퍼 처리
 
 어댑터 패턴은 다른 말로 **래퍼 패턴wrapper pattern** 이라고 하는데, 기존의 클래스를 새로운 클래스로 감싸는 기법
 
@@ -77,7 +160,7 @@
 
 <br />
 
-### 7.3.2. 호환성
+### 7.3.2 호환성
 
 문제점을 가진 객체를 해퍼하면 새로운 객체가 된다. 기존 객체를 감싼 또 다른 객체인 것. 새로 생성되는 객체는 클라이언트-어댑티 간 호환을 위해 인터페이스를 갖고 있음.
 
@@ -87,7 +170,7 @@
 
 <br />
 
-### 7.3.3. 중개 행동 패턴
+### 7.3.3 중개 행동 패턴
 
 래퍼 처리된 새로운 객체(어댑티)는 기존의 코드와 새로운 환경(클라이언트)간의 역할을 중개
 
@@ -99,7 +182,7 @@
 
 <br />
 
-### 7.3.4. 어댑터의 종류.
+### 7.3.4 어댑터의 종류.
 
 다른 객체의 구조를 내가 원하는 인터페이스 방식으로 개선
 
@@ -109,13 +192,13 @@
 
 <br />
 
-### 7.3.5. 클라이언트
+### 7.3.5 클라이언트
 
 어댑터 패턴을 적용하면 클라이언트 입장에서는 변화된 것이 없는 것처럼 사용할 수 있음. 중간역한의 어댑터가 내부적으로 처리 로직을 변경하여 동작을 수행하기 때문에 클라이언트는 기존 방긱과 동일하게 코드를 작성해서 사용하면 됨.
 
 <br />
 
-## 7.4. 클래스 어댑터
+## 7.4 클래스 어댑터
 
 클래스 어댑터는 클래스의 상속 특성을 이용하며, 클래스 어댑터를 사용하기 위해서는 다중 상속이 필요
 
@@ -143,7 +226,7 @@
 
 <br />
 
-## 7.5. 객체 어댑터
+## 7.5 객체 어댑터
 
 객체 어댑터는 객체의 의존성을 이용해 문제를 해결. 객체 어댑터는 기존 타깃인 객체의 인터페이스에 영향을 받으며 타깃의 인터페이스가 복잡할수록 많은 작업이 필요함.
 
@@ -157,7 +240,7 @@
 
 <br />
 
-### 7.5.2. 캡슐화
+### 7.5.2 캡슐화
 
 어댑터는 변경된 인터페이스로 캡슐화되어있기 때문에, 클라이언트에서 다른 수정없이 사용할 수 있음. 어갭터 패턴은 객체의 호환성을 개선하기 위한 기능들로 새롭게 합성함. 
 
@@ -171,7 +254,7 @@
 
 <br />
 
-### 7.5.3 장점
+### 7.5.3 단점
 
 객체를 구성으로 결합하면 어댑터는 클라이언트에서 사용하는 인터페이스 방식으로 메서드를 새로 생성하기 때문에 추가적인 코드가 필요
 

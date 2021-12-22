@@ -2,7 +2,14 @@
 
 <br/>
 
-[쉽게 배워 바로 써먹는 디자인 패턴](https://www.hanbit.co.kr/store/books/look.php?p_code=B9696096335)
+이 레포는 아래를 참고해서 정리하였습니다!
+
+- [쉽게 배워 바로 써먹는 디자인 패턴](https://www.hanbit.co.kr/store/books/look.php?p_code=B9696096335)
+
+- [객체지향 디자인 패턴 1편](https://www.yalco.kr/29_oodp_1/)
+
+- [객체지향 디자인 패턴 2편](https://www.yalco.kr/30_oodp_2/)
+
 
 <br/>
 
@@ -18,10 +25,11 @@
 
 패턴의 요소 : 이름(pattern name), 문제(problem), 해법(solution), 결과(consequence)
 
-
 <br/>
 
 ### 설계 원칙 SOLID
+
+<br/>
 
 ✔️ **SRP, Single Responsibility Principle. 단일 책임 원칙** 
 
@@ -68,7 +76,7 @@ Gang of Four - Erich Gamma, Richard Helm, Ralph Johnson, John Vlissides, Grady B
 <br/><br/>
 
 
-##Pattern
+## Pattern
 
 
 
@@ -168,3 +176,27 @@ Gang of Four - Erich Gamma, Richard Helm, Ralph Johnson, John Vlissides, Grady B
 **Proxy**
 
 객체의 겁근을 제한. 액세스할 때 추가적인 책임을 부여하는 역할을 수행
+
+<br/><br/>
+
+## Behavioral Pattern
+
+**Interpreter**
+
+**Template Method**
+
+**Chain of Responsibility**
+
+**Command**
+
+**Iterator**
+
+**Mediator**
+
+**Observer**
+
+**State**
+
+**Strategy**
+
+**Visitor**
