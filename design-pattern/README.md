@@ -193,7 +193,7 @@ Gang of Four - Erich Gamma, Richard Helm, Ralph Johnson, John Vlissides, Grady B
 
 **Mediator**
 
-**Observer**
+**[Observer](https://github.com/gngsn/TIL/blob/master/design-pattern/Observer.md)**
 
 **State**
 
