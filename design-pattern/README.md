@@ -121,7 +121,7 @@ Gang of Four - Erich Gamma, Richard Helm, Ralph Johnson, John Vlissides, Grady B
 
 <br/>
 
-**Builder**
+**[Builder](https://github.com/gngsn/TIL/blob/master/design-pattern/Builder.md)**
 
 추상 팩토리를 확장한 패턴. 복잡한 구조의 복합 객체를 빌더 패턴으로 생성. 복합 객체를 생성하기 위한 단계를 정의하고 각 단계별 수행 동작을 변경할 수 있음.
 
