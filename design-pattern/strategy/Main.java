@@ -1,8 +1,11 @@
 package strategy;
 
+import strategy.ConcreteStrategy.Gun;
+import strategy.ConcreteStrategy.Knife;
+
 public class Main {
     public static void main(String[] args) {
-        Charactor obj = new Charactor();
+        Fighter obj = new Fighter();
         obj.attack();
 
         obj.setWeapon(new Knife());

@@ -1,6 +1,6 @@
 package strategy;
 
-public class Charactor extends Strategy{
+public class Fighter extends Strategy {
     @Override
     public void attack() {
         if (this.delegate == null) {
