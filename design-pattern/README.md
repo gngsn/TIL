@@ -97,15 +97,15 @@ Gang of Four - Erich Gamma, Richard Helm, Ralph Johnson, John Vlissides, Grady B
 
 <br/>
 
-**Factory**
-
-객체의 생성 동작을 별도 클래스로 분리하여 처리하거나 별도의 메서드를 호출하여 객체의 생성 동작을 처리
-
-<br/>
-
 **Singleton**
 
 선언된 클래스로 복수의 객체를 생성할 수 없도록 제한. 제한된 단일 객체는 공유와 충돌을 방지
+
+<br/>
+
+**Factory**
+
+객체의 생성 동작을 별도 클래스로 분리하여 처리하거나 별도의 메서드를 호출하여 객체의 생성 동작을 처리
 
 <br/>
 
