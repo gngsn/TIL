@@ -1,4 +1,4 @@
-package TemplateMethod.Compare;
+package TemplateMethod.Sort;
 
 public class Duck implements Comparable<Duck> {
     String name;

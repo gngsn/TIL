@@ -1,4 +1,4 @@
-package TemplateMethod.Compare;
+package TemplateMethod.Sort;
 
 import java.util.Arrays;
 
