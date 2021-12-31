@@ -4,7 +4,11 @@
 
 이 레포는 아래를 참고해서 정리하였습니다!
 
+- [GoF Design Patterns](https://www.amazon.com/Design-Patterns-Object-Oriented-Addison-Wesley-Professional-ebook/dp/B000SEIBB8)
+
 - [쉽게 배워 바로 써먹는 디자인 패턴](https://www.hanbit.co.kr/store/books/look.php?p_code=B9696096335)
+
+- [Head First Design Patterns, 2nd Edition](https://www.oreilly.com/library/view/head-first-design/9781492077992/)
 
 - [객체지향 디자인 패턴 1편](https://www.yalco.kr/29_oodp_1/)
 
