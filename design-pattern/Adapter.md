@@ -1,15 +1,16 @@
 ## Adapter Pattern
 
-<small>*p.170*</small>
-
 <small>| **한 줄 소개** | 인터페이스를 추상화하여 서로 다른 인터페이스를 통일화. 상속을 통한 어댑터와 합성을 통한 어댑터로 구분.</small>
 
 코드를 재사용하기 위해 구조를 변경하는 패턴
 
 <br/>
 
+> Convert the interface of a class into another interface clients expect. Adapter lets classes work together that couldn't otherwise because of incompatible interfaces.
 
-### 예제 코드
+<br/>
+
+### 예제 코드로 미리 살펴보기
 
 예제 소개 : 전체, 이미지, 뉴스, 지도 탭 검색바(`Search`)에 **동영상**(`FindMovieAlgorithm`)을 추가하려고 하는데 다른 회사에서 만들어서 호환이 되지 않음.
 
@@ -91,7 +92,7 @@ class SearchFindAdapter implements SearchStrategy {
 
 <br />
 
-### 7.1.1 오래된 코드
+### 오래된 코드
 
 뉴턴과 거인의 어깨 이야기 → 대부분의 현대 기술은 이전 세대의 노력으로 만들어짐. 어느날 갑자기 창조된 것이 아니다.혀재의 코드는 처음 컴퓨터가 탄생한 순간부터 누적된 코드라고 할 수 있음. 새로운 기능을 만들기 위해 오래된 코드를 참고하거나 기존의 코드를 재사용. 즉, 이전 코드를 재사용하면서 새로운 코드를 재창조하는 것
 
