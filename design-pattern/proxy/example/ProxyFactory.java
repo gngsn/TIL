@@ -1,4 +1,4 @@
-package proxy;
+package proxy.example;
 
 public class ProxyFactory {
     public Subject getObject() {

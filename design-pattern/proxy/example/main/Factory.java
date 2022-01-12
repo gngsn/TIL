@@ -1,7 +1,7 @@
-package proxy.main;
+package proxy.example.main;
 
-import proxy.ProxyFactory;
-import proxy.Subject;
+import proxy.example.ProxyFactory;
+import proxy.example.Subject;
 
 public class Factory {
     public static void main(String[] args) {

@@ -1,8 +1,8 @@
-package proxy.main;
+package proxy.example.main;
 
-import proxy.Proxy;
-import proxy.RealSubject;
-import proxy.Subject;
+import proxy.example.Proxy;
+import proxy.example.RealSubject;
+import proxy.example.Subject;
 
 public class ProtectionProxy {
     public static void main(String[] args) {

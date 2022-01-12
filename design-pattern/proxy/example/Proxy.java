@@ -1,4 +1,4 @@
-package proxy;
+package proxy.example;
 
 public class Proxy implements Subject{
     private Subject object;

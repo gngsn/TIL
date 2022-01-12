@@ -1,9 +1,9 @@
-package proxy.main;
+package proxy.example.main;
 
-import proxy.ProxyFactory;
-import proxy.Subject;
+import proxy.example.ProxyFactory;
+import proxy.example.Subject;
 
-public class Index {
+public class Client {
     public static void main(String[] args) {
 //        Subject real = new RealSubject();
 //        Subject proxy = new Proxy(real);

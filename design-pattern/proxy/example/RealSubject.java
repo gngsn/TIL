@@ -1,4 +1,4 @@
-package proxy;
+package proxy.example;
 
 public class RealSubject implements Subject {
     public RealSubject() {

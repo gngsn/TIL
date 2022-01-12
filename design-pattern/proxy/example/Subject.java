@@ -1,4 +1,4 @@
-package proxy;
+package proxy.example;
 
 public interface Subject {
     String action1();
