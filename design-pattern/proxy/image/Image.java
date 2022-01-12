@@ -11,4 +11,5 @@ public class Image implements Graphic {
     public void showImage() {
         System.out.println("Show Image : " + this.fileName);
     }
+
 }

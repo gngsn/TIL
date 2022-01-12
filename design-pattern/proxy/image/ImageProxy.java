@@ -8,11 +8,18 @@ public class ImageProxy implements Graphic {
         this.fileName = fileName;
     }
 
-    @Override
-    public void showImage() {
+    public Image getImage() {
         if(this.image == null){
             this.image = new Image(this.fileName);
         }
-        this.image.showImage();
+        return image;
+    }
+
+    @Override
+    public void showImage() {
+        if(this.image == null) {
+            this.image = getImage();
+        }
+        getImage().showImage();
     }
 }
