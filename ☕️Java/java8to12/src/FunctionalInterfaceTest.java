@@ -17,7 +17,7 @@ public class FunctionalInterfaceTest {
         RunSomething runSomething = (num) -> num + baseNumber;
 
         System.out.println(runSomething.doIt(1));
-        
+
         // Function<T, R> - 1
         Plus10 plus10 = new Plus10();
         System.out.println(plus10.apply(1));
