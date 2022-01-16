@@ -1,10 +1,11 @@
-import java.net.Inet4Address;
+package Functional;
+
 import java.util.function.*;
 
 public class FunctionalInterfaceTest {
     public static void main(String[] args) {
-//        RunSomething runSomething = () -> System.out.println("Hello");
-//        RunSomething runSomething = new RunSomething() {
+//        Functional.RunSomething runSomething = () -> System.out.println("Hello");
+//        Functional.RunSomething runSomething = new Functional.RunSomething() {
 //            int baseNumber = 10;
 //
 //            @Override

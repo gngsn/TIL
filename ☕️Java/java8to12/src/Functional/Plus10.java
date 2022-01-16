@@ -1,3 +1,5 @@
+package Functional;
+
 import java.util.function.Function;
 
 public class Plus10 implements Function<Integer, Integer> {
