@@ -7,5 +7,6 @@ public class Main {
         foo.printNameUpperCase();
 
         Bar.printBar();
+
     }
 }
