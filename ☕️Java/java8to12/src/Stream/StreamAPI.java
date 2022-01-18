@@ -30,14 +30,14 @@ public class StreamAPI {
         System.out.println("수업 이름만 모아서 스트림 만들기");
         springClasses.stream()
                 .map(OnlineClass::getTitle)
-                // 이때는 Spring Type이 들어옴
+                // 이때는 String Type 이 들어옴
                 .forEach(System.out::println);
 
 
         List<OnlineClass> javaClasses = new ArrayList<>();
-        springClasses.add(new OnlineClass(1, "The Java, Test", true));
-        springClasses.add(new OnlineClass(2, "The Java,  Code manipulation", true));
-        springClasses.add(new OnlineClass(3, "The Java, 8 to 12", false));
+        javaClasses.add(new OnlineClass(1, "The Java, Test", true));
+        javaClasses.add(new OnlineClass(2, "The Java,  Code manipulation", true));
+        javaClasses.add(new OnlineClass(3, "The Java, 8 to 12", false));
 
         List<List<OnlineClass>> gngsnEvents = new ArrayList<>();
         gngsnEvents.add(springClasses);
