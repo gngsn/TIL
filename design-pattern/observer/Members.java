@@ -10,18 +10,18 @@ public class Members implements Subject {
     }
 
     @Override
-    public void addObserver(Observer observer) {
+    public void attach(Observer observer) {
         objs.add(observer);
     }
 
     @Override
-    public void deleteObserver(Observer observer) {
+    public void detach(Observer observer) {
         int index = objs.indexOf(observer);
         objs.remove(index);
     }
 
     @Override
-    public void notiObserver() {
+    public void noti() {
         for(Observer obj : objs) {
             obj.update();
         }

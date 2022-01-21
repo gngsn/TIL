@@ -7,9 +7,9 @@ public class Main {
         UserA userA = new UserA("Jiny");
         UserB userB = new UserB("Reilly");
 
-        subject.addObserver(userA);
-        subject.addObserver(userB);
+        subject.attach(userA);
+        subject.attach(userB);
 
-        subject.notiObserver();
+        subject.noti();
     }
 }
