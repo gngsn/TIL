@@ -1,5 +1,8 @@
 package observer;
 
+import java.util.Enumeration;
+import java.util.Iterator;
+
 public class Main {
     public static void main(String[] args) {
         Members subject = new Members();
