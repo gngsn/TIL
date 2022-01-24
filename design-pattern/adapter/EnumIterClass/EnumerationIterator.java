@@ -1,10 +1,9 @@
-package adapter.classAdapter;
+package adapter.EnumIterClass;
 
 import java.util.Enumeration;
 import java.util.Iterator;
 
 public class EnumerationIterator implements Iterator, Enumeration {
-
 
 //    Enumeration
 

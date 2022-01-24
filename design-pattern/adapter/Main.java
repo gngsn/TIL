@@ -12,7 +12,7 @@ public class Main {
         // Object Adapter
         drawing.addShape(new ObjectAdapter(new Triangle()));
 
-        // Class Adapter
+        // EnumIterClass Adapter
         drawing.addShape(new ClassAdapter());
 
         System.out.println("Drawing...");
