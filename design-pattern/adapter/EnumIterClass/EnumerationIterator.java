@@ -1,9 +1,9 @@
-package adapter.EnumerationIterator;
+package adapter.classAdapter;
 
 import java.util.Enumeration;
 import java.util.Iterator;
 
-public class EnumerationIterator implements Enumeration, Iterator {
+public class EnumerationIterator implements Iterator, Enumeration {
 
 
 //    Enumeration
