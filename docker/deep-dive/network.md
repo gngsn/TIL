@@ -15,7 +15,6 @@
 <summary>원본</summary>
 libnetwork project will follow Docker and Linux philosophy of developing small, highly modular and composable tools that work well independently. Libnetwork aims to satisfy that composable need for Networking in Containers.
 </details>
-
 <br/>
 
 libnetwork 프로젝트는 **독립적으로 잘 작동하는 작고 모듈화된 복합적인 도구들을 개발한다**<small>developing small, highly modular and composable tools that work well independently</small>는 도커와 리눅스의 철학을 따른다.
@@ -81,21 +80,268 @@ A Network is a group of Endpoints that are able to communicate with each-other d
 
 **NetworkController** 
 
-NetworkController 객체는 유저가(e.g. Docker Engine)가 네트워크를 할당하고 관리할 수 있도록 간단한 API를 제공하는 libnetwork의 진입점<small>entry-point</small>을 제공한다. 
+NetworkController 객체는 유저가(e.g. Docker Engine)가 네트워크를 할당하고 관리할 수 있도록 간단한 API를 제공하는 libnetwork의 진입점<small>entry-point</small>을 제공한다. libnetwork는 내장 드라이버와 원격 드라이버를 모두 지원한다. NetworkController를 사용하면 특정 드라이버를 지정된 네트워크에 바인딩할 수 있다.
 
-libnetwork는 내장 드라이버와 원격 드라이버를 모두 지원한다. 
+<br/>
 
-NetworkController를 사용하면 특정 드라이버를 지정된 네트워크에 바인딩할 수 있다.
+**Driver**
+
+Driver는 사용자가 볼 수 있는 객체는 아니지만 드라이버는 실제 네트워크 구현을 제공한다. 
+
+NetworkController는 libnetwork에 투명하지만 드라이버에 의해 직접 처리될 수 있는 드라이버별 옵션/라벨을 구성할 수 있는 API를 제공합니다. 드라이버는 다양한 사용 사례 및 배포 시나리오를 만족시키기 위해 내장(예: 브리지, 호스트, 없음 및 오버레이)과 원격(플러그인 제공자의) 둘 다일 수 있다. 이때 드라이버는 네트워크를 소유하며 네트워크(IPAM 등) 관리를 담당한다. 향후 다양한 네트워크 관리 기능을 처리하는 데 여러 드라이버가 참여함으로써 이러한 점을 개선할 수 있다.
+
+<br/>
+
+**Network**
+
+`Network` object는 위에서 정의한 CNM : Network의 구현체이다. NetworkController는 네트워크 개체를 만들고 관리할 수 있는 API를 제공한다. 네트워크가 생성되거나 업데이트될 때마다 해당 드라이버에게 이벤트에 대한 알림이 표시된다. LibNetwork는 네트워크 객체를 추상 수준으로 처리하여 동일한 네트워크에 속한 엔드포인트 그룹과 나머지 엔드포인트와의 연결을 제공한다. 드라이버는 필요한 연결 및 격리를 제공하는 실제 작업을 수행한다. 연결은 동일한 호스트 내에 있거나 여러 호스트에 걸쳐 있을 수 있다. 따라서 네트워크는 클러스터 내에서 전역 범위를 가진다.
+
+<br/>
+
+**Endpoint** 
+
+Endpoint은 서비스의 Endpoint을 나타낸다. 네트워크의 컨테이너가 노출하는<small>exposed</small> 서비스와 그 네트워크의 다른 컨테이너가 제공하는 다른 서비스에 대한 연결을 제공한다.`Network` 개체는 Endpoint를 생성하고 관리할 수 있는 API를 제공한다. Endpoint은 하나의 네트워크에만 연결할 수 있다. Endpoint의 생성 호출은 해당 Sandbox에 대한 리소스 할당을 담당하는 해당 드라이버에 대해 수행된다. Endpoint는 특정 컨테이너가 아닌 서비스를 나타내므로 Endpoint는 클러스터 내에 글로벌 범위를 가진다.
+
+<br/>
+
+**Sandbox**
+
+Sandbox는 IP address, MAC address, routes, DNS entries와 같은 컨테이너의 네트워크 설정값을 나타낸다. Sandbox 객체는 유저가 Network에 endpoint의 생성을 요청할 때 생성된다. 네트워크를 처리하는 Driver는 필요한 네트워크 리소스(e.g. IP address)를 할당하고 `libnetwork` 에 `SandboxInfo` 로 불리는 정보들을 다시 전달한다. libnetwork는 OS별 구조체(e.g. Linux용 netns)를 사용하여 네트워크 구성을 Sandbox로 표현되는 컨테이너에 채운다. Sandbox는 여러 Endpoint를 서로 다른 네트워크에 연결할 수 있다. Sandbox는 지정된 호스트의 특정 컨테이너와 연결되므로 컨테이너가 속한 호스트를 나타내는 로컬 범위를 가진다.
+
+<br/><br/>
+
+## CNM Lifecycle
 
 
 
+도커와 같은 CNM의 소비자는 CNM 객체와 API를 통해 자신이 관리하는 컨테이너를 네트워크화한다.
+
+1. Driver은 NetworkController에 등록된다. 내장<small>built-in</small> 드라이버은 libnetwork 내부에 등록되며, 원격 드라이버는 플러그인 메커니즘(WIP)을 통해 libnetwork에 등록된다. 각 드라이버는 특정 networkType을 처리한다.
+
+2. `NetworkController` 객체는  `libnetwork.New()` API를 사용하여 네트워크 할당을 관리하고 선택적으로 드라이버별 옵션을 설정한다. 
+
+3. 네트워크는 컨트롤러의 `NewNetwork()` API에 `name`과 `networkType`을 제공하여 생성된다. `networkType` 매개 변수는 적합한 드라이버를 찾는데 도움을 주며 생성된 Network를 찾은 Driver에 바인딩한다. 이 시점부터 네트워크의 모든 작업은 해당 드라이버가 처리한다.
+
+<details>
+<summary>NewNetwork</summary>
+<pre lang="go">
+func (c *controller) NewNetwork(networkType, name string, id string, options ...NetworkOption) (Network, error) {
+	var (
+		cap            *driverapi.Capability
+		err            error
+		t              *network
+		skipCfgEpCount bool
+	)
+
+	if id != "" {
+		c.networkLocker.Lock(id)
+		defer c.networkLocker.Unlock(id)
+	
+		if _, err = c.NetworkByID(id); err == nil {
+			return nil, NetworkNameError(id)
+		}
+	}
+	
+	if !config.IsValidName(name) {
+		return nil, ErrInvalidName(name)
+	}
+	
+	if id == "" {
+		id = stringid.GenerateRandomID()
+	}
+	
+	defaultIpam := defaultIpamForNetworkType(networkType)
+	// Construct the network object
+	network := &network{
+		name:             name,
+		networkType:      networkType,
+		generic:          map[string]interface{}{netlabel.GenericData: make(map[string]string)},
+		ipamType:         defaultIpam,
+		id:               id,
+		created:          time.Now(),
+		ctrlr:            c,
+		persist:          true,
+		drvOnce:          &sync.Once{},
+		loadBalancerMode: loadBalancerModeDefault,
+	}
+	
+	network.processOptions(options...)
+	if err = network.validateConfiguration(); err != nil {
+		return nil, err
+	}
+	
+	// Reset network types, force local scope and skip allocation and
+	// plumbing for configuration networks. Reset of the config-only
+	// network drivers is needed so that this special network is not
+	// usable by old engine versions.
+	if network.configOnly {
+		network.scope = datastore.LocalScope
+		network.networkType = "null"
+		goto addToStore
+	}
+	
+	_, cap, err = network.resolveDriver(network.networkType, true)
+	if err != nil {
+		return nil, err
+	}
+	
+	if network.scope == datastore.LocalScope && cap.DataScope == datastore.GlobalScope {
+		return nil, types.ForbiddenErrorf("cannot downgrade network scope for %s networks", networkType)
+	
+	}
+	if network.ingress && cap.DataScope != datastore.GlobalScope {
+		return nil, types.ForbiddenErrorf("Ingress network can only be global scope network")
+	}
+	
+	// At this point the network scope is still unknown if not set by user
+	if (cap.DataScope == datastore.GlobalScope || network.scope == datastore.SwarmScope) &&
+		!c.isDistributedControl() && !network.dynamic {
+		if c.isManager() {
+			// For non-distributed controlled environment, globalscoped non-dynamic networks are redirected to Manager
+			return nil, ManagerRedirectError(name)
+		}
+		return nil, types.ForbiddenErrorf("Cannot create a multi-host network from a worker node. Please create the network from a manager node.")
+	}
+	
+	if network.scope == datastore.SwarmScope && c.isDistributedControl() {
+		return nil, types.ForbiddenErrorf("cannot create a swarm scoped network when swarm is not active")
+	}
+	
+	// Make sure we have a driver available for this network type
+	// before we allocate anything.
+	if _, err := network.driver(true); err != nil {
+		return nil, err
+	}
+	
+	// From this point on, we need the network specific configuration,
+	// which may come from a configuration-only network
+	if network.configFrom != "" {
+		t, err = c.getConfigNetwork(network.configFrom)
+		if err != nil {
+			return nil, types.NotFoundErrorf("configuration network %q does not exist", network.configFrom)
+		}
+		if err = t.applyConfigurationTo(network); err != nil {
+			return nil, types.InternalErrorf("Failed to apply configuration: %v", err)
+		}
+		network.generic[netlabel.Internal] = network.internal
+		defer func() {
+			if err == nil && !skipCfgEpCount {
+				if err := t.getEpCnt().IncEndpointCnt(); err != nil {
+					logrus.Warnf("Failed to update reference count for configuration network %q on creation of network %q: %v",
+						t.Name(), network.Name(), err)
+				}
+			}
+		}()
+	}
+	
+	err = network.ipamAllocate()
+	if err != nil {
+		return nil, err
+	}
+	defer func() {
+		if err != nil {
+			network.ipamRelease()
+		}
+	}()
+	
+	err = c.addNetwork(network)
+	if err != nil {
+		if _, ok := err.(types.MaskableError); ok {
+			// This error can be ignored and set this boolean
+			// value to skip a refcount increment for configOnly networks
+			skipCfgEpCount = true
+		} else {
+			return nil, err
+		}
+	}
+	defer func() {
+		if err != nil {
+			if e := network.deleteNetwork(); e != nil {
+				logrus.Warnf("couldn't roll back driver network on network %s creation failure: %v", network.name, err)
+			}
+		}
+	}()
+	
+	// XXX If the driver type is "overlay" check the options for DSR
+	// being set.  If so, set the network's load balancing mode to DSR.
+	// This should really be done in a network option, but due to
+	// time pressure to get this in without adding changes to moby,
+	// swarm and CLI, it is being implemented as a driver-specific
+	// option.  Unfortunately, drivers can't influence the core
+	// "libnetwork.network" data type.  Hence we need this hack code
+	// to implement in this manner.
+	if gval, ok := network.generic[netlabel.GenericData]; ok && network.networkType == "overlay" {
+		optMap := gval.(map[string]string)
+		if _, ok := optMap[overlayDSROptionString]; ok {
+			network.loadBalancerMode = loadBalancerModeDSR
+		}
+	}
+
+addToStore:
+	// First store the endpoint count, then the network. To avoid to
+	// end up with a datastore containing a network and not an epCnt,
+	// in case of an ungraceful shutdown during this function call.
+	epCnt := &endpointCnt{n: network}
+	if err = c.updateToStore(epCnt); err != nil {
+		return nil, err
+	}
+	defer func() {
+		if err != nil {
+			if e := c.deleteFromStore(epCnt); e != nil {
+				logrus.Warnf("could not rollback from store, epCnt %v on failure (%v): %v", epCnt, err, e)
+			}
+		}
+	}()
+
+	network.epCnt = epCnt
+	if err = c.updateToStore(network); err != nil {
+		return nil, err
+	}
+	defer func() {
+		if err != nil {
+			if e := c.deleteFromStore(network); e != nil {
+				logrus.Warnf("could not rollback from store, network %v on failure (%v): %v", network, err, e)
+			}
+		}
+	}()
+	
+	if network.configOnly {
+		return network, nil
+	}
+	
+	joinCluster(network)
+	defer func() {
+		if err != nil {
+			network.cancelDriverWatches()
+			if e := network.leaveCluster(); e != nil {
+				logrus.Warnf("Failed to leave agent cluster on network %s on failure (%v): %v", network.name, err, e)
+			}
+		}
+	}()
+	
+	if network.hasLoadBalancerEndpoint() {
+		if err = network.createLoadBalancerSandbox(); err != nil {
+			return nil, err
+		}
+	}
+	
+	if !c.isDistributedControl() {
+		c.Lock()
+		arrangeIngressFilterRule()
+		c.Unlock()
+	}
+	arrangeUserFilterRule()
+	
+	return network, nil
+}
+</pre>
+</details>
+
+<br/>
 
 
+4. `controller.NewNetwork()` API 드라이버 별 옵션과 레이블을 전달할 수 있는 선택적인 옵션 매개변수를 사용하며 드라이버가 그것의 목적에 맞게 사용할 수 있도록 한다.
+5. 지정된 네트워크에서 `network.CreateEndpoint()`  호출하여 새 Endpoint를 만들 수 있다. 이 API도 드라이버가 사용할 수 있는 옵션 매개 변수를 받는다. 이러한 '옵션'에는 잘 알려진 라벨과 드리아버별 라벨이 모두 포함된다. 드라이버는 차례로 `driver.CreateEndpoint` 를 사용하여 호출되며, Endpoint가 네트워크에 생성될 때 IPv4/IPv6 주소를 예약<small>reserve</small>하도록 선택할 수 있다. 드라이버는 `driverapi`에 정의된 `InterfaceInfo` 인터페이스를 사용하여 이러한 주소를 할당한다. 서비스 endpoint는 기본적으로 애플리케이션 컨테이너가 수신 중인 네트워크 주소와 포트 번호에 불과하기 때문에 endpoint를 서비스 정의로 완료하는 데 endpoint가 노출시키는 포트와 함께 IP/IPv6가 필요하다.
 
 
-
-
-
-
-
-
+4. 
