@@ -87,7 +87,7 @@ Gang of Four - Erich Gamma, Richard Helm, Ralph Johnson, John Vlissides, Grady B
 |        | Creational Pattern                                           | Structural Pattern                                           | Behavioral Pattern                                           |
 | ------ | ------------------------------------------------------------ | ------------------------------------------------------------ | ------------------------------------------------------------ |
 | Class  | Factory Method                                               | Adapter                                                      | Interpreter<br />Template Method                             |
-| Object | Singleton<br />Builder <br />Abstract <br />Factory <br />Prototype | Bridge<br />Composite<br />Decorator <br />Facade <br />Flyweight <br />Proxy | Chain of Responsibility <br />Command <br />Iterator <br />Mediator <br />Observer <br />State <br />Strategy <br />Visitor |
+| Object | Singleton<br />Builder <br />Abstract <br />Factory <br />Prototype | Bridge<br />composite<br />Decorator <br />Facade <br />Flyweight <br />Proxy | Chain of Responsibility <br />Command <br />Iterator <br />Mediator <br />Observer <br />State <br />Strategy <br />Visitor |
 
 <br/><br/>
 
@@ -153,7 +153,7 @@ Gang of Four - Erich Gamma, Richard Helm, Ralph Johnson, John Vlissides, Grady B
 
 <br/>
 
-**Composite**
+**composite**
 
 객체의 구조를 이용해 객체를 확장. 트리 구조의 특징
 
