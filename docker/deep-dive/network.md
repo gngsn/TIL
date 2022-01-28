@@ -10,11 +10,11 @@
 
 ### Goal
 
-
 <details>
 <summary>원본</summary>
 libnetwork project will follow Docker and Linux philosophy of developing small, highly modular and composable tools that work well independently. Libnetwork aims to satisfy that composable need for Networking in Containers.
 </details>
+
 <br/>
 
 libnetwork 프로젝트는 **독립적으로 잘 작동하는 작고 모듈화된 복합적인 도구들을 개발한다**<small>developing small, highly modular and composable tools that work well independently</small>는 도커와 리눅스의 철학을 따른다.
@@ -122,220 +122,16 @@ Sandbox는 IP address, MAC address, routes, DNS entries와 같은 컨테이너�
 
 3. 네트워크는 컨트롤러의 `NewNetwork()` API에 `name`과 `networkType`을 제공하여 생성된다. `networkType` 매개 변수는 적합한 드라이버를 찾는데 도움을 주며 생성된 Network를 찾은 Driver에 바인딩한다. 이 시점부터 네트워크의 모든 작업은 해당 드라이버가 처리한다.
 
-<details>
-<summary>NewNetwork</summary>
-<pre lang="go">
-func (c *controller) NewNetwork(networkType, name string, id string, options ...NetworkOption) (Network, error) {
-	var (
-		cap            *driverapi.Capability
-		err            error
-		t              *network
-		skipCfgEpCount bool
-	)
-
-	if id != "" {
-		c.networkLocker.Lock(id)
-		defer c.networkLocker.Unlock(id)
-	
-		if _, err = c.NetworkByID(id); err == nil {
-			return nil, NetworkNameError(id)
-		}
-	}
-	
-	if !config.IsValidName(name) {
-		return nil, ErrInvalidName(name)
-	}
-	
-	if id == "" {
-		id = stringid.GenerateRandomID()
-	}
-	
-	defaultIpam := defaultIpamForNetworkType(networkType)
-	// Construct the network object
-	network := &network{
-		name:             name,
-		networkType:      networkType,
-		generic:          map[string]interface{}{netlabel.GenericData: make(map[string]string)},
-		ipamType:         defaultIpam,
-		id:               id,
-		created:          time.Now(),
-		ctrlr:            c,
-		persist:          true,
-		drvOnce:          &sync.Once{},
-		loadBalancerMode: loadBalancerModeDefault,
-	}
-	
-	network.processOptions(options...)
-	if err = network.validateConfiguration(); err != nil {
-		return nil, err
-	}
-	
-	// Reset network types, force local scope and skip allocation and
-	// plumbing for configuration networks. Reset of the config-only
-	// network drivers is needed so that this special network is not
-	// usable by old engine versions.
-	if network.configOnly {
-		network.scope = datastore.LocalScope
-		network.networkType = "null"
-		goto addToStore
-	}
-	
-	_, cap, err = network.resolveDriver(network.networkType, true)
-	if err != nil {
-		return nil, err
-	}
-	
-	if network.scope == datastore.LocalScope && cap.DataScope == datastore.GlobalScope {
-		return nil, types.ForbiddenErrorf("cannot downgrade network scope for %s networks", networkType)
-	
-	}
-	if network.ingress && cap.DataScope != datastore.GlobalScope {
-		return nil, types.ForbiddenErrorf("Ingress network can only be global scope network")
-	}
-	
-	// At this point the network scope is still unknown if not set by user
-	if (cap.DataScope == datastore.GlobalScope || network.scope == datastore.SwarmScope) &&
-		!c.isDistributedControl() && !network.dynamic {
-		if c.isManager() {
-			// For non-distributed controlled environment, globalscoped non-dynamic networks are redirected to Manager
-			return nil, ManagerRedirectError(name)
-		}
-		return nil, types.ForbiddenErrorf("Cannot create a multi-host network from a worker node. Please create the network from a manager node.")
-	}
-	
-	if network.scope == datastore.SwarmScope && c.isDistributedControl() {
-		return nil, types.ForbiddenErrorf("cannot create a swarm scoped network when swarm is not active")
-	}
-	
-	// Make sure we have a driver available for this network type
-	// before we allocate anything.
-	if _, err := network.driver(true); err != nil {
-		return nil, err
-	}
-	
-	// From this point on, we need the network specific configuration,
-	// which may come from a configuration-only network
-	if network.configFrom != "" {
-		t, err = c.getConfigNetwork(network.configFrom)
-		if err != nil {
-			return nil, types.NotFoundErrorf("configuration network %q does not exist", network.configFrom)
-		}
-		if err = t.applyConfigurationTo(network); err != nil {
-			return nil, types.InternalErrorf("Failed to apply configuration: %v", err)
-		}
-		network.generic[netlabel.Internal] = network.internal
-		defer func() {
-			if err == nil && !skipCfgEpCount {
-				if err := t.getEpCnt().IncEndpointCnt(); err != nil {
-					logrus.Warnf("Failed to update reference count for configuration network %q on creation of network %q: %v",
-						t.Name(), network.Name(), err)
-				}
-			}
-		}()
-	}
-	
-	err = network.ipamAllocate()
-	if err != nil {
-		return nil, err
-	}
-	defer func() {
-		if err != nil {
-			network.ipamRelease()
-		}
-	}()
-	
-	err = c.addNetwork(network)
-	if err != nil {
-		if _, ok := err.(types.MaskableError); ok {
-			// This error can be ignored and set this boolean
-			// value to skip a refcount increment for configOnly networks
-			skipCfgEpCount = true
-		} else {
-			return nil, err
-		}
-	}
-	defer func() {
-		if err != nil {
-			if e := network.deleteNetwork(); e != nil {
-				logrus.Warnf("couldn't roll back driver network on network %s creation failure: %v", network.name, err)
-			}
-		}
-	}()
-	
-	// XXX If the driver type is "overlay" check the options for DSR
-	// being set.  If so, set the network's load balancing mode to DSR.
-	// This should really be done in a network option, but due to
-	// time pressure to get this in without adding changes to moby,
-	// swarm and CLI, it is being implemented as a driver-specific
-	// option.  Unfortunately, drivers can't influence the core
-	// "libnetwork.network" data type.  Hence we need this hack code
-	// to implement in this manner.
-	if gval, ok := network.generic[netlabel.GenericData]; ok && network.networkType == "overlay" {
-		optMap := gval.(map[string]string)
-		if _, ok := optMap[overlayDSROptionString]; ok {
-			network.loadBalancerMode = loadBalancerModeDSR
-		}
-	}
-
-addToStore:
-	// First store the endpoint count, then the network. To avoid to
-	// end up with a datastore containing a network and not an epCnt,
-	// in case of an ungraceful shutdown during this function call.
-	epCnt := &endpointCnt{n: network}
-	if err = c.updateToStore(epCnt); err != nil {
-		return nil, err
-	}
-	defer func() {
-		if err != nil {
-			if e := c.deleteFromStore(epCnt); e != nil {
-				logrus.Warnf("could not rollback from store, epCnt %v on failure (%v): %v", epCnt, err, e)
-			}
-		}
-	}()
-
-	network.epCnt = epCnt
-	if err = c.updateToStore(network); err != nil {
-		return nil, err
-	}
-	defer func() {
-		if err != nil {
-			if e := c.deleteFromStore(network); e != nil {
-				logrus.Warnf("could not rollback from store, network %v on failure (%v): %v", network, err, e)
-			}
-		}
-	}()
-	
-	if network.configOnly {
-		return network, nil
-	}
-	
-	joinCluster(network)
-	defer func() {
-		if err != nil {
-			network.cancelDriverWatches()
-			if e := network.leaveCluster(); e != nil {
-				logrus.Warnf("Failed to leave agent cluster on network %s on failure (%v): %v", network.name, err, e)
-			}
-		}
-	}()
-	
-	if network.hasLoadBalancerEndpoint() {
-		if err = network.createLoadBalancerSandbox(); err != nil {
-			return nil, err
-		}
-	}
-	
-	if !c.isDistributedControl() {
-		c.Lock()
-		arrangeIngressFilterRule()
-		c.Unlock()
-	}
-	arrangeUserFilterRule()
-	
-	return network, nil
-}
-</pre>
-</details>
+  <details>
+  <summary>NewNetwork</summary>
+  <pre lang="go">
+  	type NetworkController interface {
+	    // ...
+	    NewNetwork(networkType, name string, id string, options ...NetworkOption) (Network, error)
+	    // ...
+  	}
+  </pre>
+  </details>
 
 <br/>
 
