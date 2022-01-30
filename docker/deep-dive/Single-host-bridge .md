@@ -11,11 +11,11 @@ Windows의 Docker는 내장 `NAT` 드라이버를 사용하여 브리지 네트�
 
 모든 면에서, 그들은 동일하게 작동한다.
 
-
+<br/>
 
 ![Untitled](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/a7348494-7cc7-43fc-97e9-815619656437/Untitled.png)
 
-
+<br/>
 
 "mynet"이라고 불리는 동일한 로컬 브리지 네트워크를 가진 두 개의 도커 호스트를 보여준다.
 
@@ -23,7 +23,11 @@ Windows의 Docker는 내장 `NAT` 드라이버를 사용하여 브리지 네트�
 
 모든 도커 호스트에는 기본 단일 호스트 브리지 네트워크가 제공된다. 리눅스에서는 브릿지(bridge)라고 하며, 윈도에서는 나트(nat)라고 부른다. (이름들은 드라이버들이 그것들을 만들 때 사용한 이름과 동일하다.)
 
+<br/>
+
 명령줄에서 `--network` 플래그로 재정의하지 않으면 새로 생성되는 모든 컨테이너들은 이것을 기본 네트워크로 가진다.
+
+<br/>
 
 ```bash
 //Linux
@@ -37,9 +41,13 @@ NETWORK ID        NAME        DRIVER        SCOPE
 095d4090fa32      nat         nat           local
 ```
 
+<br/>
+
 다음 목록은 새로 설치된 Linux 및 Windows Docker 호스트에서 `docker network ls` 명령의 출력을 보여준다. 출력은 각 호스트의 기본 네트워크만 표시되도록 잘린다.
 
 네트워크 이름이 네트워크 생성에 사용된 드라이버와 동일한데, 이는 우연의 일치일 뿐 요구 사항은 아니다.
+
+<br/>
 
 ```bash
 docker network inspect bridge
@@ -73,9 +81,13 @@ docker network inspect bridge
 
 `docker network inspect` 명령어는 훌륭한 정보들의 모음treasure trove이다. 만약 당신이 로우레벨 디테일에 관심이 있다면 위의 출력들을 읽는 것을 강력히 추천했다.
 
+<br/>
+
 Linux 호스트에서 bridge 드라이버로 구축된 도커 네트워크는 거의 20년 동안 리눅스 커널에 존재했던 내우외환(고군분투?)으로 다져진battle-hardened Linux bridge 기술을 기반으로 한다. 이것은 성능이 우수하고 매우 안정적이라는 것을 의미한다. 또한 표준 Linux 유틸리티를 사용하여 확인inspect할 수 있습니다.
 
 (역자 ; battle-hardened은 원래 (군인이) 전투 경험으로 다져진으로 해석됨..)
+
+<br/>
 
 ```bash
 $ ip link show docker0
@@ -89,10 +101,14 @@ $ ip link show docker0
 
 이것은 `docker network inspect` 를 통해 확인할 수 있다.
 
+<br/>
+
 ```bash
 $ docker network inspect bridge | grep bridge.name
 "com.docker.network.bridge.name": "docker0",
 ```
+
+<br/>
 
 도커의 기본 "브리지" 네트워크와 리눅스 커널의 "도커0" 브리지 사이의 관계는 그림 11.7과 같다.
 
@@ -123,9 +139,13 @@ docker0           8000.0242aff9eb4f     no
 br-20c2e8ae4bbb   8000.02429636237c     no
 ```
 
+<br/>
+
 출력에는 두 개의 bridge가 표시된다. 첫 번째 줄은 우리가 이미 알고 있는 "docker0" bridge이다. 이는 도커의 기본 "bridge" 네트워크와 관련이 있습니다. 두 번째 bridge(br-20c2e8ae4bb)는 새로운 `localnet` docker bridge network와 관련이 있다. 둘 다 스패닝 트리를 사용하도록 설정하지 않았으며 연결된 장치도 없다(인터페이스 열).
 
 ![Untitled](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/3b11f429-946c-4e2d-a518-8021d3645a33/Untitled.png)
+
+<br/>
 
 - Linux bridge
 
@@ -135,11 +155,15 @@ br-20c2e8ae4bbb   8000.02429636237c     no
 
 Windows에서 "`alpine sleep 1d`"를 " `mcr.microsoft.com/powershell:nanoserver pwsh.exe -Command Start-Sleep 86400` "으로 대체해야 합니다.
 
+<br/>
+
 ```bash
 $ docker container run -d --name c1 \\
   --network localnet \\
   alpine sleep 1d
 ```
+
+<br/>
 
 이제 이 컨테이너가 `localnet` 네트워크 상에 있게 된다.
 
@@ -149,12 +173,16 @@ $ docker container run -d --name c1 \\
 
 Linux `brctl show` 명령을 다시 실행하면 `br-20c2e8ae4bbb` bridge에 연결된 c1의 인터페이스를 볼 수 있다.
 
+<br/>
+
 ```bash
 $ brctl show
 bridge name       bridge id           STP enabled     interfaces
 br-20c2e8ae4bbb   8000.02429636237c   no              vethe792ac0
 docker0           8000.0242aff9eb4f   no
 ```
+
+<br/>
 
 ![Untitled](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/10def709-9e64-4554-8859-1f2fbada28bb/Untitled.png)
 
@@ -165,6 +193,8 @@ docker0           8000.0242aff9eb4f   no
 - 원문
 
   **Beware:** *The default `bridge` network on Linux does not support name resolution via the Docker DNS service. All other user-defined bridge networks do. The following demo will work because the container is on the user-defined `localnet` network.*
+
+<br/><br/>
 
 ## Practice
 
@@ -213,6 +243,8 @@ Ethernet adapter Ethernet:
 
 지금까지 bridge network의 컨테이너는 다른 컨테이너와만 통신할 때 **동일한 네트워크**에 있어야 한다고 했지만, 포트 매핑을 사용하면 이를 해결할 수 있다.
 
+<br/><br/>
+
 ### Port Mapping
 
 포트 매핑을 사용하면 컨테이너를 도커 호스트의 포트에 매핑할 수 있다. 도커 호스트에 도달하는 설정된 포트의 모든 트래픽은 해당 컨테이너로 전송된다.
@@ -224,6 +256,8 @@ Ethernet adapter Ethernet:
 웹 서버를 실행하는 컨테이너의 포트 80을 도커 호스트의 포트 5000에 매핑하는 예를 살펴보자.
 
 이 예제는 리눅스에서 NGINX를 사용할 것이다. 만약 당신이 윈도우를 따르고 있다면, 당신은 nginx를 `mcr.microsoft.com/windows/servercore/iis:nanoserver` 과 같은 윈도우 기반 웹 서버 이미지로 대체할 필요가 있을 것이다.
+
+<br/><br/>
 
 ### Nginx Practice
 
@@ -244,6 +278,8 @@ $ docker port web
 ```
 
 컨테이너의 포트 80이 도커 호스트의 모든 인터페이스에서 포트 5000에 매핑되어 있음을 나타낸다.
+
+<br/>
 
 1. 웹 브라우저가 도커 호스트의 포트 5000을 가리키도록 하여 해당 설정을 테스트한다. 이 단계를 완료하려면 Docker 호스트의 IP 또는 DNS 이름을 알아야 합니다. Mac 또는 Windows에서 Docker Desktop을 사용하는 경우 localhost:5000 또는 127.0.0.1:5000을 사용할 수 있습니다.
 
