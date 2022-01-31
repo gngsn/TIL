@@ -135,5 +135,13 @@ Sandbox는 IP address, MAC address, routes, DNS entries와 같은 컨테이너�
 
 
 4. `controller.NewNetwork()` API 드라이버 별 옵션과 레이블을 전달할 수 있는 선택적인 옵션 매개변수를 사용하며 드라이버가 그것의 목적에 맞게 사용할 수 있도록 한다.
+
 5. 지정된 네트워크에서 `network.CreateEndpoint()`  호출하여 새 Endpoint를 만들 수 있다. 이 API도 드라이버가 사용할 수 있는 옵션 매개 변수를 받는다. 이러한 '옵션'에는 잘 알려진 라벨과 드리아버별 라벨이 모두 포함된다. 드라이버는 차례로 `driver.CreateEndpoint` 를 사용하여 호출되며, Endpoint가 네트워크에 생성될 때 IPv4/IPv6 주소를 예약<small>reserve</small>하도록 선택할 수 있다. 드라이버는 `driverapi`에 정의된 `InterfaceInfo` 인터페이스를 사용하여 이러한 주소를 할당한다. 서비스 endpoint는 기본적으로 애플리케이션 컨테이너가 수신 중인 네트워크 주소와 포트 번호에 불과하기 때문에 endpoint를 서비스 정의로 완료하는 데 endpoint가 노출시키는 포트와 함께 IP/IPv6가 필요하다.
-5. 
+
+6. `endpoint.Join()` 을 사용하여 컨테이너의 `Endpoint`에 연결할 수 있다. 해당 컨테이너에  `Sandbox` 가 아직 존재하지 않는 경우 Join operation으로 `Sandbox` 가 생성된다. 드라이버는 `   Sandbox`키를 사용하여 동일한 컨테이너에 연결된 여러 엔드포인트를 구분할 수 있다. 이 API는 드라이버가 사용할 수 있는 `options`매개 변수도 허용한다.
+   - Libnetwork의 직접적인 설계 이슈는 아니지만 Docker와 같은 사용자가 컨테이너가 작동하기 전에 호출되는 컨테이너의 `Start()` lifecycle 동안 endpoint.Join()을 호출하는 것이 매우 권장된다. 도커 통합의 일환으로 이 문제가 해결된다.
+   - endpoint.Join() API에 대한 FAQ 중 하나는 endpoint를 생성하는 데 API가 필요하고 endpoint에 다른 것이 Join하는 데 API가 필요한 이유가 있냐는 것인데, 그에 대한 답은 엔드포인트가 컨테이너에서 지원되거나 지원되지 않는 서비스를 나타낸다는 사실을 기반으로 한다. 엔드포인트가 생성되면 해당 리소스가 예약되어 컨테이너가 나중에 엔드포인트에 연결되고 일관된 네트워킹 동작을 얻을 수 있다.
+
+8. 컨테이너가 중지되면 `endpoint.Leave()`를 호출할 수 있다. 드라이버는 `Join()` 호출 중에 할당한 상태를 정리할 수 있다. LibNetwork는 마지막으로 참조하는 엔드포인트가 네트워크를 벗어날 때 `Sandbox`를 삭제한다. 그러나 LibNetwork는 끝점이 아직 존재하는 한 IP 주소를 유지하며 컨테이너(또는 임의의 컨테이너)가 다시 가입할 때 재사용된다. 이렇게 하면 컨테이너의 리소스가 중지되었다가 다시 시작될 때 재사용된다.
+
+9. `endpoint.Delete()`는 네트워크에서 엔드포인트를 삭제하는 데 사용된다. 이렇게 하면 엔드포인트가 삭제되고 캐시된 `sandbox.Info`가 정리된다.
