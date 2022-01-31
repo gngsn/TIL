@@ -133,11 +133,7 @@ Sandbox는 IP address, MAC address, routes, DNS entries와 같은 컨테이너�
   </pre>
   </details>
 
-<br/>
-
 
 4. `controller.NewNetwork()` API 드라이버 별 옵션과 레이블을 전달할 수 있는 선택적인 옵션 매개변수를 사용하며 드라이버가 그것의 목적에 맞게 사용할 수 있도록 한다.
 5. 지정된 네트워크에서 `network.CreateEndpoint()`  호출하여 새 Endpoint를 만들 수 있다. 이 API도 드라이버가 사용할 수 있는 옵션 매개 변수를 받는다. 이러한 '옵션'에는 잘 알려진 라벨과 드리아버별 라벨이 모두 포함된다. 드라이버는 차례로 `driver.CreateEndpoint` 를 사용하여 호출되며, Endpoint가 네트워크에 생성될 때 IPv4/IPv6 주소를 예약<small>reserve</small>하도록 선택할 수 있다. 드라이버는 `driverapi`에 정의된 `InterfaceInfo` 인터페이스를 사용하여 이러한 주소를 할당한다. 서비스 endpoint는 기본적으로 애플리케이션 컨테이너가 수신 중인 네트워크 주소와 포트 번호에 불과하기 때문에 endpoint를 서비스 정의로 완료하는 데 endpoint가 노출시키는 포트와 함께 IP/IPv6가 필요하다.
-
-
-4. 
+5. 
