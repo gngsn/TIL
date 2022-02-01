@@ -1,4 +1,4 @@
-package composite;
+package composite.computer;
 
 public class Computer {
     private String name = "구성";

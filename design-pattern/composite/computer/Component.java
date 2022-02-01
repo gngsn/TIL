@@ -1,4 +1,4 @@
-package composite;
+package composite.computer;
 
 public class Component {
     private String name;

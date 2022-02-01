@@ -1,4 +1,4 @@
-package composite;
+package composite.computer;
 
 public class Client {
     public static void main(String[] args) {
