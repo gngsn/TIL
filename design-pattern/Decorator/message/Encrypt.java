@@ -2,8 +2,8 @@ package Decorator.message;
 
 import java.util.Base64;
 
-public class Encript extends Decorator {
-    public Encript(Message message) {
+public class Encrypt extends MessageDecorator {
+    public Encrypt(Message message) {
         super(message);
     }
 
@@ -15,7 +15,6 @@ public class Encript extends Decorator {
     @Override
     public void sendMessage(String message) {
         System.out.println("encript : " + message);
-        String encodedMessage = B64Encode(message);
-        this.getDecoratedMessage().sendMessage(encodedMessage);
+        this.getDecoratedMessage().sendMessage(B64Encode(message));
     }
 }

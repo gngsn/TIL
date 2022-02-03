@@ -1,9 +1,9 @@
 package Decorator.message;
 
-public abstract class Decorator implements Message {
+public abstract class MessageDecorator implements Message {
     protected Message base;
 
-    public Decorator(Message message) {
+    public MessageDecorator(Message message) {
         this.base = message;
     }
 

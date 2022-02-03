@@ -1,6 +1,6 @@
 package Decorator.message;
 
-public class Reverse extends Decorator {
+public class Reverse extends MessageDecorator {
 
     public Reverse(Message message) {
         super(message);
@@ -13,7 +13,6 @@ public class Reverse extends Decorator {
     @Override
     public void sendMessage(String message) {
         System.out.println("reverse : " + message);
-        String reversedMessage = reverser(message);
-        this.getDecoratedMessage().sendMessage(reversedMessage);
+        this.getDecoratedMessage().sendMessage(reverser(message));
     }
 }

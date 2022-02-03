@@ -5,7 +5,7 @@ public class Client {
         String message = "seCrEtMesSagE";
         System.out.println("Message to send : " + message);
 
-        Message after = new Reverse(new Encript(new BaseComponent()));
+        Message after = new Reverse(new Encrypt(new BaseMessage()));
         after.sendMessage(message);
     }
 }
