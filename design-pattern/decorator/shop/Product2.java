@@ -1,4 +1,4 @@
-package Decorator.shop;
+package decorator.shop;
 
 public class Product2 implements Component {
     @Override

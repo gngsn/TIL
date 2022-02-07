@@ -1,4 +1,4 @@
-package Decorator.shop;
+package decorator.shop;
 
 interface Component {
 

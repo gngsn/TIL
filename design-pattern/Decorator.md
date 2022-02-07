@@ -1,4 +1,4 @@
-# Decorator Pattern
+# decorator Pattern
 
 <br/>
 

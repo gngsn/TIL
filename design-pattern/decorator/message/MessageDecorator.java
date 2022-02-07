@@ -1,4 +1,4 @@
-package Decorator.message;
+package decorator.message;
 
 public abstract class MessageDecorator implements Message {
     protected Message base;

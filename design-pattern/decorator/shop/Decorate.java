@@ -1,4 +1,4 @@
-package Decorator.shop;
+package decorator.shop;
 
 abstract class Decorate implements Component{
     abstract public String product();

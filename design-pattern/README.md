@@ -87,7 +87,7 @@ Gang of Four - Erich Gamma, Richard Helm, Ralph Johnson, John Vlissides, Grady B
 |        | Creational Pattern                                           | Structural Pattern                                           | Behavioral Pattern                                           |
 | ------ | ------------------------------------------------------------ | ------------------------------------------------------------ | ------------------------------------------------------------ |
 | Class  | Factory Method                                               | Adapter                                                      | Interpreter<br />Template Method                             |
-| Object | Singleton<br />Builder <br />Abstract <br />Factory <br />Prototype | Bridge<br />composite<br />Decorator <br />Facade <br />Flyweight <br />Proxy | Chain of Responsibility <br />Command <br />Iterator <br />Mediator <br />Observer <br />State <br />Strategy <br />Visitor |
+| Object | Singleton<br />Builder <br />Abstract <br />Factory <br />Prototype | Bridge<br />composite<br />decorator <br />Facade <br />Flyweight <br />Proxy | Chain of Responsibility <br />Command <br />Iterator <br />Mediator <br />Observer <br />State <br />Strategy <br />Visitor |
 
 <br/><br/>
 
@@ -159,7 +159,7 @@ Gang of Four - Erich Gamma, Richard Helm, Ralph Johnson, John Vlissides, Grady B
 
 <br/>
 
-**Decorator**
+**decorator**
 
 객체에 기능을 동적으로 추가. 확장 시 객체에 새로운 책임을 부과할 수 있음. 재귀적 합성 방법을 응용하여 객체를 확장
 

@@ -1,4 +1,4 @@
-package Decorator.shop;
+package decorator.shop;
 
 public class ssd256 extends Decorate {
     public Component base;

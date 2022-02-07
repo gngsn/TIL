@@ -1,4 +1,4 @@
-package Decorator.shop;
+package decorator.shop;
 
 public class Client {
     public static void main(String[] args) {

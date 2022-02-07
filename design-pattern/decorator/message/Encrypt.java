@@ -1,4 +1,4 @@
-package Decorator.message;
+package decorator.message;
 
 import java.util.Base64;
 

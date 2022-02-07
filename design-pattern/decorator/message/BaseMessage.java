@@ -1,4 +1,4 @@
-package Decorator.message;
+package decorator.message;
 
 public class BaseMessage implements Message {
     @Override

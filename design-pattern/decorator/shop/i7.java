@@ -1,4 +1,4 @@
-package Decorator.shop;
+package decorator.shop;
 
 public class i7 extends Decorate {
     public Component base;

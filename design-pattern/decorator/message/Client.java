@@ -1,4 +1,4 @@
-package Decorator.message;
+package decorator.message;
 
 public class Client {
     public static void main(String[] args) {
