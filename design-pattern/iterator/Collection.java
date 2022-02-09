@@ -1,7 +1,5 @@
 package iterator;
 
-import java.util.Iterator;
-
 public class Collection implements Aggregate {
     private Fruit[] obj = {};
     private Integer last = 0;
@@ -20,7 +18,7 @@ public class Collection implements Aggregate {
     }
 
     @Override
-    public void iterator() {
+    public IteratorObject iterator() {
         return new IteratorObject(this);
     }
 }
