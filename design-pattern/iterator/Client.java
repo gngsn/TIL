@@ -1,22 +1,18 @@
 package iterator;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class Client {
     public static void main(String[] args) {
-        Fruit fruits[] = {
-                new Fruit("Apple"),
-                new Fruit("Banana"),
-                new Fruit("Berry"),
-                new Fruit("Grape"),
-        };
+        Collection menu = new Collection(4);
+        menu.append(new Fruit("Apple"));
+        menu.append(new Fruit("Banana"));
+        menu.append(new Fruit("Berry"));
+        menu.append(new Fruit("Grape"));
 
-        for (int i = 0; i < fruits.length; i++) {
-            System.out.println(fruits[i].getName());
+        FruitIterator loop = menu.iterator();
+
+        while(loop.isNext()) {
+            Fruit item = loop.next();
+            System.out.println(item.getName());
         }
-//        List<Fruit> fruits = new ArrayList<>(
-//                new Fruit("Apple"),
-//        )
     }
 }

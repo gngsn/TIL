@@ -1,8 +1,13 @@
 package iterator;
 
+
 public class Collection implements Aggregate {
-    private Fruit[] obj = {};
+    private Fruit[] obj;
     private Integer last = 0;
+
+    public Collection(int size) {
+        this.obj = new Fruit[size];
+    }
 
     public Fruit getObj(int index) {
         return this.obj[index];
@@ -18,7 +23,7 @@ public class Collection implements Aggregate {
     }
 
     @Override
-    public IteratorObject iterator() {
-        return new IteratorObject(this);
+    public FruitIterator iterator() {
+        return new FruitIterator(this);
     }
 }

@@ -1,5 +1,5 @@
 package iterator;
 
 interface Aggregate {
-    public IteratorObject iterator();
+    public FruitIterator iterator();
 }

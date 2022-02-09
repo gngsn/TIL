@@ -1,10 +1,10 @@
 package iterator;
 
-public class IteratorObject implements PolyIterator {
+public class FruitIterator implements Iterator {
     private Collection aggregate;
     private int index = 0;
 
-    public IteratorObject(Collection aggregate) {
+    public FruitIterator(Collection aggregate) {
         this.aggregate = aggregate;
     }
 
@@ -18,7 +18,7 @@ public class IteratorObject implements PolyIterator {
     }
 
     @Override
-    public Object next() {
+    public Fruit next() {
         Fruit obj = this.aggregate.getObj(this.index);
         this.index++;
         return obj;

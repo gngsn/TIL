@@ -1,6 +1,6 @@
 package iterator;
 
-public interface PolyIterator<T> {
+public interface Iterator<T> {
     public boolean isNext();
     public T next();
 }
