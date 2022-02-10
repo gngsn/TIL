@@ -1,12 +1,14 @@
 package iterator.menu;
 
+import java.util.Iterator;
+
 public class Client {
     public static void main(String[] args) {
         CoffeeMenu coffeeMenu = new CoffeeMenu();
         NonCoffeeMenu nonCoffeeMenu = new NonCoffeeMenu();
 
         Iterator<MenuItem> coffee = coffeeMenu.createIterator();
-        Iterator<MenuItem> nonCoffee= nonCoffeeMenu.createIterator();
+        Iterator<MenuItem> nonCoffee = nonCoffeeMenu.createIterator();
 
         printMenu(coffee);
         printMenu(nonCoffee);

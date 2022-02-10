@@ -1,6 +1,7 @@
 package iterator.menu;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 
 public class CoffeeMenu implements Menu{
     ArrayList<MenuItem> menuItems;

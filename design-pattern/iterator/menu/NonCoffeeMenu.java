@@ -1,5 +1,7 @@
 package iterator.menu;
 
+import java.util.Iterator;
+
 public class NonCoffeeMenu implements Menu {
     static final int MAX_ITEMS = 4;
     int numberOfItems = 0;

@@ -1,4 +1,5 @@
 package iterator.menu;
+import java.util.Iterator;
 
 public class NonCoffeeMenuIterator implements Iterator<MenuItem>{
     MenuItem[] list;
