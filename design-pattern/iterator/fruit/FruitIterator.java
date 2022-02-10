@@ -1,4 +1,6 @@
-package iterator;
+package iterator.fruit;
+
+import java.util.Iterator;
 
 public class FruitIterator implements Iterator {
     private Collection aggregate;
@@ -9,7 +11,7 @@ public class FruitIterator implements Iterator {
     }
 
     @Override
-    public boolean isNext() {
+    public boolean hasNext() {
         if (this.index >= this.aggregate.getLast()) {
             return false;
         } else {

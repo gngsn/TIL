@@ -1,4 +1,4 @@
-package iterator;
+package iterator.fruit;
 
 interface Aggregate {
     public FruitIterator iterator();

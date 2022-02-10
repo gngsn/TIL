@@ -1,4 +1,4 @@
-package iterator;
+package iterator.fruit;
 
 
 public class Collection implements Aggregate {

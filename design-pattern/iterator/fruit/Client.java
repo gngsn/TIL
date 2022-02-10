@@ -1,4 +1,4 @@
-package iterator;
+package iterator.fruit;
 
 public class Client {
     public static void main(String[] args) {
@@ -10,7 +10,7 @@ public class Client {
 
         FruitIterator loop = menu.iterator();
 
-        while(loop.isNext()) {
+        while(loop.hasNext()) {
             Fruit item = loop.next();
             System.out.println(item.getName());
         }

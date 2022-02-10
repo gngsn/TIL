@@ -1,4 +1,4 @@
-package iterator;
+package iterator.fruit;
 
 public class Fruit {
     public String name;
