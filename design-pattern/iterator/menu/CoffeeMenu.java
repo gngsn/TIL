@@ -2,7 +2,7 @@ package iterator.menu;
 
 import java.util.ArrayList;
 
-public class CoffeeMenu {
+public class CoffeeMenu implements Menu{
     ArrayList<MenuItem> menuItems;
 
     public CoffeeMenu() {
@@ -18,8 +18,8 @@ public class CoffeeMenu {
         this.menuItems.add(menuItem);
     }
 
-    public ArrayList<MenuItem> getMenuItems() {
-        return menuItems;
+    @Override
+    public Iterator<MenuItem> createIterator() {
+        return new CoffeeMenuIterator(this.menuItems);
     }
-
 }

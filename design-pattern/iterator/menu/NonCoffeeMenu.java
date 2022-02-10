@@ -1,6 +1,6 @@
 package iterator.menu;
 
-public class NonCoffeeMenu {
+public class NonCoffeeMenu implements Menu {
     static final int MAX_ITEMS = 4;
     int numberOfItems = 0;
     MenuItem[] menuItems;
@@ -23,7 +23,8 @@ public class NonCoffeeMenu {
         }
     }
 
-    public MenuItem[] getMenuItems() {
-        return menuItems;
+    @Override
+    public Iterator<MenuItem> createIterator() {
+        return new NonCoffeeMenuIterator(this.menuItems);
     }
 }
