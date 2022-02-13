@@ -1,5 +1,5 @@
 package visitor;
 
 interface Visitable {
-    public String accept(Visitor visitor);
+    String accept(Visitor visitor);
 }

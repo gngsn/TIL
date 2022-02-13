@@ -16,14 +16,18 @@ public class Visitant implements Visitor {
 
     @Override
     public String order(Visitable visitable) {
-        System.out.println("== 상품 내역 ==");
+        System.out.println("[ 상품 내역 ]");
 
         if (visitable instanceof Cart ) {
-            this.num++;
-            this.total += ((Cart) visitable).getPrice() * ((Cart) visitable).getNum();
-            String msg = ((Cart) visitable).list() +
-                    "\n합계 : " + total;
-            return msg;
+            Cart cart = (Cart) visitable;
+
+            int total = cart.getPrice() * cart.getNum();
+            this.num += cart.getNum();
+            this.total += total;
+
+            return cart.list() +
+                    "\n주문 개수 : " + num +
+                    ", 합계 : " + total;
         }
 
         throw new IllegalStateException();
