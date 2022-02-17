@@ -1,4 +1,4 @@
-package memento;
+package memento.basic;
 
 public class Originator {
     protected String state;

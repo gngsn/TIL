@@ -1,4 +1,4 @@
-package memento;
+package memento.basic;
 
 import java.util.Stack;
 
