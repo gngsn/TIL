@@ -2,12 +2,12 @@ package memento.editor;
 
 // Originator
 public class Editor {
-    protected String text;
-    protected int posX, posY;
+    private String text;
+    private int posX, posY;
 
     public Snapshot create() {
         System.out.println("Create Snapshot");
-        return new Snapshot(this, text, posX, posY);
+        return new Snapshot();
     }
 
     public void restore(Snapshot snapshot) {
@@ -29,5 +29,30 @@ public class Editor {
         this.posX = posX;
         this.posY = posY;
     }
+
+    // Memento
+    class Snapshot {
+        String text;
+        int posX, posY;
+
+        Snapshot() {
+            this.text = Editor.this.text;
+            this.posX = Editor.this.posX;
+            this.posY = Editor.this.posY;
+        }
+
+        String getText() {
+            return text;
+        }
+
+        int getPosX() {
+            return posX;
+        }
+
+        int getPosY() {
+            return posY;
+        }
+    }
+
 
 }

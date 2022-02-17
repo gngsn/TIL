@@ -3,19 +3,19 @@ package memento.editor;
 import java.util.Stack;
 
 public class Command {
-    protected Stack<Snapshot> stack;
+    protected Stack<Editor.Snapshot> stack;
 
     public Command() {
         this.stack = new Stack<>();
     }
 
     public void makeBackup(Editor origin) {
-        Snapshot memento = origin.create();
+        Editor.Snapshot memento = origin.create();
         stack.push(memento);
     }
 
     public Editor undo(Editor editor) {
-        Snapshot memento = stack.pop();
+        Editor.Snapshot memento = stack.pop();
         editor.restore(memento);
         return editor;
     }
