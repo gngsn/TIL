@@ -4,7 +4,7 @@ import adapter.extra.Triangle;
 
 public class Main {
     public static void main(String[] args) {
-        System.out.println("Creating drawing of shapes...");
+        System.out.println("Creating drawing of Shapes...");
         Drawing drawing = new Drawing();
         drawing.addShape(new Rectangle());
         drawing.addShape(new Circle());
