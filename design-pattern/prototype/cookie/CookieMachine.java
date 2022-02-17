@@ -2,21 +2,26 @@ package prototype.cookie;
 
 public class CookieMachine {
 
-    private Cookie cookie;//could have been a private Cloneable cookie;
+    private Cookie cookie;
 
     public CookieMachine(Cookie cookie) {
         this.cookie = cookie;
     }
+
     public Cookie makeCookie() {
+        System.out.println("Coconut Cookie를 복제합니다.");
         return (Cookie) cookie.clone();
     }
-//    public Object clone() { }
 
     public static void main(String[] args) {
-        Cookie tempCookie;
-        Cookie prot = new CoconutCookie();
-        CookieMachine cm = new CookieMachine(prot);
-        for (int i=0; i<100; i++)
-            tempCookie = cm.makeCookie();
+        final int CREATE_NUM = 10;
+
+        Cookie prototype = new CoconutCookie();
+        CookieMachine cookieMachine = new CookieMachine(prototype);
+
+        for (int i =0; i < CREATE_NUM; i++) {
+            Cookie clone = cookieMachine.makeCookie();
+
+        }
     }
 }

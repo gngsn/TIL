@@ -3,14 +3,17 @@ package prototype.shape;
 public class Circle extends Shape {
     public int radius;
 
+
     public Circle() {
     }
 
     public Circle(Circle target) {
-        super(target);
-        if (target != null) {
-            this.radius = target.radius;
-        }
+        this.radius = target.radius;
+    }
+
+    @Override
+    public String getShape() {
+        return super.getShape() + ", " + radius + "°";
     }
 
     @Override

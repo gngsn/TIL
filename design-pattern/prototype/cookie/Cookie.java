@@ -1,11 +1,11 @@
 package prototype.cookie;
 
 public class Cookie implements Cloneable {
+    @Override
     public Object clone() {
         try {
-            return (Cookie) super.clone();
+            return super.clone();
         } catch(CloneNotSupportedException e) {
-            e.printStackTrace();
             return null;
         }
     }

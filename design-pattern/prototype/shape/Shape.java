@@ -7,15 +7,18 @@ public abstract class Shape {
     public int y;
     public String color;
 
-    public Shape() {
-    }
+//    public Shape() {}
+//
+//    public Shape(Shape target) {
+//        if (target != null) {
+//            this.x = target.x;
+//            this.y = target.y;
+//            this.color = target.color;
+//        }
+//    }
 
-    public Shape(Shape target) {
-        if (target != null) {
-            this.x = target.x;
-            this.y = target.y;
-            this.color = target.color;
-        }
+    public String getShape() {
+        return "position: (" + x + ", " + y + "), color: " + color;
     }
 
     public abstract Shape clone();

@@ -1,18 +1,18 @@
 package prototype.shape;
 
 public class Rectangle extends Shape {
-    public int width;
-    public int height;
+    public int width, height;
 
-    public Rectangle() {
-    }
+    public Rectangle() {}
 
     public Rectangle(Rectangle target) {
-        super(target);
-        if (target != null) {
-            this.width = target.width;
-            this.height = target.height;
-        }
+        this.width = target.width;
+        this.height = target.height;
+    }
+
+    @Override
+    public String getShape() {
+        return "width: " + width + ", height: " + height;
     }
 
     @Override
