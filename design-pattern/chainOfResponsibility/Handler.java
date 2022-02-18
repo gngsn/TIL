@@ -1,12 +1,10 @@
 package chainOfResponsibility;
 
 public class Handler {
-    public String event(String message) {
-        if (message.equals("order")) {
-            return (new Order()).execute();
-        } else if (message.equals("cancel")) {
-            return (new Cancel()).execute();
-        }
-        return "동작이 없습니다.";
+    public String event(String event) {
+        Order first = new Order();
+        first.setNext(new Cancel());
+
+        return first.execute(event);
     }
 }
