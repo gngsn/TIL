@@ -2,6 +2,7 @@ package flyweight.tree;
 
 import java.awt.*;
 
+// UnsharedConcreteFlyweight
 public class Tree {
     private int x;
     private int y;

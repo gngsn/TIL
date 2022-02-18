@@ -2,15 +2,14 @@ package flyweight.tree;
 
 import java.awt.*;
 
+// ConcreteFlyweight
 public class TreeType {
     private String name;
     private Color color;
-    private String otherTreeData;
 
-    public TreeType(String name, Color color, String otherTreeData) {
+    public TreeType(String name, Color color) {
         this.name = name;
         this.color = color;
-        this.otherTreeData = otherTreeData;
     }
 
     public void draw(Graphics g, int x, int y) {
