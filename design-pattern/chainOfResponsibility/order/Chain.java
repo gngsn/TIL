@@ -1,4 +1,4 @@
-package chainOfResponsibility;
+package chainOfResponsibility.order;
 
 public abstract class Chain {
     protected Chain next;

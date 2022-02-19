@@ -1,4 +1,4 @@
-package chainOfResponsibility;
+package chainOfResponsibility.order;
 
 public class Cancel extends Chain {
     public String execute(String event) {

@@ -1,4 +1,4 @@
-package chainOfResponsibility;
+package chainOfResponsibility.order;
 
 public class Handler {
     public String event(String event) {

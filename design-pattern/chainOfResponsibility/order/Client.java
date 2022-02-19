@@ -1,4 +1,4 @@
-package chainOfResponsibility;
+package chainOfResponsibility.order;
 
 public class Client {
     public static void main(String[] args) {
