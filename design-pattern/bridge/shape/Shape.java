@@ -1,14 +1,10 @@
 package bridge.shape;
 
 abstract class Shape {
-    String color;
+    Color color;
 
-    public Shape(String color) {
+    public Shape(Color color) {
         this.color = color;
-    }
-
-    public String fill() {
-        return "Color is " + color;
     }
 
     public abstract void draw();

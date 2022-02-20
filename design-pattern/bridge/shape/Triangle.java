@@ -1,12 +1,12 @@
 package bridge.shape;
 
 public class Triangle extends Shape {
-    public Triangle(String color) {
+    public Triangle(Color color) {
         super(color);
     }
 
     @Override
     public void draw() {
-        System.out.println("Triangle drawn. " + this.fill());
+        System.out.println("Triangle drawn. " + color.fill());
     }
 }
