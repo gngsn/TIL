@@ -16,3 +16,12 @@ public class Client {
         }
     }
 }
+
+/*  OUTPUT :: before applying the bridge pattern
+
+Square drawn. Color is red
+Square drawn. Color is blue
+Triangle drawn. Color is red
+Triangle drawn. Color is blue
+
+* */
