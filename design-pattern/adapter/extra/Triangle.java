@@ -33,7 +33,7 @@ public class Triangle implements GeometricShape {
 
     @Override
     public void drawShape() {
-        System.out.println("Drawing Triangle with area: " + area() + " and perimeter: " + perimeter());
+        System.out.println("Drawing RedTriangle with area: " + area() + " and perimeter: " + perimeter());
     }
 
 }

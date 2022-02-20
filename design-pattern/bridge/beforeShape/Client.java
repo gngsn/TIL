@@ -1,4 +1,4 @@
-package bridge.shape;
+package bridge.beforeShape;
 
 import java.util.ArrayList;
 
@@ -6,10 +6,10 @@ public class Client {
     public static void main(String[] args) {
         ArrayList<Shape> shapes = new ArrayList<>();
 
-        shapes.add(new Square(new Red()));
-        shapes.add(new Square(new Blue()));
-        shapes.add(new Triangle(new Red()));
-        shapes.add(new Triangle(new Blue()));
+        shapes.add(new RedSquare());
+        shapes.add(new RedTriangle());
+        shapes.add(new RedSquare());
+        shapes.add(new RedSquare());
 
         for (Shape shape: shapes) {
             shape.draw();

@@ -27,7 +27,7 @@ public class ObjectAdapter implements Shape {
     @Override
     public String description() {
         if (adaptee instanceof Triangle) {
-            return "Triangle object";
+            return "RedTriangle object";
         } else if (adaptee instanceof Rhombus) {
             return "Rhombus object";
         } else {

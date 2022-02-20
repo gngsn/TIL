@@ -7,6 +7,6 @@ public class Square extends Shape {
 
     @Override
     public void draw() {
-        System.out.println("Square drawn. " + color.fill());
+        System.out.println("RedSquare drawn. " + color.fill());
     }
 }

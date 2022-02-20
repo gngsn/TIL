@@ -16,12 +16,12 @@ public class ClassAdapter extends Triangle implements Shape {
 
     @Override
     public void resize() {
-        System.out.println("Triangle can't be resized. Please create new one with required values.");
+        System.out.println("RedTriangle can't be resized. Please create new one with required values.");
     }
 
     @Override
     public String description() {
-        return "Triangle object";
+        return "RedTriangle object";
     }
 
 }
