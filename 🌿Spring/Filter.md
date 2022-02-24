@@ -36,4 +36,26 @@ public interface Filter {
 [: Interface Filter](https://docs.oracle.com/cd/E17802_01/products/products/servlet/2.3/javadoc/javax/servlet/Filter.html)
 
 
-ConfigurableSiteMeshFilter
+<br/>
+
+## 적용 예시 
+
+### ConfigurableSiteMeshFilter
+
+<br/>
+
+``` java
+public class SiteMeshFilterConfiguration extends ConfigurableSiteMeshFilter {	
+
+	/**	 
+	* Sitemesh 설정	 
+	*
+	* @param builder	 */
+    @Override
+	protected void applyCustomConfiguration(SiteMeshFilterBuilder builder) {
+
+		builder.addDecoratorPath("/*", "/WEB-INF/decorator/maindeco.jsp");
+
+	}
+}
+```
