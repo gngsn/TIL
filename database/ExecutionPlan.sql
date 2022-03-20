@@ -89,3 +89,30 @@ EXPLAIN SELECT * FROM employees
 WHERE emp_no IN (SELECT emp_no FROM salaries WHERE from_date > '2020-01-01' AND salary > 200000);
 
 
+SHOW GLOBAL STATUS LIKE 'Q%';
+
+-- table
+EXPLAIN
+SELECT emp.emp_no, sal.salary
+FROM employees as emp,
+    (SELECT MAX(salary) as salary 
+    FROM salaries 
+    WHERE emp_no BETWEEN 10001 AND 20000
+    ) as sal;
+
+
+-- type
+SELECT MAX(salary) as salary 
+    FROM salaries 
+    WHERE emp_no BETWEEN 10001 AND 20000;
+
+-- type : eq_ref
+EXPLAIN 
+SELECT dept_emp.emp_no, dept.dept_no, dept.dept_name
+FROM dept_emp, 
+	 departments as dept
+WHERE dept_emp.dept_no = dept.dept_no
+AND dept_emp.dept_no BETWEEN 10011 AND 10012;
+
+
+
