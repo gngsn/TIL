@@ -140,3 +140,10 @@ Redis의 'list', 'set', 'sorted set'을 이용해서 "register_userlist_20220410
 
 <br/><br/>
 
+### flushall/flushdb 명령 주의
+
+Redis의 모든 데이터를 삭제하는 명령어.
+
+Redis는 '0번 DB', '1번 DB',... 와 같이 DB에 가상 공간을 제공하고, `select` 명령으로 이동할 수 있다. 
+
+
