@@ -12,7 +12,7 @@
 
 ### ✔️ Key-Value Store
 
-> 단순 스츠링에 대한 Key/Value 구조를 지원
+> 단순 스트링에 대한 Key/Value 구조를 지원
 
 기본적으로 Redis는 Key-Value 형태의 데이터 저장소이며, 아래와 같이 데이터를 저장할 수 있다. 
 
