@@ -114,6 +114,27 @@ Settings의 인스턴스를 가져가는 방법이 오로지 정적 팩토리 �
 
 <br/>
 
+예를 들면, Java의 Boolean 객체를 들 수 있는데, Boolean은 아래와 같이 정의 되어있다(일부)
+
+<br/>
+
+``` java 
+
+public final class Boolean implements java.io.Serializable,
+                                      Comparable<Boolean>
+{
+    public static final Boolean TRUE = new Boolean(true);
+
+    public static final Boolean FALSE = new Boolean(false);
+
+    // ...
+}
+
+```
+
+
+<br/>
+
 **플라이웨이트 패턴?** 가령 자주 사용하는 인스턴스들 (e.g. 폰트) 
 인스턴스를 통제하는 방법. 미리 자주 사용하는 객체들을 만들어두고 필요할 때 꺼내 쓸 수 있기 때문에 언급된다.
 
