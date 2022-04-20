@@ -151,22 +151,78 @@ public final class Boolean implements java.io.Serializable,
 public class HelloServiceFactory {
     public static HelloService of(String lang) {
         if (lang.equals("ko")) {
-            return new KoreanHelloService();
+            return new KoreanHelloService(); // HelloService 상속
         } else {
-            return new EnglishHelloService();
+            return new EnglishHelloService(); // HelloService 상속
         }
     }
 }
 ```
 
 
-
 #### 📌 4. 입력 매개변수가 따라 매번 다른 클래스의 객체를 반환할 수 있다. (EnumSet)
+
+클라이언트 코드에서 아래와 같이 강제로 구체적인 타입을 숨길 수 있다.
+
+`HelloService ko = HelloServiceFactory.of("ko");`
+
+인터페이스인 HelloService 로 타입을 명시하도록 만들 수 있음.
+
+<br /><br />
 
 #### 📌 5. 정적 팩터리 메서드를 작성하는 시점에는 반환할 객체의 클래스가 존재하지 않아도 된다. (서비스 제공자 프레임워크) 
 
+<br/>
+
+자바 8 이후부터 인터페이스에 static 메서드를 선언할 수 있게 되었기 때문에,
+이제는 Factory 메서드에 별도로 만들어서 정적 팩토리 메서드들을 가지는 클래스들을 많이 만들지 않아도 된다.
+
+<br/>
+
+``` java
+public interface HelloService {
+    String hello();
+
+    static HelloService of(String lang) {
+        if (lang.equals("ko")) {
+            return new KoreanHelloService(); // HelloService 상속
+        } else {
+            return new EnglishHelloService(); // HelloService 상속
+        }
+    }
+}
+```
+
+위와 같이 선언하면, 아래와 같이 사용할 수 있다.
+
+`HelloService eng = HelloService.of("eng");`
+
 <br/><br/>
 
+
+구현체가 없고 인터페이스만 있어도 로딩을 해온다.
+
+``` java
+public interface HelloService {
+    String hello();
+}
+public interface HelloServiceFactory {
+    public static void main(String[] args) {
+        ServiceLoader<HelloService> loader = ServiceLoader.load(HelloService.class);
+        // 참조할 수 있는 클래스 패스 내의 구현체를 가져옴. Hello service를 구현한 구현체를 찾아보고 구현한 게 있으면 (다수면 모두) 가져옴
+
+        Optional<HelloService> helloServiceOptional = loader.findFirst();
+        helloServiceOptional.ifPresent(h -> {
+            System.out.println(h.hello());  // Ni Hao
+        })
+    }
+}
+```
+
+아무런 구현체가 없
+
+
+<br/><br/>
 
 ### 단점
 
