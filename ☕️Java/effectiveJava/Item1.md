@@ -219,7 +219,33 @@ public interface HelloServiceFactory {
 }
 ```
 
-아무런 구현체가 없
+아무런 구현체가 없는데 "Ni Hao"라는 ChineseHelloService를 가져온 걸까.
+
+-> pom에 jar파일로 만들어둔 dependency를 추가해서 가져와서 가능했다. (패키징할 때 META-INF/service에 해당 패키지 명을 포함하게끔 만들어서 jar 생성 시 포함되게 만듦)
+
+그렇다면 아래 코드와 비교해보자. 
+
+`HelloService helloService = new ChineseHelloService();`
+
+첫번째는 ChineseHelloService클래스에 의존적지만 아래(두 번째)는 의존적이지 않으며, 이는 굉장히 큰 차이이다. 
+전자는 어떤 임의의 클래스가 올지 모르는 것이고 후자는 명확하게 가져오는 것이다.
+어떤 구현체가 올지는 모르지만 유연하게 해당 인터페이스를 구현한 클래스를 가져와야 할 경우가 생길 수 있는데, 그 때 전자 코드를 사용하게 된다.
+
+<details>
+<summary>ServiceLoader Class:: load method</summary>
+
+```java
+public final class ServiceLoader<S> implements Iterable<S> {
+    // ...
+    public static <S> ServiceLoader<S> load(Class<S> service) {
+        ClassLoader cl = Thread.currentThread().getContextClassLoader();
+        return new ServiceLoader<>(Reflection.getCallerClass(), service, cl);
+    }
+    // ...
+}
+```
+
+</details>
 
 
 <br/><br/>
