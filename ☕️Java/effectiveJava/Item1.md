@@ -247,8 +247,9 @@ public final class ServiceLoader<S> implements Iterable<S> {
 
 </details>
 
-
 <br/><br/>
+
+<small>[4강]</small>
 
 ### 단점
 
