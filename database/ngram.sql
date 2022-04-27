@@ -1,0 +1,1 @@
+SELECT * FROM books WHERE MATCH(title) AGAINST("철학");
