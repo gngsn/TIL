@@ -63,4 +63,13 @@ ALTER TABLE articles ADD FULLTEXT INDEX ft_index (title,body) WITH PARSER ngram;
 -- Index 생성 방법 3
 CREATE FULLTEXT INDEX ft_index ON articles (title,body) WITH PARSER ngram;
 
-SELECT * FROM books WHERE MATCH(title) AGAINST("철학");
+
+-- 검색 방법 1
+SELECT MATCH (a) AGAINST ('abc') FROM t GROUP BY a WITH ROLLUP;
+SELECT 1 FROM t GROUP BY a, MATCH (a) AGAINST ('abc') WITH ROLLUP;
+
+-- 검색 방법 2
+SELECT 1 FROM t GROUP BY a WITH ROLLUP HAVING MATCH (a) AGAINST ('abc');
+
+-- 검색 방법 3
+SELECT 1 FROM t GROUP BY a WITH ROLLUP ORDER BY MATCH (a) AGAINST ('abc');
