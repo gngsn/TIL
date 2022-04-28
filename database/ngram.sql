@@ -48,4 +48,19 @@ SHOW GLOBAL VARIABLES LIKE "ngram_token_size";
 1 row in set (0.01 sec)
 */
 
+
+-- Index 생성 방법 1
+CREATE TABLE articles (
+      id INT UNSIGNED AUTO_INCREMENT NOT NULL PRIMARY KEY,
+      title VARCHAR(200),
+      body TEXT,
+      FULLTEXT (title,body) WITH PARSER ngram
+) ENGINE=InnoDB CHARACTER SET utf8mb4;
+
+-- Index 생성 방법 2
+ALTER TABLE articles ADD FULLTEXT INDEX ft_index (title,body) WITH PARSER ngram;
+
+-- Index 생성 방법 3
+CREATE FULLTEXT INDEX ft_index ON articles (title,body) WITH PARSER ngram;
+
 SELECT * FROM books WHERE MATCH(title) AGAINST("철학");
