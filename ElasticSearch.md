@@ -20,5 +20,21 @@ ELK stack은 모두 오픈소스 기반이며, 데이터 처리의 강력한 도
 
 Logstash는 **모든 종류의 로그를 받고 처리하고 출력하는 도구**로, 백엔드의 데이터 저장소로는 Elasticsearch, 프론트엔드의 데이터 시각화 도구로 Kibana를 사용한다.
 
-사용 스팩 JDK 1.7.X 이상 권장
-OpenJDK 또는 Oracle 버전 권장 
+<br/>
+
+<pre>
+<code>
+<b>권장 사용 스팩</b>
+
+- JDK 1.7.X 이상 권장 
+- OpenJDK 또는 Oracle 버전 권장 
+</code>
+</pre>
+
+<br/>
+
+Logstash는 동작 방식이 단순해서 사용하기 쉽고 프로그램과 연동하기 쉬우며, 다양한 로그 형태가 있다.
+
+Logstash의 기본 동작방식은 다음과 같다.
+
+
