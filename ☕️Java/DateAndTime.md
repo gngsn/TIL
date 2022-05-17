@@ -1,7 +1,5 @@
 # Date & Time
 
-# Date & Time
-
 # Intro
 
 자바 8에 새로운 날짜와 시간 API가 생긴 이유
@@ -194,7 +192,7 @@ LocalDateTime localDateTime = Instant.ofEpochMilli(date.getTime()).atZone(ZoneId
     
     `DateTimeFormatter.ISO_LOCAL_DATE_TIME` **와 같이 미리 포맷을 정의해두었기 때문에 활용하면 됨
     
-    ![스크린샷 2022-01-18 오후 4.44.56.png](Date%20&%20Time%20df7e0f3cc8b547f291cfa2585926cabf/%E1%84%89%E1%85%B3%E1%84%8F%E1%85%B3%E1%84%85%E1%85%B5%E1%86%AB%E1%84%89%E1%85%A3%E1%86%BA_2022-01-18_%E1%84%8B%E1%85%A9%E1%84%92%E1%85%AE_4.44.56.png)
+    ![predefined_formatter.png](./img/predefined_formatter.png)
     
 
 - DateTimeFormatter.**ofPattern**(*format*)
