@@ -81,7 +81,7 @@
 [all-about-java-util-date](https://codeblog.jonskeet.uk/2017/04/23/all-about-java-util-date/), [datetime overview](https://docs.oracle.com/javase/tutorial/datetime/overview/index.html), [datetime iso](https://docs.oracle.com/javase/tutorial/datetime/iso/overview.html)
 
 
-
+<br/><br/>
 
 # Date / Time API
 
@@ -127,6 +127,7 @@
     
     - Universal Time Coordinated == Greenwich Mean Time
     
+<br/><br/>
 
 ## LocalDateTime
 
@@ -143,6 +144,8 @@ System.out.println(birthday);  // 1998-08-12T12:00
 - LocalDateTime.**now() :** 현재 시스템 Zone에 해당하는(로컬) 일시를 리턴한다.
 - LocalDateTime.**of(int, Month, int, int, int, int)**: 로컬의 특정 일시를 리턴한다.
 - LocalDateTime.**of(int, Month, int, int, int, int, ZoneId)**: 특정 Zone의 특정 일시를 리턴한다.
+
+<br/><br/>
 
 ### LocalDateTime to DateTime
 
@@ -164,7 +167,11 @@ Instance instant = Timestamp.valueOf(localDateTime.format(DateTimeFormatter.ofPa
 Date date = Date.from(instance);
 ```
 
+<br/>
+
 Date 인스턴스를 생성하면 millisecond 단위까지 전달할 수 있다
+
+<br/>
 
 ```java
 Timestamp timestamp = Timestamp.valueOf(localDateTime.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
@@ -173,6 +180,8 @@ System.out.println(date);
 ```
 
 → 납득 안감 테스트해보자
+
+<br/><br/>
 
 ### [java.util.Date](http://java.util.Date) to java.time.LocalDateTime
 
@@ -185,6 +194,8 @@ LocalDateTime localDateTime = LocalDateTime.ofInstant(Instant.ofEpochMilli(date.
 // 2. Instant.ofEpochMilli().toLocalDateTime()
 LocalDateTime localDateTime = Instant.ofEpochMilli(date.getTime()).atZone(ZoneId.systemDefault()).toLocalDateTime();
 ```
+
+<br/><br/>
 
 ## 파싱 또는 포매팅
 
@@ -259,32 +270,4 @@ Instant plus = instantNow .plus(10, ChronoUnit.SECONDS);
 Duration between = Duration.between(instantNow, plus);
 
 System.out.println(between.getSeconds());
-```
-
-## 레거시 API 지원
-
-- GregorianCalendar와 Date 타입의 인스턴스를 Instant나 ZonedDateTime으로 변환 가능.
-- util.TimeZone에서 java.time.ZoneId로 상호 변환 가능.
-
-```java
-ZoneId newZoneAPI = TimeZone.getTimeZone("PST").toZoneId();
-TimeZone legacyZoneAPI = TimeZone.getTimeZone(newZoneAPI);
-Instant newInstant = new Date().toInstant();
-Date legacyInstant = Date.from(newInstant);
-```
-
-```java
-
-GregorianCalendar gregorianCalendar = new GregorianCalendar();
-ZonedDateTime zonedDateTime2 = gregorianCalendar.toZonedDateTime();
-LocalDateTime dateTime = zonedDateTime2.toLocalDateTime();
-
-// 반대
-GregorianCalendar.from(zonedDateTime2);
-
-// 예전 API에서 최근 API로 변경
-ZoneId zoneId = TimeZone.getTimeZone("PST").toZoneId();
-
-// 최근 API에서 예전 API로 변경
-TimeZone.getTimeZone(zoneId);
 ```
