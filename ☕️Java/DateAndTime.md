@@ -195,24 +195,30 @@ LocalDateTime localDateTime = LocalDateTime.ofInstant(Instant.ofEpochMilli(date.
 LocalDateTime localDateTime = Instant.ofEpochMilli(date.getTime()).atZone(ZoneId.systemDefault()).toLocalDateTime();
 ```
 
+<br/>
+
+<img src="./img/java_sql_date_time.png" alt="java_sql_date_time" width="40%">
+
+[oracle date time](https://docs.oracle.com/javase/tutorial/datetime/overview/design.html)
+
 <br/><br/>
 
 ## 파싱 또는 포매팅
 
 - **미리 정의해둔 포맷** 참고 : [DateTimeFormatter - predefined](https://docs.oracle.com/javase/8/docs/api/java/time/format/DateTimeFormatter.html#predefined)
-    
-    `DateTimeFormatter.ISO_LOCAL_DATE_TIME` **와 같이 미리 포맷을 정의해두었기 때문에 활용하면 됨
-    
-    ![predefined_formatter.png](./img/predefined_formatter.png)
-    
+
+`DateTimeFormatter.ISO_LOCAL_DATE_TIME` **와 같이 미리 포맷을 정의해두었기 때문에 활용하면 됨
+
+<img src="./img/predefined_formatter.png" alt="predefined_formatter" width="40%">
+
 
 - DateTimeFormatter.**ofPattern**(*format*)
-    
-    ```java
-    DateTimeFormatter MMddyyyy = DateTimeFormatter.ofPattern("MM/dd/yyyy");
-    now.format(MMddyyyy);    // 01/18/2022
-    ```
-    
+
+```java
+DateTimeFormatter MMddyyyy = DateTimeFormatter.ofPattern("MM/dd/yyyy");
+now.format(MMddyyyy);    // 01/18/2022
+```
+
 - LocalDate.**parse**(*String, DateTimeFormatter*);
     
     
