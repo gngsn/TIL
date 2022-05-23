@@ -1,4 +1,4 @@
-package chapter01.ticket;
+package chapter01.ticket.v1;
 
 public class Theater {
     private TicketSeller seller;
@@ -8,13 +8,13 @@ public class Theater {
     }
 
     public void enter(Audience audience) {
+        Ticket ticket = seller.getTicketBooth().getTicket();
+
         if (audience.getBag().hasInvitation()) {
-            Ticket ticket = seller.getTicketBooth().getTicket();
             audience.getBag().setTicket(ticket);
         } else  {
-            Ticket ticket = seller.getTicketBooth().getTicket();
             audience.getBag().minusCash(ticket.getFee());
-            seller.getTicketBooth().plusAmount(ticket.getFee());
+            seller.getTicketBooth().plusPrice(ticket.getFee());
             audience.getBag().setTicket(ticket);
         }
     }

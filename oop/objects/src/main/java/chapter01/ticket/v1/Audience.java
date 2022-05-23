@@ -1,4 +1,4 @@
-package chapter01.ticket;
+package chapter01.ticket.v1;
 
 public class Audience {
     private Bag bag;

@@ -1,4 +1,4 @@
-package chapter01.ticket;
+package chapter01.ticket.v1;
 
 import java.time.LocalDateTime;
 

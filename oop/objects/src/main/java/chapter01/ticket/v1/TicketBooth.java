@@ -1,4 +1,4 @@
-package chapter01.ticket;
+package chapter01.ticket.v1;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -8,7 +8,7 @@ public class TicketBooth {
     private Long price;
     private List<Ticket> tickets = new ArrayList<>();
 
-    public TicketBooth(Long prie, Ticket ...tickets) {
+    public TicketBooth(Long price, Ticket ...tickets) {
         this.price = price;
         this.tickets.addAll(Arrays.asList(tickets));
     }
@@ -17,11 +17,11 @@ public class TicketBooth {
         return this.tickets.get(0);
     }
 
-    public void minusAmount(Long cash) {
+    public void minusPrice(Long cash) {
         this.price -= cash;
     }
 
-    public void plusAmount(Long cash) {
+    public void plusPrice(Long cash) {
         this.price += cash;
     }
 }
