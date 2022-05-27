@@ -168,6 +168,8 @@ public class Theater {
 Robert C.Martin - ⌜클린 소프트웨어: 애자일 원칙과 패턴, 그리고 실천 방법⌟에서 소프트웨어 모듈이 가져야 하는 세 가지 기능에 관해 설명한다. 
 여기서 모듈이란 크기와 상관없이 클래스나 패키지, 라이브러리와 같이 프로그램을 구성하는 임의의 요소를 의미한다.
 
+<br/>
+
 
 > 모든 소프트웨어 모듈에는 세 가지 목적이 있다.
 > 
@@ -179,6 +181,8 @@ Robert C.Martin - ⌜클린 소프트웨어: 애자일 원칙과 패턴, 그리�
 > 세 번째 목적은 코드를 읽는 사람과 의사소통하는 것이다. 모듈은 특별한 훈련 없이도 개발자가 쉽게 읽고 이해할 수 있어야 한다.
 > 읽는 사람과 의사소통할 수 없는 모듈은 개선해야 한다.
 > 
+
+<br/>
 
 즉, 모듈은 제대로 실행되어야 하고, 변경에 용이하며, 이해하기 쉬워야 한다.
 
@@ -208,6 +212,8 @@ public void enter(Audience audience) {
 }
 ```
 
+<br/>
+
 관람객(audience)과 판매원(seller)이 소극장의 통제를 받은 수동적인 객체로 구현되었다는 문제가 볼 수 있다.
 관람객의 입장에서 보면 자신의 가방 안의 내용물을 확인해서 돈을 가져간다.
 가장 큰 문제는 이렇게 티켓을 처리하는 것이 Theater 내에서 발생한다는 것이다.
@@ -219,16 +225,170 @@ public void enter(Audience audience) {
 
 ### 2. 변경에 취약한 코드
 
-의존성(dependency)와 관련된 문제다.
+이 코드는 의존성(dependency) 문제가 있다.
 
-이 코드는 관람객이 현금과 초대장을 보관하기 위해 항상 가방을 들고 다닌다는 가정과.
+관람객이 현금과 초대장을 보관하기 위해 항상 가방을 들고 다닌다는 가정과 판매원이 매표소에서만 티켓을 판매한다고 가정한다.
 
-또한 판매원이 매표소에서만 티켓을 판매한다고 가정한다.
+<br/>
+
+![ticket.v1 class-diagram](./img/ticket.v1.class-diagram.jpg)
+
+<br/>
+
+
+> ##### 관람객이 가방을 들고 있다는 가정이 변경된다면?
+> 
+> Audience 클래스에서 bag을 제거해야 할 뿐만 아니라, Audience의 Bag에 직접 접근하는 Theater의 enter 메서드역시 수정해야 한다.
+> 
+> -> Theater는 관람객이 가방을 들고 있고 판매원이 매표소에서만 티켓을 판매한다는 지나치게 세부적인 사실에 의존 
+> 
+> **하나의 조건이라도 변경되면 해당 클래스뿐만 아니라 의존된 모든 클래스를 변경해야함**
+
+<br/>
+
+의존성을 완전히 없애는 게 정답인가? 아니다. 
+
+객체지향 설계는 서로 의존하면서 협력하는 객체들의 공동체를 구축하는 것.
+
+따라서 최소한의 의존성만 유지하고 불필요한 의존성을 제거(결합도를 낮춤)하는 것을 목표로 해야한다.
+
+<br/>
+
+결합도(Coupling)가 높다: 객체 사이의 의존성이 과한 경우를 의미
+
+결합도(Coupling)가 낮다: 객체들이 합리적인 수준으로 의존할 경우
+
+<br/>
+
+<br/>
+
+
+### 3. 설계 개선하기
+
+V1 코드에서의 문제점 : Theater가 관람객의 가방과 판매원의 매표소에 직접 접근하기 때문에 코드를 이해하기(의사소통하기) 어려움
+
+<br/>
+
+
+```java
+public class Theater {
+    // ...
+
+   public void enter(Audience audience) {
+      Ticket ticket = seller.getTicketBooth().getTicket();
+
+      if (audience.getBag().hasInvitation()) {
+         audience.getBag().setTicket(ticket);
+      } else  {
+         audience.getBag().minusCash(ticket.getFee());
+         seller.getTicketBooth().plusPrice(ticket.getFee());
+         audience.getBag().setTicket(ticket);
+      }
+   }
+   // ...
+}
+```
+<small>문제의 코드</small>
+
+<br/>
+
+-> 관람객과 판매원이 각각 독자적인 일을 해야한다는 직관을 벗어난다.
+
+-> 변경과 의사소통이라는 문제가 서로 엮여 있다는 점에 주목 (변경도 어렵고 의사소통, 즉 코드 가독성이 떨어지는데 이 둘을 밀접하다.)
+
+<br/>
+
+**해결법은 간단** 
+
+Theater가 Audience가 TicketSeller에 관해 세세한 부분을 관여하지 못하도록 막자.
+
+즉, TicketSeller가 직접 Bag과 TicketOffice에 접근하는 모든 코드를 TicketSeller내부로 숨기는 것이다.
+
+<div style="display: flex">
+<pre lang="java">
+// v1
+public class Theater {
+    private TicketSeller seller;
+
+    public Theater(TicketSeller seller) {
+        this.seller = seller;
+    }
+    
+    public void enter(Audience audience) {
+        Ticket ticket = seller.getTicketBooth().getTicket();
+    
+        if (audience.getBag().hasInvitation()) {
+            audience.getBag().setTicket(ticket);
+        } else  {
+            audience.getBag().minusCash(ticket.getFee());
+            seller.getTicketBooth().plusPrice(ticket.getFee());
+            audience.getBag().setTicket(ticket);
+        }
+    }
+}
+</pre>
+<pre lang="java">
+// v2
+public class Theater {
+    private TicketSeller seller;
+
+    public Theater(TicketSeller seller) {
+        this.seller = seller;
+    }
+    
+    public void enter(Audience audience) {}
+}
+</pre>
+</div>
+
+<br/>
+
+<div style="display: flex">
+<pre lang="java">
+public class TicketSeller {
+    private TicketBooth ticketBooth;
+
+    public TicketSeller(TicketBooth ticketBooth) {
+        this.ticketBooth = ticketBooth;
+    }
+    
+    public TicketBooth getTicketBooth() {
+        return ticketBooth;
+    }
+}
+
+</pre>
+<pre lang="java">
+public class TicketSeller {
+    private TicketBooth ticketBooth;
+
+    public TicketSeller(TicketBooth ticketBooth) {
+        this.ticketBooth = ticketBooth;
+    }
+    
+    public void sellTo(Audience audience) {
+        Ticket ticket = ticketBooth.getTicket();
+    
+        if (audience.getBag().hasInvitation()) {
+            audience.getBag().setTicket(ticket);
+        } else  {
+            audience.getBag().minusCash(ticket.getFee());
+            ticketBooth.plusPrice(ticket.getFee());
+            audience.getBag().setTicket(ticket);
+        }
+    }
+}
+</pre>
+</div>
+
+✔️ TicketSeller에서 getTicketOffice가 삭제
+
+-> ticketOffice의 가시성이 private + 더 이상 접근할 필요가 없음
+
+-> TicketSeller는 ticketOffice에서 티켓을 꺼내거나 판매 요금을 적립하는 일을 스스로 수행할 수밖에 없다. 
 
 
 
-
-3. 설계 개선하기
    1. 자율성을 높이자 
    2. 무엇이 개선됐는가
    3. 어떻게 한 것인가
