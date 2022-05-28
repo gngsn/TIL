@@ -1,6 +1,5 @@
-package chapter01.ticket.v2;
+package chapter01.ticket.v3;
 
-import chapter01.ticket.v1.Audience;
 import chapter01.ticket.v1.Ticket;
 import chapter01.ticket.v1.TicketBooth;
 
@@ -21,14 +20,6 @@ public class TicketSeller {
      * @param audience
      */
     public void sellTo(Audience audience) {
-        Ticket ticket = ticketBooth.getTicket();
-
-        if (audience.getBag().hasInvitation()) {
-            audience.getBag().setTicket(ticket);
-        } else  {
-            audience.getBag().minusCash(ticket.getFee());
-            ticketBooth.plusPrice(ticket.getFee());
-            audience.getBag().setTicket(ticket);
-        }
+        ticketBooth.plusPrice(audience.buy(ticketBooth.getTicket()));
     }
 }

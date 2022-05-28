@@ -302,9 +302,9 @@ public class Theater {
 
 Theater가 Audience가 TicketSeller에 관해 세세한 부분을 관여하지 못하도록 막자.
 
-즉, TicketSeller가 직접 Bag과 TicketOffice에 접근하는 모든 코드를 TicketSeller내부로 숨기는 것이다.
+즉, TicketSeller가 직접 Bag과 ticketBooth에 접근하는 모든 코드를 TicketSeller내부로 숨기는 것이다.
 
-<div style="display: flex">
+<tr><tr><td>
 <pre lang="java">
 // v1
 public class Theater {
@@ -327,6 +327,7 @@ public class Theater {
     }
 }
 </pre>
+</td><td>
 <pre lang="java">
 // v2
 public class Theater {
@@ -339,11 +340,11 @@ public class Theater {
     public void enter(Audience audience) {}
 }
 </pre>
-</div>
+</td></tr></div>
 
 <br/>
 
-<div style="display: flex">
+<table><tr><td>
 <pre lang="java">
 public class TicketSeller {
     private TicketBooth ticketBooth;
@@ -358,6 +359,7 @@ public class TicketSeller {
 }
 
 </pre>
+</td><td>
 <pre lang="java">
 public class TicketSeller {
     private TicketBooth ticketBooth;
@@ -379,13 +381,107 @@ public class TicketSeller {
     }
 }
 </pre>
-</div>
+</td></tr></table>
 
-✔️ TicketSeller에서 getTicketOffice가 삭제
+<br/><br/>
 
--> ticketOffice의 가시성이 private + 더 이상 접근할 필요가 없음
+**✔️ TicketSeller에서 getticketBooth가 삭제**
 
--> TicketSeller는 ticketOffice에서 티켓을 꺼내거나 판매 요금을 적립하는 일을 스스로 수행할 수밖에 없다. 
+-> ticketBooth의 가시성이 private + 더 이상 접근할 필요가 없음
+
+-> TicketSeller는 ticketBooth에서 티켓을 꺼내거나 판매 요금을 적립하는 일을 스스로 수행할 수밖에 없다. 
+
+
+<pre>public class Theater {
+   // ...
+
+    public void enter(Audience audience) {
+        seller.sellTo(audience);
+    }
+}</pre>
+
+수정된 Theater 클래스 어디에서도 ticketBooth에 접근하지 않는다는 사실에 주목.
+Theater는 ticketBooth가 TicketSeller내부에 존재한다는 사실을 알지 못한다. 
+단지 ticketSeller가 sellTo 메시지를 이해하고 응답할 수 있다는 사실만 알고 있을 뿐이다.
+
+Theater는 오직 TicketSeller의 인터페이스(interface)에만 의존한다. 
+TicketSeller가 내부에 ticketBooth 인스턴스를 초함하고 있다는 사실은 구현(implementation)의 영역에 속한다.
+
+수정된 v3 코드를 확인해보자.
+
+<pre lang="java">
+public class Theater {
+    private TicketSeller seller;
+
+    public Theater(TicketSeller seller) {
+        this.seller = seller;
+    }
+
+    public void enter(Audience audience) {
+        seller.sellTo(audience);
+    }
+}
+public class TicketSeller {
+    private TicketBooth ticketBooth;
+
+    public TicketSeller(TicketBooth ticketBooth) {
+        this.ticketBooth = ticketBooth;
+    }
+
+    public void sellTo(Audience audience) {
+        ticketBooth.plusPrice(audience.buy(ticketBooth.getTicket()));
+    }
+}
+public class Audience {
+    private Bag bag;
+
+    public Audience(Bag bag) {
+        this.bag = bag;
+    }
+
+    public Bag getBag() {
+        return bag;
+    }
+
+    public long buy(Ticket ticket) {
+        if (bag.hasInvitation()) {
+            bag.setTicket(ticket);
+            return 0L;
+        } else  {
+            bag.minusCash(ticket.getFee());
+            bag.setTicket(ticket);
+            return ticket.getFee();
+        }
+    }
+}
+</pre>
+
+수정 전: Theater가 Audience와 TicketSeller의 상세한 내부 구현까지 알고 있어야 했다. Theater는 Audience와 TicketSeller와 강하게 결합되어 있었고, 그 결과 Audience와 TikcetSeller의 사소한 변경에도 Theater가 영향을 받을 수 밖에 없었다.
+수정 후: Theater나 TicketSeller의 내부에 직접 접근하지 않는다. Audience는 Bag 내부의 내용물을 확인하거나 추가하거나, 제거하는 작업을 스스로 처리하며 외부의 누군가에게 자신의 가방을 열어보도록 허용하지 않는다.
+
+그 결과, 자율성을 높이고, 유연한 설계를 이루어 냈다.
+
+<br/>
+
+핵심? 객체 내부의 상태를 캡슐화하고 객체 간에 오직 메시지를 통해서만 상호작용하도록 만드는 것.
+
+결론: 객체는 자신의 데이터를 스스로 처리하는 자율적이 존재여야 하며, 이 것이 객체의 응집도를 높이는 첫 걸음이고 외부의 간섭을 최대한 배제하고 메시지를 통해서만 협력하는 자율적인 객체들의 공동체를 만드는 것이 훌륭한 객체지향 설계를 얻을 수 있는 지름길인 것이다.
+
+
+### 절차지향과 객체지향
+
+절차적 프로그래밍(Procedural Programming): Theater의 enter메서드는 프로세스(Process)이며 Audience, TicketSeller, Bag, TicketBooth는 데이터(Data)이다.
+모든 처리가 하나의 클래스 안에 위치하고 나머지 클래스는 단지 데이터의 역할만 수행하기 때문에 프로세스를 담당하는 Theater가 모든 데이터에 의존하고 있는 것.
+
+절차적 프로그래밍은 너무나도 쉽게 우리의 예상을 벗어나 버리기 때문에 읽는 사람과 원활하게 의사소통하지 못한다.
+
+더 큰 문제는 절차적 프로그래밍의 세상은 데이터의 변경으로 인한 영향을 지역적으로 고립시키기 어려움. (즉, 변경 시 단독 수정이 불가하여 다른 객체들에까지 영향을 끼친다는 것)
+따라서, 절차적 프로그래밍의 세상은 변경하기 어려운 코드를 양산하는 경향이 있다.
+
+<br>
+
+변경하기 쉬운 설계는 한 번에 하나의 클래스만 변경할 수 있는 설계다. 절차적 프로그래밍은 프로세스가 필요한 모든 데이터에 의존해야한다는 근본적인 문제점 때문에 변경에 취약할 수 밖에 없다.
+
 
 
 

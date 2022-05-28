@@ -1,6 +1,4 @@
-package chapter01.ticket.v2;
-
-import chapter01.ticket.v1.Audience;
+package chapter01.ticket.v3;
 
 public class Theater {
     private TicketSeller seller;
