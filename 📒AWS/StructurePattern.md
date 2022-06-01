@@ -238,16 +238,41 @@ www(호스트명), yahoo.com.(도메인명), www.yahoo.com.(FQDN)
 원칙적으로 도메인의 표기는 네임스페이스상의 경로를 명확히 하기 위해 끝에 도트(‘.’ 루트 도메인)를 포함하여야 하지만, 보통 도트를 생략하고 사용한다.
 ```
 
+<br/><br/>
+
+##### ✔️ 서비스 종료
+
+사이트를 닫는다면 알아야할 일이 있다.
+서비스를 그대로 두면 계속해서 비용이 발생하기 때문에, 비용이 발생하는 서비스를 중지해야한다.
+
+EC2 인스턴스는 중지해도 유지하는 용량만큼 청구된다. 재사용 계획이 없다면 데이터를 백업해놓은 후에 매니지먼트 콘솔의 EC2 인스턴스 설정 화면에서 Terminate를 클릭해서 삭제해야한다.
+Enable termination protection(종료 보호 활성화)를 설정해두었다면 무효화시킨 후 삭제해야한다.
+
+EBS도 마찬가지로 EC2 인스턴스에서 분리(Detach)하여 유지하더라도 비용이 청구되니, 필요없다면 삭제해야한다.
+
+EIP는 조금 다르게, EC2에 연결되어있으면 과금이 되지 않지만 연결되어 있지않으면 과금된다. 따라서 Release address로 할당을 해제해야한다.
+
+라우트 53은 DNS 존 단위로 월정액 과금된다. 
+
+VPC는 연결 및 데이터 전송에 비용이 발생하지만, VPC 유지 자체 비용은 청구되지 않기 때문에 제거할 필요가 없다.
 
 
+<br/><br/>
 
+##### 관리형 서비스
 
-<br/><br/><br/>
+AWS를 EC2로 대표되는 IaaS(Infrastructure as a Service)를 제공하는 클라우드 사업자로 인식하는데,
+실제로는 OS와 미들웨어까지 관리하는 PaaS(Platform as a Service)와 
+소프트웨어를 관리하는 SaaS(Software as a Service)도 제공하며 그 숫자가 점점 늘고 있다. 
 
-### Pattern 2. Enterprise Web Site
+이러한 서비스를 관리형 서비스라고 부른다.
 
-### Pattern 3. Intra Site attaching great importance to performance
+주요 관리형 서비스로는 스토리지 서비스 아마존 S3, 데이터베이스 서비스 아마존 RDS, DNS 서비스 아마존 라우트 53, 서버리스 (Serverless) 코드 실행 서비스 아마존 람다(AWS Lambda) 등이 있다. 
 
-### Pattern 4. Intra Site attaching great importance to availability
+관리형 서비스는 AWS가 인스턴스를 관리하기 때문에 사용자가 OS에 접속할 수 없다. 
 
-<br/>
+장점: 사용자가 직접 버전업이나 다중화, 백업 등의 작업 할 필요가 없음
+단점: 성능 문제가 발생해도 개선 방안이 많지 않음
+
+변경할 수 있는 범위에 대한 트레이드오프 -> 사용자가 변경 가능한 범위가 적어지기 때문에 바꿀 수 있는 범위도 적기 때문 
+
