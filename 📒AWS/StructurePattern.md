@@ -276,3 +276,70 @@ AWS를 EC2로 대표되는 IaaS(Infrastructure as a Service)를 제공하는 클
 
 변경할 수 있는 범위에 대한 트레이드오프 -> 사용자가 변경 가능한 범위가 적어지기 때문에 바꿀 수 있는 범위도 적기 때문 
 
+
+<br/><br/><br/>
+
+### Pattern 2. Enterprise WebSite
+
+*목표: 조금은 더 복잡한 웹사이트의 예: 웹 서버와 DB 서버의 이중화 방법, 저비용으로 정적 콘텐츠를 배포하는 방법*
+
+
+> #### Enterprise WebSite Condition
+>
+>
+> - 공개 사이트
+> - 사용자: 거래처, 잠재적 고객, 입사지원자 등
+> - 서버 다중화로 장애 대비
+> - 부하가 높아지면 서버 추가 구성
+> - 장애 서버의 교체, 추가는 수동으로 조작
+> - 응답시간과 비용 고려
+
+<br/>
+
+```
+#### 핵심 설계 사항
+
+1. 웹 서버 다중화
+로드밸러서로 장애에 대비, 부하가 높아진 경우에 대비해 웹 서버 추가 가능
+
+2. DB 서버 다중화
+서비스 기능을 사용해 DB 서버 복제
+
+3. CDN과 객체 저장소를 사용한 정적 콘텐츠 전송
+웹 서버로부터의 접속을 줄여 운영 비용 절감
+```
+
+<br/><br/>
+
+기업 웹사이트의 특징: 마케팅과 커뮤니케이션 도구로 중요하게 쓰이기 때문에 (기반 업무 시스템 정도는 아니지만)안정적으로 가동되어야 한다.
+
+<br/><img src="./img/archi-enterprise.jpg" width="40%" /><br/>
+
+*구성 설명*
+
+#### 웹 서버
+
+가상 서버인 EC2와 가상 저장소인 EBS를 사용하여 구축, 로드밸런서를 사용하여 다중으로 구성
+
+로드밸런서 기능을 제공하는 서비스는 ELB(Elastic Load Balancing) 입니다.
+
+<br/>
+
+#### DB 서버
+
+RDB 관리형 서비스인 RDS(AWS Relational Database Service)로 구성. 
+
+RDS는 셋업이 완료된 RDBMS 환경을 제공하는 서비스로 간단한 설정만으로도 다중화가 가능
+
+이렇게 관리형 서비스들을 이용해 적은 노력으로 시스템의 구성이 가능한 것이 AWS 장점
+
+
+
+<br/><br/><br/>
+
+
+### Pattern 3. Intra Site attaching great importance to performance
+
+### Pattern 4. Intra Site attaching great importance to availability
+
+<br/>
