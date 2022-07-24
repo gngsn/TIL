@@ -23,8 +23,15 @@ FROM employee
 WHERE gender = "M" 
 LIMIT 5000000, 1000;
 
--- Covering Index
 
+# Paging TEST 2: OFFSET Performance 
+-- offset 5,000,000 limit 1,000 without Covering Index
+SELECT *
+FROM employee 
+WHERE gender = "M" 
+LIMIT 5000000, 1000;
+
+-- offset 5,000,000 limit 1,000 with Covering Index
 SELECT *
 FROM employee as e
 JOIN (
@@ -33,11 +40,4 @@ JOIN (
 	WHERE gender = "M" 
 	LIMIT 5000000, 1000) as cover
 ON e.emp_no = cover.emp_no;
-
-
-
-ALTER TABLE employee ADD INDEX Idx_employee_firstName (first_name);
-ALTER TABLE employee ALTER INDEX Idx_employee_firstName invisible;
-
-ALTER TABLE employee ADD INDEX Idx_employee_gender (gender);
 
