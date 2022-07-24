@@ -1,10 +1,14 @@
+# Table Count
 SELECT count(*) FROM test.employee;
 # 9,600,768 900만건
-# insert into test.employee select * from test.employee;
 
-describe test.employee;
+# Table Check
+USE test;
+DESCRIBE employee;
+
+# Table Describe
 SELECT * FROM test.employee limit 10;
-use test;
+
 
 SELECT * FROM employee WHERE first_name = "Parto";
 
