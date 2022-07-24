@@ -9,6 +9,7 @@ DESCRIBE employee;
 # Table Describe
 SELECT * FROM test.employee limit 10;
 SELECT * FROM employee WHERE first_name = "Parto";
+SHOW INDEX FROM employee;
 
 # Paging TEST 1: OFFSET Performance 
 -- offset 0 limit 1,000
@@ -22,6 +23,7 @@ SELECT *
 FROM employee 
 WHERE gender = "M" 
 LIMIT 5000000, 1000;
+
 
 
 # Paging TEST 2: OFFSET Performance 
