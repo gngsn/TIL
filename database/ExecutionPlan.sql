@@ -112,7 +112,30 @@ SELECT dept_emp.emp_no, dept.dept_no, dept.dept_name
 FROM dept_emp, 
 	 departments as dept
 WHERE dept_emp.dept_no = dept.dept_no
-AND dept_emp.dept_no BETWEEN 10011 AND 10012;
+AND dept_emp.emp_no BETWEEN 10001 AND 10010;
+
+
+-- type : ref
+EXPLAIN 
+SELECT emp.emp_no, sal.salary
+FROM employees as emp,
+	 salaries as sal
+WHERE emp.emp_no = sal.emp_no;
+
+
+-- type : ref_or_null
+EXPLAIN 
+SELECT *
+FROM employees as emp,
+	 salaries as sal
+WHERE emp.emp_no = sal.emp_no;
+
+-- key
+EXPLAIN 
+SELECT emp_no
+FROM titles
+WHERE title = "Engineer";
+
 
 
 
