@@ -8,24 +8,22 @@ DESCRIBE employee;
 
 # Table Describe
 SELECT * FROM test.employee limit 10;
-
-
 SELECT * FROM employee WHERE first_name = "Parto";
 
--- Covering Index
-
-SELECT first_name
-FROM employee
-WHERE first_name = "Parto";
-
-
-
-SELECT state, ROUND(SUM(duration),5) AS `duration (summed) in sec` FROM information_schema.profiling WHERE query_id = 8 GROUP BY state ORDER BY `duration (summed) in sec` DESC; 
-
+# Paging TEST 1: OFFSET Performance 
+-- offset 0 limit 1,000
 SELECT *
-	FROM employee 
-	WHERE gender = "M" 
-	LIMIT 5000000, 1000;
+FROM employee 
+WHERE gender = "M" 
+LIMIT 0, 1000;
+
+-- offset 5,000,000 limit 1,000
+SELECT *
+FROM employee 
+WHERE gender = "M" 
+LIMIT 5000000, 1000;
+
+-- Covering Index
 
 SELECT *
 FROM employee as e
