@@ -2,6 +2,9 @@
 SELECT count(*) FROM test.employee;
 # 9,600,768 900만건
 
+# Cardinality 고려
+# CREATE TABLE employee_hire AS SELECT * FROM employee;
+
 # Table Check
 USE test;
 DESCRIBE employee;
@@ -24,6 +27,11 @@ FROM employee
 WHERE gender = "M" 
 LIMIT 5000000, 1000;
 
+
+## Paging TEST 1-1: OFFSET Performance (more high cardinality)
+SHOW INDEX FROM employee_tmp;  -- Cardinality: 1
+SHOW INDEX FROM employee;      -- Cardinality: first_name(1276), hire_date(5096)
+ALTER TABLE employee ALTER INDEX `Idx_employee_hireDate` INVISIBLE;
 
 
 # Paging TEST 2: OFFSET Performance 
