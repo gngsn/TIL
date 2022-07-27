@@ -1,5 +1,7 @@
 # Table Count
-SELECT count(*) FROM test.employee;
+SELECT count(*) FROM test.employee_hire;
+INSERT INTO employee_hire SELECT * FROM employee;
+
 # 9,600,768 900만건
 
 # Cardinality 고려
@@ -51,3 +53,28 @@ JOIN (
 	LIMIT 5000000, 1000) as cover
 ON e.emp_no = cover.emp_no;
 
+
+# Paging TEST 3: Index - firstName::OFFSET Performance 
+-- offset 13,000 limit 1,000 without Covering Index
+SELECT *
+FROM employee 
+WHERE first_name = 'Parto'
+LIMIT 13000, 1000;
+
+
+-- offset 13,000 limit 1,000 with Covering Index
+SELECT *
+FROM employee as e
+JOIN (
+	SELECT emp_no
+	FROM employee 
+	WHERE first_name = 'Parto'
+	LIMIT 13000, 1000) as cover
+ON e.emp_no = cover.emp_no;
+
+EXPLAIN SELECT e.* FROM employee as e JOIN (
+	SELECT emp_no
+	FROM employee 
+	WHERE first_name = 'Parto'
+	LIMIT 13000, 1000) as cover
+ON e.emp_no = cover.emp_no;
