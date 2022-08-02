@@ -28,15 +28,18 @@ SELECT * FROM employee WHERE first_name = 'Parto' LIMIT 13000, 1000;
 */
 
 SELECT * FROM employee
-WHERE first_name = 'Parto'
 ORDER BY emp_no DESC
 LIMIT 13000, 1000;
 -- 1000 rows in set (1.45 sec)
 
+SELECT * FROM employee
+WHERE gender = 'M'
+AND emp_no < 1000
+ORDER BY emp_no DESC
+LIMIT 13000, 1000;
 
 SELECT * FROM employee 
-WHERE emp_no < 13000 
-AND first_name = 'Parto'
+WHERE emp_no < 1000
 ORDER BY emp_no DESC
 LIMIT 1000;
 /*
@@ -54,6 +57,48 @@ mysql> SELECT * FROM employee  WHERE emp_no > 13000 AND first_name = 'Parto' LIM
 +---------+------------+------------+-----------------+--------+------------+
 1000 rows in set (0.02 sec)
 */
+
+
+/* No Offset */
+SELECT * FROM employee 
+WHERE gender = 'M' 
+AND emp_no > 5000000 
+ORDER BY emp_no DESC LIMIT 1000;
+/*
+mysql> SELECT * FROM employee 
+    -> WHERE gender = 'M' 
+    -> AND emp_no > 5000000 
+    -> ORDER BY emp_no DESC LIMIT 1000;
++----------+------------+----------------+------------------+--------+------------+
+| emp_no   | birth_date | first_name     | last_name        | gender | hire_date  |
++----------+------------+----------------+------------------+--------+------------+
+| 19201536 | 1958-05-01 | Sachin         | Tsukuda          | M      | 1997-11-30 |
+| 19201535 | 1956-09-05 | Patricia       | Breugel          | M      | 1993-10-13 |
+| 19201534 | 1961-08-03 | Berhard        | Lenart           | M      | 1986-04-21 |
+...
++----------+------------+----------------+------------------+--------+------------+
+1000 rows in set (0.06 sec)
+*/
+
+
+SELECT * FROM employee 
+WHERE gender = 'M'
+ORDER BY emp_no DESC 
+LIMIT 5000000, 1000;
+/*
+mysql> SELECT * FROM employee  WHERE gender = 'M' ORDER BY emp_no DESC  LIMIT 5000000, 1000;
++----------+------------+----------------+----------------+--------+------------+
+| emp_no   | birth_date | first_name     | last_name      | gender | hire_date  |
++----------+------------+----------------+----------------+--------+------------+
+| 10866490 | 1960-07-31 | George         | Fortenbacher   | M      | 1986-12-09 |
+| 10866488 | 1956-06-28 | Weiyi          | Bodoff         | M      | 1990-06-27 |
+| 10866487 | 1959-08-25 | Gilbert        | Panangaden     | M      | 1986-07-06 |
+   ...
++----------+------------+----------------+----------------+--------+------------+
+1000 rows in set (5.37 sec)
+*/
+
+
 
 
 
