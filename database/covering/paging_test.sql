@@ -99,14 +99,65 @@ mysql> SELECT * FROM employee  WHERE gender = 'M' ORDER BY emp_no DESC  LIMIT 50
 */
 
 
+SELECT * FROM employee 
+ORDER BY emp_no DESC 
+LIMIT 5000000, 1000;
+/*
++----------+------------+---------------+-----------------+--------+------------+
+| emp_no   | birth_date | first_name    | last_name       | gender | hire_date  |
++----------+------------+---------------+-----------------+--------+------------+
+| 14201536 | 1956-12-30 | Anestis       | Reinhard        | F      | 1987-07-14 |
+| 14201535 | 1955-04-21 | Mansur        | Pauthner        | M      | 1986-09-21 |
+| 14201534 | 1956-01-01 | Hideo         | Kornyak         | M      | 1990-09-30 |
+									   ...
++----------+------------+---------------+-----------------+--------+------------+
+1000 rows in set (2.76 sec)
+*/
 
-
-
-EXPLAIN SELECT e.* FROM employee as e JOIN (
+SELECT e.* FROM employee as e JOIN (
 	SELECT emp_no
-	FROM employee 
-	WHERE first_name = 'Parto'
-	LIMIT 13000, 1000) as cover
+	FROM employee
+	ORDER BY emp_no DESC 
+	LIMIT 5000000, 1000) as cover
 ON e.emp_no = cover.emp_no;
+/*
+mysql> SELECT e.* FROM employee as e JOIN (
+    -> SELECT emp_no
+    -> FROM employee
+    -> ORDER BY emp_no DESC 
+    -> LIMIT 5000000, 1000) as cover
+    -> ON e.emp_no = cover.emp_no;
++----------+------------+---------------+-----------------+--------+------------+
+| emp_no   | birth_date | first_name    | last_name       | gender | hire_date  |
++----------+------------+---------------+-----------------+--------+------------+
+| 14201536 | 1956-12-30 | Anestis       | Reinhard        | F      | 1987-07-14 |
+| 14201535 | 1955-04-21 | Mansur        | Pauthner        | M      | 1986-09-21 |
+| 14201534 | 1956-01-01 | Hideo         | Kornyak         | M      | 1990-09-30 |
+									   ...
++----------+------------+---------------+-----------------+--------+------------+
+1000 rows in set (1.48 sec)
+*/
+
+
+SELECT * FROM employee 
+WHERE gender = 'M'
+ORDER BY emp_no DESC 
+LIMIT 5000000, 1000;
+/*
++----------+------------+---------------+-----------------+--------+------------+
+1000 rows in set (4.71 sec)
+*/
+
+SELECT e.* FROM employee as e JOIN (
+	SELECT emp_no
+	FROM employee
+    WHERE gender = 'M'
+	ORDER BY emp_no DESC 
+	LIMIT 5000000, 1000) as cover
+ON e.emp_no = cover.emp_no;
+/*
++----------+------------+---------------+-----------------+--------+------------+
+1000 rows in set (3.39 sec)
+*/
 
 
