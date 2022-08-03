@@ -62,7 +62,7 @@ mysql> SELECT * FROM employee  WHERE emp_no > 13000 AND first_name = 'Parto' LIM
 /* No Offset */
 SELECT * FROM employee 
 WHERE gender = 'M' 
-AND emp_no > 5000000 
+AND emp_no > 5000000
 ORDER BY emp_no DESC LIMIT 1000;
 /*
 mysql> SELECT * FROM employee 
@@ -173,5 +173,34 @@ ON e.emp_no = cover.emp_no;
 +----------+------------+----------------+----------------+--------+------------+
 1000 rows in set (3.39 sec)
 */
+
+--
+
+EXPLAIN SELECT * FROM employee ORDER BY emp_no DESC LIMIT 5000000, 1000;
+/*
+mysql> EXPLAIN SELECT * FROM employee ORDER BY emp_no DESC LIMIT 5000000, 1000;
++----+-------------+----------+------------+-------+---------------+---------+---------+------+---------+----------+---------------------+
+| id | select_type | table    | partitions | type  | possible_keys | key     | key_len | ref  | rows    | filtered | Extra               |
++----+-------------+----------+------------+-------+---------------+---------+---------+------+---------+----------+---------------------+
+|  1 | SIMPLE      | employee | NULL       | index | NULL          | PRIMARY | 4       | NULL | 5001000 |   100.00 | Backward index scan |
++----+-------------+----------+------------+-------+---------------+---------+---------+------+---------+----------+---------------------+
+1 row in set, 1 warning (0.00 sec)
+*/
+
+
+EXPLAIN SELECT e.* FROM employee as e JOIN ( SELECT emp_no FROM employee  LIMIT 5000000, 1000) as cover ON e.emp_no = cover.emp_no;
+/*
++----+-------------+------------+------------+--------+---------------+------------------------+---------+--------------+----------+----------+-------------+
+| id | select_type | table      | partitions | type   | possible_keys | key                    | key_len | ref          | rows     | filtered | Extra       |
++----+-------------+------------+------------+--------+---------------+------------------------+---------+--------------+----------+----------+-------------+
+|  1 | PRIMARY     | <derived2> | NULL       | ALL    | NULL          | NULL                   | NULL    | NULL         |  5001000 |   100.00 | NULL        |
+|  1 | PRIMARY     | e          | NULL       | eq_ref | PRIMARY       | PRIMARY                | 4       | cover.emp_no |        1 |   100.00 | NULL        |
+|  2 | DERIVED     | employee   | NULL       | index  | NULL          | Idx_employee_firstname | 58      | NULL         | 18681872 |   100.00 | Using index |
++----+-------------+------------+------------+--------+---------------+------------------------+---------+--------------+----------+----------+-------------+
+3 rows in set, 1 warning (0.00 sec)
+*/
+
+
+
 
 
