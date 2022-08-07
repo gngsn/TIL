@@ -90,5 +90,84 @@ mysql> show global status like 'Handler%';
 ```
 
 
+<br/>
+
+### 4.1.2 MySQL 스레딩 구조
+
+<img src="./MySQL_threading_architecture.png" alt="MySQL_threading_architecture" />
+
+MySQL 서버는 프로세스 기반이 아니라 스레드 기반으로 작동: Foreground Thread, Background Thread 로 구분
+
+MySQL 서버에서 실행 중인 스레드 목록은 다음과 같이 performance_schema DB의 threads 테이블을 통해 확인할 수 있다.
+
+`SELECT thread_id, name, type, processlist_user, processlist_host
+FROM performance_schema.threads ORDER BY type, thread_id;`
+
+
+``` sql
+mysql> SELECT thread_id, name, type, processlist_user, processlist_host FROM performance_schema.threads ORDER BY type, thread_id;
++-----------+---------------------------------------------+------------+------------------+------------------+
+| thread_id | name                                        | type       | processlist_user | processlist_host |
++-----------+---------------------------------------------+------------+------------------+------------------+
+|         1 | thread/sql/main                             | BACKGROUND | NULL             | NULL             |
+|         2 | thread/mysys/thread_timer_notifier          | BACKGROUND | NULL             | NULL             |
+|         4 | thread/innodb/io_ibuf_thread                | BACKGROUND | NULL             | NULL             |
+|         5 | thread/innodb/io_log_thread                 | BACKGROUND | NULL             | NULL             |
+|         6 | thread/innodb/io_read_thread                | BACKGROUND | NULL             | NULL             |
+|         7 | thread/innodb/io_read_thread                | BACKGROUND | NULL             | NULL             |
+|         8 | thread/innodb/io_read_thread                | BACKGROUND | NULL             | NULL             |
+|         9 | thread/innodb/io_read_thread                | BACKGROUND | NULL             | NULL             |
+|        10 | thread/innodb/io_write_thread               | BACKGROUND | NULL             | NULL             |
+|        11 | thread/innodb/io_write_thread               | BACKGROUND | NULL             | NULL             |
+|        12 | thread/innodb/io_write_thread               | BACKGROUND | NULL             | NULL             |
+|        13 | thread/innodb/io_write_thread               | BACKGROUND | NULL             | NULL             |
+|        14 | thread/innodb/page_flush_coordinator_thread | BACKGROUND | NULL             | NULL             |
+|        15 | thread/innodb/log_checkpointer_thread       | BACKGROUND | NULL             | NULL             |
+|        16 | thread/innodb/log_closer_thread             | BACKGROUND | NULL             | NULL             |
+|        17 | thread/innodb/log_flush_notifier_thread     | BACKGROUND | NULL             | NULL             |
+|        18 | thread/innodb/log_flusher_thread            | BACKGROUND | NULL             | NULL             |
+|        19 | thread/innodb/log_write_notifier_thread     | BACKGROUND | NULL             | NULL             |
+|        20 | thread/innodb/log_writer_thread             | BACKGROUND | NULL             | NULL             |
+|        21 | thread/innodb/srv_lock_timeout_thread       | BACKGROUND | NULL             | NULL             |
+|        22 | thread/innodb/srv_error_monitor_thread      | BACKGROUND | NULL             | NULL             |
+|        23 | thread/innodb/srv_monitor_thread            | BACKGROUND | NULL             | NULL             |
+|        24 | thread/innodb/buf_resize_thread             | BACKGROUND | NULL             | NULL             |
+|        25 | thread/innodb/srv_master_thread             | BACKGROUND | NULL             | NULL             |
+|        26 | thread/innodb/buf_dump_thread               | BACKGROUND | NULL             | NULL             |
+|        27 | thread/innodb/dict_stats_thread             | BACKGROUND | NULL             | NULL             |
+|        28 | thread/innodb/fts_optimize_thread           | BACKGROUND | NULL             | NULL             |
+|        29 | thread/mysqlx/worker                        | BACKGROUND | NULL             | NULL             |
+|        30 | thread/mysqlx/worker                        | BACKGROUND | NULL             | NULL             |
+|        31 | thread/mysqlx/acceptor_network              | BACKGROUND | NULL             | NULL             |
+|        35 | thread/innodb/clone_gtid_thread             | BACKGROUND | NULL             | NULL             |
+|        36 | thread/innodb/srv_purge_thread              | BACKGROUND | NULL             | NULL             |
+|        37 | thread/innodb/srv_worker_thread             | BACKGROUND | NULL             | NULL             |
+|        38 | thread/innodb/srv_worker_thread             | BACKGROUND | NULL             | NULL             |
+|        39 | thread/innodb/srv_worker_thread             | BACKGROUND | NULL             | NULL             |
+|        40 | thread/innodb/srv_worker_thread             | BACKGROUND | NULL             | NULL             |
+|        41 | thread/innodb/srv_worker_thread             | BACKGROUND | NULL             | NULL             |
+|        42 | thread/innodb/srv_purge_thread              | BACKGROUND | NULL             | NULL             |
+|        43 | thread/innodb/srv_worker_thread             | BACKGROUND | NULL             | NULL             |
+|        45 | thread/sql/signal_handler                   | BACKGROUND | NULL             | NULL             |
+|        47 | thread/mysqlx/acceptor_network              | BACKGROUND | NULL             | NULL             |
+|        44 | thread/sql/event_scheduler                  | FOREGROUND | NULL             | NULL             |
+|        46 | thread/sql/compress_gtid_table              | FOREGROUND | NULL             | NULL             |
+|     15763 | thread/sql/one_connection                   | FOREGROUND | root             | localhost        |
++-----------+---------------------------------------------+------------+------------------+------------------+
+44 rows in set (0.11 sec)
+```
+
+총 44개의 스레드가 실행 중이며, 41개의 스레드가 백그라운드, 3개만 포그라운드 스레드
+
+마지막 `thread/sql/one_connection` 스레드만 실제 사용자의 요청을 처리하는 포그라운드 스레드.
+
+백그라운드 스레드의 개수는 MySQL 서버의 설정 내용에 따라 가변적일 수 있다.
+
+동일한 이름의 스레드가 2개 이상씩 보이는 것은 MySQL 서버의 설정 내용에 의해 여러 스레드가 동일 작업을 병렬로 처리하는 경우다.
+
+(자세한 내용은 4.1.9절)
+
+
+
 
 
