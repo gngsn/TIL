@@ -167,7 +167,19 @@ mysql> SELECT thread_id, name, type, processlist_user, processlist_host FROM per
 
 (자세한 내용은 4.1.9절)
 
+<br/>
 
+### Foreground Thread (Client Thread)
+
+Foreground Thread 는 최소한 MySQL 서버에 접속된 클라이언트의 수만큼 존재, 주로 각 클라이언트 사용자가 요청하는 쿼리 문장을 처리한다.
+
+클라이언트 사용자가 작업을 마치고 커넥션을 종료하면 해당 커넥션을 담당하던 스레드는 다시 스레드 캐시(Thread cache)로 되돌아간다.
+
+이미 스레드 캐시에 일정 개수 이상의 대기 중인 스레드가 있으면 스레드 캐시에 넣지 않고 스레드를 종료시켜 일정 개수의 스레드만 스레드 캐시에 존재하게 한다. 
+
+이때, 스레드 캐시에 유지할 수 있는 최대 스레드 개수는 thread_cache_size 시스템 변수로 설정한다.
+
+포그라운드 스레드는 데이터를 MySQL의 데이터 버퍼나 캐시로부터 가져오며, 버퍼나 캐시에 없는 경우에는 직접 디스크의 데이터나 인덱스 파일로부터 데이터를 읽어와서 작업을 처리한다.
 
 
 
