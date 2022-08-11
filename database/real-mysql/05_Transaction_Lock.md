@@ -20,9 +20,12 @@ InnoDB 스토리지 엔진은 렠코드 기반의 잠금 기능을 제공하며,
 
 <img src="./InnoDB_Lock.png" alt="InnoDB_Lock.png" />
 
-
-
 ### Record Lock
+
+레코드 자체만을 잠그는 락
+사용 DBMS의 레코드 락과 동일한 역할을 한다.
+중요한 점은 InnoDB 스토리지 엔진은 레코드 자체가 아니라 인덱스의 레코드를 잠근다는 점
+
 
 ### Gap Lock
 
