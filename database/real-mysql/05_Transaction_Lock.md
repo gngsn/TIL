@@ -22,3 +22,8 @@ InnoDB 스토리지 엔진은 렠코드 기반의 잠금 기능을 제공하며,
 
 
 
+### Record Lock
+
+### Gap Lock
+
+### Next Key Lock
