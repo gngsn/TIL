@@ -10,10 +10,18 @@
 
 Goal 1. What is InnoDB engine?
 
-Goal 2. Default support storage engine: InnoDB, MyISAM storage engine
+Goal 2. MVCC: Multi Version Concurrency Control
+
+Goal 3. Indexing (PK Clustering, FK)
+
+Goal 4. Locking (Non-Locking Consistent Read, Automation Detection DeadLock)
+
+Goal 5. Buffer (Buffer Pool, Double Writer Buffer, Undo Log, Change Buffer)
+
+Goal 6. Adaptive Hash Index
+
 
 ---
-
 
 
 
