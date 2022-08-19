@@ -6,7 +6,7 @@ DELIMITER $$
 CREATE PROCEDURE save_data()
 BEGIN
 	DECLARE i INT DEFAULT 1;
-    WHILE(i <= 10000) DO
+    WHILE(i <= 1000000) DO
         INSERT INTO test.multi_in_clause (x1, y1, x2, y2) VALUES (
 			FLOOR(RAND() * 1000), FLOOR(RAND() * 1000), FLOOR(RAND() * 1000), FLOOR(RAND() * 1000)
 		);
