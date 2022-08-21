@@ -1,3 +1,13 @@
+CREATE TABLE `multi_in_clause` (
+  `pk` int(11) NOT NULL AUTO_INCREMENT,
+  `x1` int(11) NOT NULL,
+  `y1` int(11) NOT NULL,
+  `x2` int(11) NOT NULL,
+  `y2` int(11) NOT NULL,
+  PRIMARY KEY (`pk`),
+  KEY `IDX_XY` (`x1`,`y1`,`x2`,`y2`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
 SELECT * FROM test.multi_in_clause;
 
 truncate test.multi_in_clause;
