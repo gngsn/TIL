@@ -18,6 +18,22 @@ CREATE TABLE mirrorline.users (
 	PARTITION P_maxvalue VALUES LESS THAN MAXVALUE
 );
 
+
+CREATE TABLE mirrorline.users2 (
+  `user_id` INT NOT NULL AUTO_INCREMENT,
+  `email` VARCHAR(100) NOT NULL,
+  `name` VARCHAR(15) NOT NULL,
+  `age` INT NOT NULL,
+  `reg_at` DATETIME UNIQUE,
+  PRIMARY KEY (`user_id`, `reg_at`)
+) PARTITION BY RANGE (TO_DAYS(reg_at)) (
+	PARTITION P_202206 VALUES LESS THAN (TO_DAYS('2022-07-01')),
+	PARTITION P_202207 VALUES LESS THAN (TO_DAYS('2022-08-01')),
+	PARTITION P_202208 VALUES LESS THAN (TO_DAYS('2022-09-01')),
+	PARTITION P_maxvalue VALUES LESS THAN MAXVALUE
+);
+INSERT INTO users2(email, name, age, reg_at) VALUES('gngsn@gmail.com', 'gngsn', 25, null);
+
 -- METHOD2. 기존의 테이블을 파티션으로 나누기 
 CREATE TABLE mirrorline.users_after (
   `user_id` INT NOT NULL AUTO_INCREMENT,
@@ -30,6 +46,7 @@ CREATE TABLE mirrorline.users_after (
 
     -- 데이터가 존재할 때에도 파티션 적용이 가능할까? - YES
 INSERT INTO users_after(email, name, age, reg_at) VALUES('gngsn@gmail.com', 'gngsn', 25, '2022-08-23 00:00:00');
+
 
 	-- 생성한 테이블에 ALTER로 파티션 적용
 ALTER TABLE users_after PARTITION BY RANGE (TO_DAYS(reg_at)) (
@@ -49,6 +66,9 @@ ALTER TABLE mirrorline.users
 ADD UNIQUE INDEX `name_UNIQUE` (`name` ASC) VISIBLE;
 -- Error Code: 1503. A UNIQUE INDEX must include all columns in the table's partitioning function
 
+
+
+
 -- ========== INSERT INTO PARTITION ========== -----
 
 -- users 테이블에 데이터 추가하기
@@ -66,5 +86,25 @@ SELECT	TO_DAYS('2022-07-23 00:00:00') < TO_DAYS('2022-07-01') as '202206',
 1 row in set (0.00 sec)
 */
 
-INSERT INTO users(email, name, age, reg_at) VALUES('gngsn@gmail.com', 'gngsn', 25, '2022-07-23 00:00:00');
 
+-- maxvalue
+INSERT INTO users(email, name, age, reg_at) VALUES('gngsn@gmail.com', 'gngsn', 25, '2022-12-23 12:02:28');
+SELECT	TO_DAYS('2022-12-23 12:02:28') < TO_DAYS('2022-07-01') as '202206',
+	    TO_DAYS('2022-12-23 12:02:28') < TO_DAYS('2022-08-01') as '202207',
+        TO_DAYS('2022-12-23 12:02:28') < TO_DAYS('2022-09-01') as '202208';
+
+
+
+
+        
+-- ========== DROP PARTITION ========== -----
+ALTER TABLE users DROP PARTITION P_202206;
+
+explain sELECT * FROM users PARTITION (P_202207);        
+SELECT * FROM users PARTITION (P_maxvalue);
+
+
+
+
+        
+        
