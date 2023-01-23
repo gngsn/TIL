@@ -49,3 +49,36 @@
 vCPU 16개, 즉 코어 16개입니다. 메모리는 32GB로 훨씬 많고 EC2 인스턴스에 부착된 스토리지인 400 NVMeSSD가 있으며, 네트워크 스토리지와 통신하는 대역폭(4,750)도 좋습니다.
 
 r5.16xlarge와 m5.8xlarge같이 더 다양한  종류의 인스턴스가 있으며, 혹은 여러분의 애플리케이션 성능에 맞는 EC2 인스턴스를 선택하여 주문형 클라우드를 사용할 수도 있다.
+
+
+
+
+## Hands-On: Launching an EC2 Instance running Linux
+
+- We’ll be launching our first virtual server using the AWS Console
+- We’ll get a first high-level approach to the various parameters
+- We’ll see that our web server is launched using EC2 user data
+- We’ll learn how to start / stop / terminate our instance
+
+EC2 생성 실습 시 **User Data**는 EC2 인스턴스가 처음으로 부팅될 때 딱 한 번 실행될 스크립트임.
+
+```java
+#!/bin/bash
+# install httpd (Linux 2 version)
+yum update -y
+yum install -y httpd
+systemctl start httpd
+systemctl enable httpd
+echo "<h1>Hello World from $(hostname -f)</h1>" > /var/www/html/index.html
+```
+
+이것이 EC2 인스턴스에 웹 서버를 시작하고 파일을 쓸 것입니다.
+
+`Delete on Termination` : 인스턴스를 종료할 때 디스크 또한 비운다는 뜻
+
+### Security Group
+
+- 보안 그룹
+- HTTP - 80번 포트 추가, `0.0.0.0/0, ::/0` 는 어디에서나 라는 의미
+
+클라우드는 일회용이기 때문에 Termicate한다는 것은 매우 흔한 일
