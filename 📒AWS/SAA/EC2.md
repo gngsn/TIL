@@ -81,4 +81,5 @@ echo "<h1>Hello World from $(hostname -f)</h1>" > /var/www/html/index.html
 - 보안 그룹
 - HTTP - 80번 포트 추가, `0.0.0.0/0, ::/0` 는 어디에서나 라는 의미
 
-클라우드는 일회용이기 때문에 Termicate한다는 것은 매우 흔한 일
+클라우드는 일회용이기 때문에 Terminate 한다는 것은 매우 흔한 일
+
