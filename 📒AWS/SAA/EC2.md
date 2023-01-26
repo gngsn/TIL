@@ -83,3 +83,72 @@ echo "<h1>Hello World from $(hostname -f)</h1>" > /var/www/html/index.html
 
 클라우드는 일회용이기 때문에 Terminate 한다는 것은 매우 흔한 일
 
+
+## EC2 Instance Types - Overview
+
+- You can use different types of EC2 instances that are optimised for different use cases ([https://aws.amazon.com/ec2/instance-types/](https://aws.amazon.com/ec2/instance-types/))
+- AWS has the following naming convention:
+
+```java
+m5.2xlarge
+```
+
+- m: instance class
+    - 범용의 인스턴스
+- 5: generation (AWS improves them over time)
+- 2xlarge: size within the instance class
+    - small, large, 2xlarge ~
+
+### EC2 Instance Types – General Purpose
+
+- Great for a diversity of workloads such as web servers or code repositories
+- Balance between:
+- Compute
+- Memory
+- Networking
+- In the course, we will be using the t2.micro which is a General Purpose EC2 instance
+
+EC2 Instance Types – Compute Optimized
+
+- Great for compute-intensive tasks that require high performance processors:
+    - Batch processing workloads
+    - Media transcoding
+    - High performance web servers
+    - High performance computing (HPC)
+    - Scientific modeling & machine learning
+    - Dedicated gaming servers
+
+⇒ 모든 좋은 성능의 CPU와 컴퓨팅(compute size)을 요구합니다.
+
+컴퓨터 최적화의 모든 인스턴스는 C로 시작하는 이름을 가진다: ex. C5, C6…
+
+### EC2 Instance Types – Memory Optimized
+
+: 여기서 메모리란 RAM을 의미.
+
+- Fast performance for workloads that process large data sets in memory
+- Use cases:
+    - High performance, relational/non-relational databases
+    - Distributed web scale cache stores
+    - In-memory databases optimized for BI (business intelligence)
+    - Applications performing real-time processing of big unstructured data
+
+처리하는 유형의 작업에 빠른 성능을 제공
+
+예를 들면 대부분 인메모리 데이터베이스가 되는 고성능의 관계형비관계형 데이터베이스에 사용하고, 일래스틱 캐시로 예를 들 수 있는 분산 웹 스케일 캐시 저장소에도 사용
+
+즉, BI에 최적화된 인메모리 데이터베이스와  대규모 비정형 데이터의 실시간 처리를 실행하는 사이즈가 큰 애플리케이션에도 사용
+
+Memory Optimized를 보면 R~ 로 시작하는 인스턴스 시리즈가 있는데 RAM을 나타냅니다. 하지만 X1이나 대용량 메모리 Z1도 있다. (외울 필요는 없지만 알고 있으면 좋다)
+
+### EC2 Instance Types – Storage Optimized
+
+- Great for storage-intensive tasks that require high, sequential read and write access to large data sets on local storage
+- Use cases:
+    - High frequency online transaction processing (OLTP) systems
+    - Relational & NoSQL databases
+    - Cache for in-memory databases (for example, Redis)
+    - Data warehousing applications
+    - Distributed file systems
+
+참고. 이름이 I, D, 혹은 H로 시작한다
