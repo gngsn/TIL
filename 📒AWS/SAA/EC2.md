@@ -151,4 +151,26 @@ Memory Optimized를 보면 R~ 로 시작하는 인스턴스 시리즈가 있는�
     - Data warehousing applications
     - Distributed file systems
 
-참고. 이름이 I, D, 혹은 H로 시작한다
+참고. 이름이 I, D, 혹은 H로 시작한다.
+
+
+## Introduction to Security Groups
+
+- Security Groups are the fundamental of network security in AWS
+- They control how traffic is allowed into or out of our EC2 Instances. Inbound trafficEC2 InstanceOutbound trafficSecurity Group
+
+WWW. -→  Inbound —  EC2
+
+            ←- Outbound - 
+
+- Security groups only contain rules
+- Security groups rules can reference by IP or by security group
+
+## Security Groups Deeper Dive
+
+- Security groups are acting as a “firewall” on EC2 instances
+- They regulate:
+    - Access to Ports
+    - Authorised IP ranges – IPv4 and IPv6
+    - Control of inbound network (from other to the instance)
+    - Control of outbound network (from the instance to other)
