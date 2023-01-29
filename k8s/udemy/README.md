@@ -48,9 +48,10 @@
 
 1. Rolling Updates and Rollbacks
 2. Command and Argument
-
-
-_TODO_
+3. Configure Environment Variables in Applications
+4. Configuring ConfigMaps in Applications
+5. Configure Secrets in Applications
+6. Additional Resource
 
 <br/>
 
