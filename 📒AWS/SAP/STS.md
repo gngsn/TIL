@@ -150,10 +150,10 @@ User  —              AssumeRole API          —> AWS STS
 - 활용 사례:
     - 회사에 Active Directory와 같은 자체 자격 증명 시스템을 두는 경우
     - AWS 리소스에 액세스해야 하는 웹 및 모바일 애플리케이션이 있는 경우
-- (Identity Provider와 AWS는 신뢰 관계(trust relationship)가 설정되어 있어야 함
+- (Identity Provider와 AWS는 신뢰 관계(trust relationship)가 설정되어 있어야 함)
 - 해당 자격 증명 제공자로부터 자격 증명을 제공받는 사실을 AWS에 알려야 함
 - 이후 사용자가 해당 자격 증명 제공자를 통해 로그인을 하고 AWS에 대한 자격 증명을 반환 받으면 해당 임시 자격 증명을 가지고 AWS에 액세스함
-- 자격 증명 Federation에는 여러 유형이 존재:  (시험을 위해서는 네 가지 전부 알아야 함)
+- 자격 증명 Federation에는 여러 유형이 존재: (시험을 위해서는 네 가지 전부 알아야 함)
     - SAML 2.0
     - Custom Identity Broker (사용자 지정 자격 증명 브로커)
     - Web Identity Federation with(out) Amazon Cognito
