@@ -51,8 +51,6 @@ vCPU 16개, 즉 코어 16개입니다. 메모리는 32GB로 훨씬 많고 EC2 �
 r5.16xlarge와 m5.8xlarge같이 더 다양한  종류의 인스턴스가 있으며, 혹은 여러분의 애플리케이션 성능에 맞는 EC2 인스턴스를 선택하여 주문형 클라우드를 사용할 수도 있다.
 
 
-
-
 ## Hands-On: Launching an EC2 Instance running Linux
 
 - We’ll be launching our first virtual server using the AWS Console
@@ -196,3 +194,46 @@ WWW. -→  Inbound —  EC2
 - 80 = HTTP – access unsecured websites
 - 443 = HTTPS – access secured websites
 - 3389 = RDP (Remote Desktop Protocol) – log into a Windows instance
+
+
+## EC2 Instances Purchasing Options
+
+다양한 워크로드에 따라 AWS EC2에 지정해서 할인을 받고 비용을 최적화할 수 있다
+
+### ✔️ **On-Demand Instances**
+
+- 사용한 대로 지불 - Pay for what you use (필요한 만큼 인스턴스를 실행할 수 있음)
+    - Linux or Windows - 1분 이후 초 단위로 청구
+    - 다른 모든 운영체제의 경우 1시간 단위로 청구
+- 단기적인 워크로드에 사용하기 좋음 (Short workload)
+- 비용을 예측할 수 있음 (Predictable pricing)
+- 비용이 가장 많이 들지만, 바로 지불할(upfront) 금액은 없음
+- 장기적 약정도 없음 (No long-term commitment)
+- Recommended
+    - 단기적이고 중단 없는 워크로드가 필요 시 (Short-term / Un-interrupted workloads)
+    - 애플리케이션이 어떻게 가동될지 예측 불가능할 때 (can’t predict how the application will behave)
+
+### ✔️ **Reserved (1 & 3 years)**
+
+- 기간 1년 혹은 3년. 장기간의 워크로드를 위함 (Long workload)
+- **Reserved Instances**: 예약 인스턴스
+    - Reserved Instances는 On-Demand에 비해 72% 할인을 제공
+    - 특정 인스턴스 속성을 예약 (Instance Type, Region, Tenancy, OS)
+    - Reservation Period
+        - 예약 기간을 1년이나 3년으로 지정해서 할인을 더 받을 수 있으며, 모두 선결제
+        - 1 Year (+discount) or 3 Year (+++discount)
+    - Payment Options
+        - 결제 옵션은 선결제 없음(+, No Upfront), 부분 선결제(++, Partial Upfront), 모두 선결제(+++, All Upfront, 최대 할인)
+    - Reserved Instance’s Scope — Regional or Zonal
+        - 인스턴스의 범위를 특정한 리전이나 존으로 지정할 수 있음 ← 즉, 특정 AZ에 있는 예약된 용량을 의미
+    - Recommended
+        - 사용량이 일정한 애플리케이션에 예약 인스턴스를 사용하는 게 좋음 (가령 database)
+    - 예약 인스턴스를 마켓플레이스에서 살 수 있고, 더 이상 필요가 없어지면 팔 수도 있다.
+
+- **Convertible Reserved Instances**
+    - 유연한 인스턴스 타입. 특별한 유형의 예약 인스턴스
+    - EC2 Instance Type, Instance type, instance family, OS, scope와 tenancy를 변경할 수 있음
+    - 시간이 지나면 인스턴스 타입을 변경하길 원한다면 전환형 예약 인스턴스가 적절
+    - Up to 66% discount. 유연성이 더 크기 때문에 할인율은 조금 더 적음
+
+*시간에 따라 AWS는 % 할인율을 변경하지만, 그러한 정확한 숫자가 시험에 필요하지는 않습니다.*
