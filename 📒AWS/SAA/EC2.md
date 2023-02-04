@@ -237,3 +237,19 @@ WWW. -→  Inbound —  EC2
     - Up to 66% discount. 유연성이 더 크기 때문에 할인율은 조금 더 적음
 
 *시간에 따라 AWS는 % 할인율을 변경하지만, 그러한 정확한 숫자가 시험에 필요하지는 않습니다.*
+
+### ✔️ Spot Instances
+
+- 최대 90% 할인. 가장 저렴한 할인 폭(Very very Cheap)
+- 최대 지불 가격을 정의한 후, 스폿 가격이 그 가격을 넘게 되면 인스턴스가 손실
+    - 언제라도 인스턴스들이 손실될 수 있어서 신뢰성이 낮음 (Can lose instances, less reliable)
+- MOST cost-efficient instances. 가장 비용효율적인 인스턴스.
+- 인스턴스가 고장에 대한 회복력이 있다면 아주 유용
+    - Batch Jobs
+    - Data analysis
+    - 이미지 처리. Image processing
+    - 모든 종류의 분산형 워크로드. Any distributed workloads
+    - 시작 시간과 종료 시간이 유연한 워크로드. Workloads with a flexible start and end time
+- **Not suitable for critical jobs or databases (⭐️)**
+    - 중요한 작업이나 데이터베이스에는 적절하지 않음.
+- 아주 짧은 워크로드 (Short workloads) (very very short)
