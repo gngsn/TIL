@@ -253,3 +253,14 @@ WWW. -→  Inbound —  EC2
 - **Not suitable for critical jobs or databases (⭐️)**
     - 중요한 작업이나 데이터베이스에는 적절하지 않음.
 - 아주 짧은 워크로드 (Short workloads) (very very short)
+
+### ✔️ Dedicated Hosts
+
+- 전용 호스트는 물리적 서버 전체를 예약해서 인스턴스 배치를 제어할 수 있음
+    - EC2 인스턴스 용량이 있는 실제 물리적 서버를 받음
+- 법규 준수 요건(Compliance requirements)이 있거나 소켓, 코어, VM 소프트웨어 라이선스를 기준으로 청구되는 기존의 서버에 연결된 소프트웨어 라이선스가 있는 경우 → 물리적 서버에 접근하고 전용 호스트를 갖춰야 하는 경우(활용 사례)들임
+- Purchasing Options
+    - 온디맨드로 초당 비용을 지불하거나
+    - 1년 또는 3년 동안 예약할 수 있음 (No Upfront :선결제 없음, Partial Upfront:부분 선결제, All Upfront:모두 선결제)
+- 실제 물리적 서버를 예약하기 때문에 AWS에서 가장 비싼 옵션 (The most expensive option)
+- 활용 사례: 라이선싱 모델과 함께 제공되는 소프트웨어인 경우, 즉, 흔히 BYOL(Bring Your Own License) 인 경우, 또는 규정이나 법규를 반드시 준수해야 하는 회사를 갖고 있는 경우
