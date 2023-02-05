@@ -266,6 +266,22 @@ WWW. -→  Inbound —  EC2
 - 활용 사례: 라이선싱 모델과 함께 제공되는 소프트웨어인 경우, 즉, 흔히 BYOL(Bring Your Own License) 인 경우, 또는 규정이나 법규를 반드시 준수해야 하는 회사를 갖고 있는 경우
 
 
+**Dedicated Instances VS Dedicated Hosts**
+
+시험에서는 헷갈리게 출제되지는 않음
+
+기억할 점 
+
+전용 인스턴스: 자신만의 인스턴스를 자신만의 하드웨어에 가짐
+
+전용 호스트: 물리적 서버 자체에 대한 접근권을 갖고 낮은 수준의 하드웨어 대한 가시성을 제공해줌
+
+Affinity: 유연
+
+← 이 표 다시 봐야 함
+
+
+
 ## Which purchasing option is right for me?
 
 어떤 경우게 어떤 구매 옵션을 사용해야 적합할까?
