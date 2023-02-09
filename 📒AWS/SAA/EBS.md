@@ -94,6 +94,7 @@
 
 - io2가 더 합리적: io1과 동일한 비용으로 **내구성**과 **GiB 당 IOPS의 수가 더 높음**
 
+
 ### io2 Block Express
 
 - 4GB ~ 64TB (더 고성능 유형의 볼륨)
@@ -101,6 +102,4 @@
 - 지연 시간이 밀리초 미만 (Sub-millisecond latency)
 
 - IOPS 와 GB의 비율이 1,000:1일 때, 최대 256,000 IOPS
-
-
 
