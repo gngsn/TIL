@@ -44,7 +44,7 @@
 
 ### gp Series (General Purpose)
 
-특징: 짧은 지연 시간(Cost effective storage), 효율적인 비용 스토리지 (Low-latency)
+특징: 효율적인 비용 스토리지(Cost effective storage), 짧은 지연 시간 (Low-latency)
 
 사용 사례: 시스템 부팅 볼륨, 가상 데스크톱 개발, 개발과 테스트 환경
 
@@ -64,7 +64,7 @@
 
 - 작은 볼륨으로 3,000 IOPS를 낼 수 있고, 최대 IOPS 16,000
 
-- 볼륨과 IOPS가 연결: 1 GB 당 3 IOPS, 만약 5,334GB라고 하면 최대 용량인 16,000 IOPS를 초과
+- 볼륨 크기와 IOPS가 연결: 1 GB 당 3 IOPS, 만약 5,334GB라고 하면 최대 용량인 16,000 IOPS를 초과
 
 
 ⭐️⭐️⭐️ gp2/gp3는 **비용 효과적인 스토리지** gp3에서는 IOPS와 처리량을 독자적으로 설정할 수 있는 반면, gp2에서는 그 둘이 연결되어 있음
@@ -102,4 +102,9 @@
 - 지연 시간이 밀리초 미만 (Sub-millisecond latency)
 
 - IOPS 와 GB의 비율이 1,000:1일 때, 최대 256,000 IOPS
+
+
+
+
+
 
