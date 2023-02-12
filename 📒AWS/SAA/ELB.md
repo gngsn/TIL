@@ -43,4 +43,11 @@ Sticky Sessions (Session Affinity)
 
   - 쿠키 이름은 ALB에서는 AWSALB, CLB에서는 AWSELB를 사용
 
-  - 만료 시간은 특정 기간 동안을 로드밸런서에서 알아서 지정
+* 만료 시간: 쿠키가 만료되는 특정 기간을 Duration-based Cookie의 경우 로드밸런서에서, Application-based Cookie의 경우에는 Application이 알아서 지정
+
+<small>다 알지 않아도 되고 애플리케이션 기반 쿠키와 기간 기반 쿠키가 있고 특정 이름이 있다는 것만 알면 된다.</small>
+
+### 실습 
+Target groups > Action(Edit attributes) > Load balancing algorithm을 보면 Stickiness 섹션에 Stickiness type으로 'Load balancer generated cookie' 와 'Application-based cookie'가 존재하며, Stickiness duration 지정 항목이 보임. 마지막으로 Application-based cookie을 선택할 경우, App cookie name 을 지정하여 쿠키 설정을 할 수 있다.
+
+이후 계속 동일한 인스턴스로만 redirect 되는 것을 확인할 수 있으며, Chrome의 웹 개발자 도구의 Network > Cookies 탭에서 확인할 수 있다.
