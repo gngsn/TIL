@@ -51,3 +51,32 @@ Sticky Sessions (Session Affinity)
 Target groups > Action(Edit attributes) > Load balancing algorithm을 보면 Stickiness 섹션에 Stickiness type으로 'Load balancer generated cookie' 와 'Application-based cookie'가 존재하며, Stickiness duration 지정 항목이 보임. 마지막으로 Application-based cookie을 선택할 경우, App cookie name 을 지정하여 쿠키 설정을 할 수 있다.
 
 이후 계속 동일한 인스턴스로만 redirect 되는 것을 확인할 수 있으며, Chrome의 웹 개발자 도구의 Network > Cookies 탭에서 확인할 수 있다.
+
+## Auto Scaling Group
+
+- ASG: 클라우드 환경에서는 (API 호출을 포함하여) 서버를 빠르게 생성하고 제거할 수 있고, 이를 자동화하기 위한 목적으로 생성되는 그룹
+
+- 목적: Scale Out (add EC2 instances) / Scale In (remove EC2 instances) 
+
+- 인스턴스 최소, 최대 개수 보장
+
+- 로드 밸런서와 페어링하는 경우 ASG 이하의 모든 EC2 인스턴스가 로드 밸런서에 연결
+
+  - 인스턴스 비정상(Unhealthy)이면 종료 후 새 EC2 인스턴스 생성
+
+- 무료, 하위 생성 리소스에 대해서만 지불
+
+### ELB + ASG
+
+- ASG Launch Template 설정 
+
+  - AMI + Instance Type, EC2 User Data, EBS Volumes
+
+  - Security Groups, SSH Key Pair, IAM Roles (for EC2), Network + Subnets Information
+
+  - Load Balancer 정보
+
+- ASG의 최소, 최대 크기, 초기 용량(Initial Capacity)
+
+- Scaling Policy
+
