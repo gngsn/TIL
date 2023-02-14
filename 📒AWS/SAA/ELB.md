@@ -77,7 +77,7 @@ Target groups > Action(Edit attributes) > Load balancing algorithm을 보면 Sti
 
   -> 없다면 기본 설정을 반환
 
-  -> ALB, NLB에서만 동작
+  -> ALB, NLB에서만 동작, CLB에서 여러개를 사용할 수는 없고 SSL 별로 CLB를 생성해야 함
 
 ### 예시
 
