@@ -77,7 +77,23 @@ Target groups > Action(Edit attributes) > Load balancing algorithm을 보면 Sti
 
   -> 없다면 기본 설정을 반환
 
-  -> ALB, NLB에서만 동작한다.
+  -> ALB, NLB에서만 동작
+
+### 예시
+
+ALB는 2개의 SSL 인증서 - Domain1.example.com, www.mycorp.com - 를 포함하고 있다.
+
+- Client가 `www.mycorp.com` 에 접근을 요청했을 때, 
+
+(1) ALB는 해당 도메인에 해당하는 SSL 인증서를 로드
+
+(2) 해당 인증서를 가져와 트래픽을 암호화한 다음
+
+(3) 규칙에 따라 대상 그룹인 mycorp.com으로 요청을 재전송
+
+새로운 프로토콜 SNI를 사용해 해당 웹 사이트의 SSL 인증서를 연결해줌..
+
+=> SNI '서버 이름 지정'으로 여러 개의 대상 그룹과 웹 사이트를 지원할 수 있음
 
 
 
