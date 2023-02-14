@@ -66,6 +66,21 @@ Target groups > Action(Edit attributes) > Load balancing algorithm을 보면 Sti
 
 - 무료, 하위 생성 리소스에 대해서만 지불
 
+
+## SNI (Server Name Indication)
+
+- 여러 개의 SSL 인증서를 하나의 서버에 로드해 하나의 웹 서버가 여러 개의 웹 사이트를 지원할 수 있게 함
+
+- 확장 프로토콜로, 최초 SSL Handshake 단계에 클라이언트가 대상 서버의 호스트 이름을 지정해야 함
+
+  -> 클라이언트가 "난 이 웹사이트에 접속하고 싶어"라고 했을 때, 서버가 어떤 인증서를 로드할지 알 수 있음
+
+  -> 없다면 기본 설정을 반환
+
+  -> ALB, NLB에서만 동작한다.
+
+
+
 ### ELB + ASG
 
 - ASG Launch Template 설정 
