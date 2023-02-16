@@ -57,8 +57,12 @@
 
 <br/>
 
+### Read Replica ⭐️⭐️⭐️
+- 최대 5 개
+
 <img src="./img/../../img/rds1.png" />
 
+- 동일 AZ, 서로 다른 AZ, 혹은 서로 다른 리전 Within AZ, Cross AZ or Cross Region
 - 메인 RDS 데이터베이스 인스턴스와 두 개의 읽기 전용 복제본 사이에 비동기식 복제가 발생
 - 비동기식: 결론적으로 읽기가 일관적으로 유지된다는 것을 의미 (Asynchronous: the reads are eventually consistent)
   - 애플리케이션에서 데이터를 복제하기 전, 읽기 전용 복제본을 읽어들이면 모든 데이터를 얻을 수 있다는 의미
@@ -71,3 +75,36 @@
 
 - 복제본 중 하나를 데이터베이스로 사용하고자 설정하면, 그에 대한 권한을 획득하면 해당 복제본을 데이터베이스로 승격시킬 수 있음 => 그 후, 이 복제본은 복제 메커니즘을 완전히 탈피하여 자체적인 생애 주기를 갖음
 
+### 사례
+
+1. 일반 프로덕션 애플리케이션에 연결된 RDS 데이터베이스를 가지고 보고 및 분석을 진행하려고 함
+
+2. 프로덕션과 동일한 RDS를 사용하면 많은 부하를 끼칠 수 있고, 장애를 발생시킬 수 있음
+
+3. Read Replica를 생성하면 (비동기식 복제 발생) 애플리케이션이 생성한 읽기 전용 복제본에서 읽기 작업과 분석을 실행
+
+4. 생산 애플리케이션은 전혀 영향을 받지 않음
+
+- Read replicas are used for SELECT (=read) only kind of statements (not INSERT, UPDATE, DELETE)
+
+### Network Cost ⭐️
+
+- AWS에서는 하나의 가용 영역에서 다른 가용 영역으로 데이터가 이동할 때에 비용이 발생
+- But, 예외 존재: **동일한 리전**에 위치한 읽기 전용 복제본과의 네트워크 비용은 무료 (다른 AZ라도)
+
+✔️ Same Region / Different AZ -> Async Replication Free
+✔️ Different Region -> Cross-Region: Async Replication incur a replication fee for network 
+
+### Multi AZ (Diaster Recovery)
+
+- 주로 재해 복구에 사용: Availability
+
+- AZ A에 위치한 Master DB instance와 AZ B에 위치한 Standby DB로 Sync Replication (동기 복제)
+
+  - Master에 쓰이는 변경 사항이 Standby 인스턴스에도 그대로 복제
+
+- Master DB instance와 Standby DB는 하나의 DNS 이름을 갖음
+
+  - 애플리케이션이 해당 DNS 이름으로 통신하며, Master에 문제가 생길 때 Standby DB에 자동으로 장애 조치가 수행
+
+- Master DB의 인스턴스 또는 스토리지에 장애가 발생할 때 Standby DB가 새로운 마스터가 될 수 있음
