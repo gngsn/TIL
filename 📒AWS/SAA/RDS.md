@@ -108,3 +108,29 @@
   - 애플리케이션이 해당 DNS 이름으로 통신하며, Master에 문제가 생길 때 Standby DB에 자동으로 장애 조치가 수행
 
 - Master DB의 인스턴스 또는 스토리지에 장애가 발생할 때 Standby DB가 새로운 마스터가 될 수 있음
+
+- 스케일링에 이용되지 않음
+
+- Standby DB는 단지 대기 목적 하나만 수행: 읽거나 쓸 수 없음 (Master DB에 장애 대비한 장애 조치일 뿐)
+
+⭐️ 읽기 전용 복제본을 재해 복구를 대비해서 다중 AZ로 설정할 수 있으며 읽기 전용 복제본을 다중 AZ로도 설정할 수 있음
+
+### Single AZ / Multi AZ (단일 AZ에서 다중 AZ)
+
+- ⭐️ 단일 AZ에서 다중 AZ로 RDS 데이터베이스 전환 가능
+
+- 다운타임이 전혀 없음: 단일 AZ에서 다중 AZ로 전환할 때에 데이터베이스를 중지할 필요가 없음
+
+ - ⭐️⭐️ 데이터베이스 수정을 클릭하고 다중 AZ 기능을 활성화시키기만 하면 됨
+
+**The following happens internally**:
+
+1. A snapshot is taken
+: Master DB가 스냅샷 생성
+
+2. A new DB is restored from the snapshot in a new AZ
+: 새로운 DB가 새로운 AZ에 스냅샷을 기반으로 복구
+
+3.  Synchronization is established between the two databases
+: 두 데이터베이스 간 동기화가 설정 후 Standby 데이터베이스가 Main RDS 데이터베이스 내용을 모두 수용하여 다중 AZ 설정 상태가 됨
+
