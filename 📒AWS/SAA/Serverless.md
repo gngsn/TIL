@@ -51,7 +51,7 @@ Edge Function:
 - High-scale, latency-sensitive CDN Customization: 확장성이 높고 지연 시간에 민감한 CDN 사용자 지정에 사용
 - startup 시간은 1밀리초 미만이며 초당 백만 개의 요청을 처리 (millions of requests/second)
 - 역할: Viewer 요청과 Viewer 응답 수정할 때만 사용
-    - Viewer Request: 요청을 받은 다음에 **뷰어 요청을 수정**할 수 있고
+    - Viewer Request: CloudFront가 뷰어에게 요청을 받은 다음에 **뷰어 요청을 수정**할 수 있음
     - Viewer Response: CloudFront가 뷰어에게 응답을 보내기 전에 뷰어 응답을 수정할 수 있음
 - CloudFront Function은 CloudFront의 네이티브 기능 (모든 코드가 CloudFront에서 직접 관리)
 
@@ -65,4 +65,51 @@ Lambda@Edge의 기능은 좀 더 많습니다
 
 - 이 함수는 Node.js나 Python으로 작성
 - 초당 수천 개의 요청을 처리 (1000s of requests/seconds)
-- 모든 CloudFront 요청 및 응답을 변경할 수 있음
+
+- 역할: 모든 CloudFront Viewer 요청/응답을 포함한 Origin 요청/응답을 변경할 수 있음
+    - Viewer Request: CloudFront가 뷰어에게 요청을 받은 다음 - Viewer Request(뷰어 요청)을 수정할 수 있음
+    - Origin Request: CloudFront가 오리진에 요청을 전송하기 전 - Origin Request(뷰어 요청)을 수정할 수 있음
+    - Origin Response: CloudFront가 오리진에게 응답 받은 후 - Origin Response(뷰어 응답)수정할 수 있음
+    - Viewer Response: CloudFront가 뷰어에게 응답을 보내기 전 - Viewer Response(뷰어 응답) 수정할 수 있음
+
+
+- Lambda@Edge는 us-east-1 리전에만 작성할 수 있고, CloudFront 배포를 관리하는 리전과 같은 리전
+- Lambda@Edge를 작성하면 CloudFront가 모든 로케이션에 해당 함수를 복제
+
+
+### CloudFront 함수와 Lambda@Edge의 비교
+
+<<table>>
+
+- 가장 눈에 띄는 차이점은 런타임 지원
+  - CloudFront는 JavaScript만 Lambda@Edge는 Node.js와 Python을 지원
+
+- # of Requests(확장성): 
+  - CloudFront 함수: 수백만 개 요청 처리(매우 높음)
+  - Lambda@Edge: 수천 개 요청 처리
+
+- 트리거 발생 위치도 크게 다름
+  - Lambda@Edge: 뷰어 & 오리진 모두에게 영향
+  - CloudFront 함수: 뷰어에만 영향
+
+- 최대 실행 시간 ⭐️⭐️⭐️
+  - CloudFront 함수: 1밀리초 미만 소요 (아주 빠르고 간단)
+  - Lambda@Edge: 5~10초 소요 -> 여러 로직을 실행할 수 있음
+
+
+### 사용 사례
+
+**CloudFront 함수**
+  - 캐시 키를 정규화: 요청 속성을 변환하여 최적의 캐시 키를 생성
+  - 헤더 조작: 요청이나 응답에 HTTP 헤더를 삽입, 수정, 삭제하도록 헤더를 조작하고 URL을 다시 쓰거나 리디렉션
+  - URL rewrite or redirect
+  - 요청 인증 및 인가:요청을 허용 또는 거부하기 위해 JWT를 생성하거나 검증하는 요청 인증 및 권한 부여에도 사용
+  -> 모든 작업이 1밀리초 이내에 이뤄짐
+
+
+**Lambda@Edge**
+  - 실행 시간: 10초가 걸릴 수도 있음
+  - CPU와 메모리 조절 가능 (여러 라이브러리를 로드할 수 있음)
+  - 타사 라이브러리에 코드를 의존시킬 수 있음 (가령, SDK에서 다른 AWS 서비스에 액세스할 수 있도록)
+  - 네트워크 액세스를 통해 외부 서비스에서 데이터를 처리할 수 있어 대규모 데이터 통합도 수행할 수 있음
+  - 파일 시스템이나 HTTP 요청 본문에도 바로 액세스할 수 있음 -> 다양한 사용자 지정이 가능
