@@ -153,3 +153,25 @@ RDS가 프라이빗 서브넷에 있어도 Lambda 함수로 직접 해당 DB에 
 - RDS 프록시 수준에서 IAM 인증을 강제하여 보안 강화 + 자격 증명은 Secrets Manager에 저장
 
 당연히 VPC에서 Lambda 함수를 시작해야 Lambda 함수가 RDS 프록시에 연결 (RDS 프록시는 퍼블릭이 아니기 때문, Lambda 함수를 퍼블릭으로 시작하면 RDS 프록시에 네트워크 연결을 할 수가 없음)
+
+---
+
+### Amazon DynamoDB
+
+- 완전 관리형 데이터베이스, 데이터가 다중 AZ 간에 복제되어 가용성이 높음
+- NoSQL 데이터베이스 + 트랜잭션 지원, Cloud Native (AWS의 독점 서비스)
+- 데이터베이스가 내부에서 분산되기 때문에 방대한 워크로드로 확장 가능
+- 초당 수백만 개의 요청(Millions of requests)을 처리하고 수조 개의 행(trillions of row), 수백 TB의 스토리지를 갖게 됨
+- ⭐️⭐️⭐️ 성능: 한 자릿수 밀리초를 자랑하고 일관성 또한 높음 (single-digit millisecond)
+- 보안과 관련된 모든 기능은 IAM과 통합 - security, authorization, administration(보안, 권한 부여, 관리 기능)이 포함
+- 비용이 적게 들고 오토 스케일링 capabilities(사용 가능)
+- 유지 관리나 패치 없이도 항상 사용 가능 - 데이터베이스를 프로비저닝할 필요가 없음. 항상 사용할 수 있으므로 테이블을 생성해 해당 테이블의 용량만 설정하면 됨
+- 테이블 클래스 두 종류
+    - 액세스가 빈번한 데이터 - Standard 클래스에 저장
+    - 액세스가 빈번하지 않는 데이터 - IA 테이블 클래스에 저장
+
+- DynamoDB는 테이블로 구성됨: 데이터베이스를 생성할 필요가 없음
+    - Aurora나 RDS와 달리 DynamoDB는 데이터베이스가 이미 존재하는 서비스
+- DynamoDB에 테이블을 생성하면 각 테이블에 Primary Key(기본 키)가 부여되는데 Primary Key는 생성 시 결정
+- 각 테이블에 추가 항목 데이터 - 행을 무한히 추가할 수 있음
+- 각 항목은 Attribute(속성)을 가지며 속성은 열에 표시 - 속성은 나중에 추가할 수도 있고 null이 될 수도 있음(엄청난 장점)
