@@ -37,10 +37,10 @@
 
 - 다시 서브넷을 나갈 땐, 아웃바운드 규칙은 자동으로 허용 ← Security Group: Stateful
 
-```
-NACL: Stateless. 무상태
-Security Groups: Stateful. 상태 유지
-```
+<pre>
+<b>NACL</b>: Stateless. 무상태
+<b>Security Groups</b>: Stateful. 상태 유지
+</pre>
 - 보안 그룹의 특징이 상태 유지이기 때문, 다시 말해 들어간 것은 전부 나올 수 있음
 
 **3/ 서브넷 밖으로 이동**
@@ -172,12 +172,12 @@ NACL: Network Access Control List
   - 서로 다른 VPC가 통신하려면 VPC 피어링을 활성화해야 함
 
 **VPC Peering is NOT transitive, 전이 불가**
-```
+<pre>
 VPC A, B, C가 있을 때, 
 A -⭕️-> B: A와 B는 Peering 연결 생성 -> 통신 가능 상태
 B -⭕️-> C: B와 C는 Peering 연결 생성 -> 통신 가능 상태
 A -❌-> C: A와 C의 VPC 피어링 연결을 활성화해야 둘이 통신 가능
-```
+</pre>
 
 ⚠️ 또한 VPC 피어링이 있을 때 1. 활성화, VPC 서브넷 상의 2. Root Table도 업데이트해서 EC2 인스턴스가 서로 통신할 수 있게 해야 함
 
@@ -314,3 +314,72 @@ CASE4. 아웃바운드 ACCEPT 인바운드 REJECT
 3/ VPC Flow Logs > S3 Bucket > Amazon Athena > Amazon QuickSight
 : VPC 흐름 로그를 모두 S3 버킷에 전송 및 저장해서 Amazon Athena를 이용하여 SQL로 VPC 흐름 로그를 분석할 수 있음
     - Amazon QuickSight: 데이터 시각화
+
+
+<pre>
+<b>VPC(Virtual Private Cloud) Peering</b>
+A VPC peering connection is a networking connection between two VPCs that enables you to route traffic between them using private IPv4 addresses or IPv6 addresses. Instances in either VPC can communicate with each other as if they are within the same network. You can create a VPC peering connection between your own VPCs, or with a VPC in another GCP account. The VPCs can be in different regions (also known as an inter-region VPC peering connection).
+
+<b>VPN (Virtual Private network)</b>
+VPN stands for virtual private network. A virtual private network (VPN) is a technology that creates a safe and encrypted connection over a less secure network, such as the internet. Virtual Private network is a way to extend a private network using a public network such as the internet. The name only suggests that it is Virtual “private network” i.e. the user can be the part of the local network sitting at a remote location. It makes use of tunneling protocols to establish a secure connection.
+</pre>
+
+<br/>
+
+## Site-to-Site VPN
+
+**Corporate Data Center**
+
+- 공용 인터넷을 통해 사설 Site-to-Site VPN을 연결해야 함
+- VPN 연결이라서 공용 인터넷을 거치지만 암호화되어 있음
+- 특정 기업 데이터 센터를 AWS와 비공개로 연결하려면 기업은 고객 게이트웨이, VPC는 VPN 게이트웨이를 가져야 함
+
+Site-to-Site VPN을 구축하려면 두 가지 Gateway가 필요: VGW, CGW
+
+### VGW: Virtual Private Gateway
+*가상 프라이빗 게이트웨이*
+
+- Virtual Private Gateway: VPN 연결에서 AWS 측에 있는 VPN concentrator
+- VGW는 생성 시 Site-to-Site VPN 연결을 생성하는 VPC에 연결
+- ASN 지정 가능
+
+### CGW: Customer Gateway
+*고객 게이트웨이*
+
+- Customer Gateway: VPN 연결에서 데이터 센터 측에 있는 고객이 갖춰야 할 소프트웨어 혹은 물리적 장치
+
+
+### Site-to-Site VPN Connections ⭐️⭐️
+
+- Customer Gateway Device
+고객 게이트웨이가 있는 기업 데이터 센터와 가상 프라이빗 게이트웨이를 갖춘 VPC가 있습니다
+
+**⭐️ IP 주소**
+- **고객 게이트웨이가 공용public일 때**: 고객 게이트웨이 장치 내에 있는 IP 주소
+- **고객 게이트웨이가 사설private일 때**: NAT-T를 활성화하는 NAT 장치 뒤에 있는 NAT 장치의 공용 IP 주소
+
+**⭐️ Route Propagation**
+- 서브넷의 VPC에서 라우트 전파를 활성화해야 Site-to-Site VPN 연결이 실제로 작동
+
+**⭐️ Security Group - ICMP**
+- 온프레미스에서 AWS로 EC2 인스턴스 상태를 진단할 때, 보안 그룹 인바운드 ICMP 프로토콜이 활성화됐는지 확인
+  - 가령, EC2 인스턴스로 ping을 사용해 상태 체크를 하고 싶을 때
+  - 비활성인 경우 연결 안 됨
+
+
+### AWS VPN CloudHub ⭐️⭐️⭐️⭐️⭐️
+
+: 여러 VPN 연결을 통해 모든 사이트 간 안전한 소통을 보장
+
+**Example Scenario**
+
+<img src="../img/cloudhub.png" />
+
+*VPC::**VGW** [1] ---- ? ---- [N] **CGW**::데이터 센터*
+
+- 비용이 적게 드는 허브 및 스포크 모델(hub&spoke)로 VPN만을 활용해 서로 다른 지역 사이 기본 및 보조 네트워크 연결성에 사용
+- VPC 내 CGW와 VGW 하나 사이에 Site-to-Site VPN을 생성
+- VPN 연결이므로 모든 트래픽이 암호화되어 공용 인터넷을 통함 (사설 네트워크로는 연결 안됨)
+- 설치 방법: 
+  - VPG(가상 프라이빗 게이트웨이) 하나에 Site-to-Site VPN 연결을 여러 개 생성 -> 동적 라우팅을 활성화 -> 라우팅 테이블 구성
+
