@@ -153,7 +153,7 @@ NACL: Network Access Control List
 | | Security Group | NACL |
 | -- | --- | --- |
 | level | Instance | Subnet |
-| supports | allow rules | allow rules and deny rules (특정 IP 주소를 거부) |
+| supports | allow rules | allow rules and deny rules (특정 IP 주소 거부 가능) |
 | state | **Stateful** | **Stateless** (임시 포트) |
 | allow | 트래픽 허용이 될 때까지 규칙 검증 | 트래픽이 허용되는지 순서에 따라 가장 높은 우선순위로 매칭되는 룰에 검증 |
 | range | EC2에 지정한 규칙이 존재할 때 검증 | NACL과 연결된 Subnet 내 모든 EC2 인스턴스에 적용 |
@@ -245,4 +245,72 @@ A -❌-> C: A와 C의 VPC 피어링 연결을 활성화해야 둘이 통신 가�
       - 온프레미스에 있는 데이터 센터에 프라이빗으로 액세스해야 하는 경우 
   - 다른 VPC에 연결할 때
 
+<br/>
 
+## VPC Flow Logs
+
+VPC Flow Logs
+: VPC 흐름 로그. 인터페이스로 향하는 IP 트래픽 정보를 포착하는 것
+
+- 연결 문제를 모니터링하고 트러블 슈팅하는 데 유용
+- 로그 데이터는 Amazon S3와 CloudWatch Logs에 전송 가능
+- AWS 관리형 인터페이스 정보를 포착
+    - ELB, RDS, ElastiCache Redshift, Workspaces, NAT Gateway, Transit Gateway ...
+
+**종류**
+- VPC 계층 
+- 서브넷 계층 
+- Elastic Network Interface(ENI) 계층
+
+
+### VPC Flow Logs Syntax
+
+<img src="../im/../img/vpcFlowSyntax.png"/>
+
+-> VPC를 통과하는 네트워크 패킷의 메타데이터: version, account-id, interface-id, 소스 주소(srcaddr), 대상 주소(dstaddr) 소스 포트(srcport), 대상 포트(dstport), 프로토콜(protocol), 패킷 수(packets), 바이트 수(bytes) 시작 동작(start action), 로그 상태(log-status)
+
+- **srcaddr & dstaddr**: 문제가 있는 IP를 식별
+  - 한 IP가 지속적으로 거부되면 여기서 확인 가능 
+  - (문제가 있거나 특정 IP가 공격받았을 때)
+- **srcport & dstport**: 문제가 있는 포트를 식별
+- **action**: 요청이 수락되었는지 거부되었는지 식별
+  - **보안 그룹**이나 **NACL** 계층에서 요청 성공/실패 확인
+
+
+- 사용량 패턴 분석이나 악성 행동 감지 포트 스캔 등에 사용
+- 흐름 로그를 쿼리 방법: 
+  1. S3에서 Athena를 쓰는 방법 (Best)
+  2. CloudWatch Logs Insight (스트리밍 분석을 원할 때)
+
+
+#### 문제 트러블 슈팅
+*이 흐름 로그를 보안 그룹과 NACL 문제 트러블 슈팅에 사용하는 방법은?*
+\- **action 필드**
+
+CASE1. action: 인바운드 REJECT가 표시된 경우
+: EC2 외부에서 전송한 인바운드 요청이 거부되었다는 뜻. NACL이나 보안 그룹 중 하나가 요청 거부.
+
+CASE2. 인바운드 ACCEPT + 아웃바운드 REJECT
+: NACL 문제 (보안 그룹은 stateful, 상태 유지 중이므로)
+
+CASE3. 아웃바운드 REJECT가 표시된 경우 (보내는 요청)
+: NACL이나 보안 그룹의 문제라는 뜻
+
+CASE4. 아웃바운드 ACCEPT 인바운드 REJECT
+: 반드시 NACL가 원인
+
+
+### Architectures
+
+1/ VPC Flow Logs > CloudWatch Logs > CloudWatch Contributor Insights
+: CloudWatch Logs로 전송된 흐름 로그는 CloudWatch Contributor Insights라는 기능을 사용하여, 상위 10위에 해당하는 VPC 네트워크에 가장 많이 기여하는 IP 주소나 ENI 등 식별 가능
+
+2/ VPC Flow Logs > CloudWatch Logs > CW Alarm > Amazon SNS
+: CloudWatch Logs에 흐름 로그를 보냄
+    - SSH나 RDP 프로토콜에 관하여 지표 필터를 설정 가능
+    - 평소보다 SSH나 RDP 프로토콜이 너무 많은 경우 CloudWatch 경보를 트리거하여 Amazon SNS 주제로 경보를 전송
+    - 네트워크에 수상한 행동이 발생했을 수 있으므로
+
+3/ VPC Flow Logs > S3 Bucket > Amazon Athena > Amazon QuickSight
+: VPC 흐름 로그를 모두 S3 버킷에 전송 및 저장해서 Amazon Athena를 이용하여 SQL로 VPC 흐름 로그를 분석할 수 있음
+    - Amazon QuickSight: 데이터 시각화
