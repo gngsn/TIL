@@ -15,7 +15,150 @@
 ## 3. Internet Gateway
 ## 4. Bastion Host
 ## 5. NAT Gateway
+
 ## 6. NACL
+
+### Security Groups & Network Access Control List
+
+**EX. 서브넷 보안 단계**
+
+#### #1. Incoming Request
+*요청이 EC2 인스턴스 내부로 이동*
+
+**1/ 요청이 서브넷에 들어가기 전, 먼저 NACL로 이동**
+- NACL에는 몇 가지의 인바운드 규칙이 정의되며 요청이 허용되지 않으면 내부로 들어갈 수 없음
+
+**2/ 첫 번째 요청이 NACL을 통과 후 서브넷 내부에 도달**
+- 보안 그룹 인바운드 규칙 검증
+- 요청이 명시적으로 허용 받지 못하면 거부
+
+
+**만약 요청이 보안 그룹의 인바운드 규칙을 통과하면, EC2 인스턴스에 도달**
+
+- 다시 서브넷을 나갈 땐, 아웃바운드 규칙은 자동으로 허용 ← Security Group: Stateful
+
+```
+NACL: Stateless. 무상태
+Security Groups: Stateful. 상태 유지
+```
+- 보안 그룹의 특징이 상태 유지이기 때문, 다시 말해 들어간 것은 전부 나올 수 있음
+
+**3/ 서브넷 밖으로 이동**
+- NACL 아웃바운드의 규칙이 평가 ← NACL 무상태
+- 규칙이 통과하지 못하면 요청도 통과하지 못함
+
+<br/>
+
+#### #2. Outgoing Request
+
+*보안 그룹 내 EC2 인스턴스가 아웃바운드 요청*
+
+**1/ 보안 그룹 내 EC2 인스턴스가 서브넷으로 이동**
+- 보안 그룹 아웃바운드 규칙 평가
+
+**2/ 서브넷 밖으로 이동**
+- NACL 아웃바운드 규칙 검증: 규칙이 적절하고 요청이 허가될 때
+
+<small>EC2 내에서 `www.google.com`로 ping을 보내면, 이런 식으로 평가된 요청이 `www.google.com`에 도달하고 Amazon 웹 서비스로 다시 돌아오는 것</small>
+
+**3/ 서브넷 내로 응답이 돌아옴**
+- NACL 인바운드 규칙이 평가될 수 있음 ← NACL 무상태
+
+**서브넷에서 Security Group 내로 응답이 돌아옴**
+- 보안 그룹 수준에서 서브넷의 인바운드 규칙은 무조건 허용 ← Security Group: Stateful
+
+<br/>
+
+### NACL: 네트워크 액세스 제어 목록
+
+NACL: Network Access Control List
+
+
+- 서브넷을 오가는 트래픽을 제어하는 방화벽과 비슷
+- One NACL per Subnet. 서브넷마다 하나의 NACL 존재. 새로운 서브넷에는 **Default NACL**이 할당됨
+- NACL 규칙 정의, NACL Rules
+  - 규칙에는 숫자가 있고 범위는 1 (Highest Priority) ~ 32,766 (Lowest Priority)
+  - 규칙 비교 시 첫 번째 매칭만 적용 First rule match 
+  - 별표(*): 일치하는 규칙이 없으면 모든 요청을 거부
+  - AWS는 이 규칙을 100씩 추가하는 것을 권장 (사이에 규칙을 추가하기 용이)
+
+- 새로 만들어진 NACL은 기본적으로 모두를 거부
+- NACL의 아주 좋은 사용 사례를 들면 **서브넷 수준에서 특정한 IP 주소를 차단**하는데 적합
+- NACL 위치: 서브넷 수준. 공용 서브넷 및 사설 서브넷 등에 위치
+
+## Default NACL ⭐️⭐️⭐️
+
+<img src="../img/DefaultNACL.png">
+
+- 연결된 서브넷을 가지고 인바운드/아웃바운드의 모든 요청을 허용 → 기본 NACL은 매우 개방적
+- 기본 NACL을 수정하지 않는 것 추천
+  - NACL이 모든 것을 드나들도록 허용하지 않으면 AWS를 시작할 때 심각한 디버깅을 해야 함
+- 사용자 정의 네트워크 ACL이 필요하다면 만들 수 있음
+
+=> 즉, **⭐️ 기본 NACL이 기본적으로 서브넷과 연결된다면 모든 것이 드나들도록 허용된다는 뜻**
+
+
+### Ephemeral Ports, 임시 포트 ⭐️⭐️⭐️
+
+- 클라이언트와 서버가 연결되면 포트를 사용해야 함
+- 클라이언트 - 규정된 포트 -> 서버 연결
+  - ex. HTTP 포트는 80, HTTPS 포트는 443 SSH 포트는 22 등
+- 서버 -(**임시 포트**)-> 클라이언트
+  - 서버도 응답을 하려면 클라이언트에 연결해야 함
+  - 클라이언트는 기본적으로 개방된 포트가 없기 때문에 클라이언트가 자체적으로 **특정 포트**를 열게 됨
+  - 이 포트는 임시라서 클라이언트와 서버 간 연결이 유지되는 동안만 열려 있음
+
+**임시 포트는 운영 체제에 따라 포트 범위가 다르고, 아래 범위 내 임시 포트로 선택**
+- Windows 10: 49152 ~ 65,535
+- Linux: 32,768 ~ 60,999
+
+
+#### EX. 클라이언트 - 데이터베이스 연결
+
+- Web Subnet (Public): EC2 Instance
+- DB Subnet (Private): DB Instance - port 3306
+
+**클라이언트가 데이터베이스 인스턴스에 연결을 시작하면 허용되어야 하는 규칙은?**
+- 웹 NACL & DB NACL 서로 통신한다고 가정
+
+1. Web Subnet NACL - TCP 아웃바운드 허용
+   - 웹 NACL은 TCP부터 데이터베이스를 Port 3306를 통해 서브넷 CIDR까지 아웃바운드를 허용
+2. DB SubnetNACL - TCP 인바운드 허용
+   - 데이터베이스 측에서는 DB NACL가 웹 서브넷 CIDR에서 포트 3306으로 인입하도록 허용
+
+*데이터베이스가 클라이언트로 요청에 회신을 할 때*
+
+3. DB Subnet NACL - TCP 아웃바운드 허용
+   - 클라이언트는 임시 포트를 가지게 되며, 요청에 대해 무작위 포트가 할당
+   - DB NACL은 포트 및 임시 포트 범위: 1,024 ~ 65,535
+
+4. Web Subnet NACL - TCP 인바운드 허용
+   - 웹 NACL은 DB 서브넷 CIDR의 임시 포트 범위에서 인바운드 TCP를 허용해야 함
+
+
+- ⭐️ **네트워크 ACL을 여러 서브넷과 연결할 수 있음**
+  - 서브넷: NACL = N:1
+  - 서브넷은 한 번에 하나의 네트워크 ACL에만 연결할 수 있으며, 네트워크 ACL을 서브넷과 연결하면 이전 연결이 제거됨
+  - 즉, 다중 NACL 및 서브넷이 있다면 각 NACL 조합이 NACL 내에서 허용되어야 함
+  - CIDR 사용 시, 서브넷이 고유의 CIDR을 갖기 때문
+  - NACL에 서브넷을 추가하면 NACL 규칙도 업데이트해서 연결 조합이 가능한지 확인해야만 함
+
+
+<a href="https://docs.aws.amazon.com/vpc/latest/userguide/vpc-network-acls.html#nacl-ephemeral-ports">
+🔗 Link: nacl-ephemeral-ports
+</a>
+
+### Security Group vs. NACL
+
+| | Security Group | NACL |
+| -- | --- | --- |
+| level | Instance | Subnet |
+| supports | allow rules | allow rules and deny rules (특정 IP 주소를 거부) |
+| state | **Stateful** | **Stateless** (임시 포트) |
+| allow | 트래픽 허용이 될 때까지 규칙 검증 | 트래픽이 허용되는지 순서에 따라 가장 높은 우선순위로 매칭되는 룰에 검증 |
+| range | EC2에 지정한 규칙이 존재할 때 검증 | NACL과 연결된 Subnet 내 모든 EC2 인스턴스에 적용 |
+
+
 
 ## 7. VPC Peering
 
