@@ -247,7 +247,7 @@ A -❌-> C: A와 C의 VPC 피어링 연결을 활성화해야 둘이 통신 가�
 
 <br/>
 
-## VPC Flow Logs
+## 9. VPC Flow Logs
 
 VPC Flow Logs
 : VPC 흐름 로그. 인터페이스로 향하는 IP 트래픽 정보를 포착하는 것
@@ -326,7 +326,10 @@ VPN stands for virtual private network. A virtual private network (VPN) is a tec
 
 <br/>
 
-## Site-to-Site VPN
+## 10. Site-to-Site VPN
+
+⭐️ ✍🏻 **온프레미스와 AWS 사이의 Site-to-Site VPN 연결을 생성하는 과정**
+<small>고객 게이트웨이와 가상 프라이빗 게이트웨이를 AWS에서 생성하고 둘을 Site-to-Site VPN 연결로 연결하는 방법</small>
 
 **Corporate Data Center**
 
@@ -382,4 +385,108 @@ Site-to-Site VPN을 구축하려면 두 가지 Gateway가 필요: VGW, CGW
 - VPN 연결이므로 모든 트래픽이 암호화되어 공용 인터넷을 통함 (사설 네트워크로는 연결 안됨)
 - 설치 방법: 
   - VPG(가상 프라이빗 게이트웨이) 하나에 Site-to-Site VPN 연결을 여러 개 생성 -> 동적 라우팅을 활성화 -> 라우팅 테이블 구성
+
+<br />
+
+## 11. Direct Connect
+
+Direct Connect
+: 원격 네트워크로부터 VPC로의 전용 프라이빗 연결을 제공
+
+- 사용 조건: 전용 연결(Dedicated Connection) 생성: 고객 DC - AWS Direct Connect 로케이션
+- VPC에는 가상 프라이빗 게이트웨이를 설치해야 온프레미스 데이터 센터와 AWS 간 연결이 가능
+- 퍼블릭 리소스(ie. Amazon S3)와 프라이빗 리소스(ie. EC2 인스턴스)를 같은 연결상에서 퍼블릭 및 프라이빗 VIF를 사용해 액세스 가능
+
+**프라이빗 연결**
+- 퍼블릭 인터넷을 거치지 않기 때문에 속도 가속
+- 비용 절약
+- 퍼블릭 인터넷 연결에 문제가 발생해도 Direct Connect를 사용하면 연결 상태를 유지 가능
+
+**사용 사례**
+- 대역폭 처리량이 증가할 때 큰 데이터 세트를 처리; 속도 가속, 비용 절감
+- 실시간 데이터 피드를 사용하는 애플리케이션
+- 하이브리드 환경 지원; 온프레미스 데이터 센터와 클라우드가 연결
+
+*IPv4와 IPv6 둘 다 지원*
+
+
+**리전을 기업 데이터 센터에 연결을 위한 AWS Direct Connect Location 요청**
+- AWS Direct Connect Location: 물리적인 위치
+  - AWS Cage: Direct Connect 엔드포인트
+  - Customer or partner cage: 고객 혹은 파트너 라우터
+- Customer router/firewall: 온프레미스 데이터 센터에는 방화벽이 있는 고객 라우터를 설치
+
+**프라이빗 VIF를 생성**
+- 목적: 프라이빗 가상 인터페이스 생성하여 VPC로 프라이빗 리소스에 액세스하기 위함
+- 모든 로케이션을 연결하는 프라이빗 VIF를 생성하여 가상 프라이빗 게이트웨이에 연결 (VLAN1, 2)
+- 가상 프라이빗 게이트웨이는 VPC에 연결
+
+- 프라이빗 VIF로 EC2 인스턴스가 있는 프라이빗 서브넷에 액세스할 수 있음
+- 설치만 한 달이 걸릴 수 있음
+- 퍼블릭 인터넷을 전혀 지나지 않고 전부 비공개로 연결
+
+- AWS 내 퍼블릭 서비스 (ie. Amazon Glacier, Amazon S3)에 연결할 수도 있는데 이때는 퍼블릭 가상 인터페이스 즉 퍼블릭 VIF를 설치해야 함
+- 결국 같은 경로를 지나가지만 가상 프라이빗 게이트웨이로 연결되지 않고 AWS로 직접 연결
+
+### Direct Connect Gateway
+- 하나 이상의 VPC와 연결하고 싶을 때 사용
+
+**리전이 두 개인 예시**
+
+- 각기 다른 VPC와 CIDR가 두 개 있고 온프레미스 데이터 센터를 양쪽 VPC에 연결
+- Region1: us-east-1, VPC: 10.0.0.0/16
+- Region2: us-west-1, VPC: 172.16.0.0/16
+
+1. Direct Connect 연결을 생성
+2. 프라이빗 VIF를 사용해 Direct Connect Gateway에 연결
+3. Direct Connect Gateway에는 프라이빗 VIF를 통해 여러 VPC와 여러 리전을 연결
+
+### Direct Connect 유형
+
+**Dedicated Connections(전용 연결)**
+- 한도: 초당 1Gbp, 10Gbp, 100Gbp
+- 고객마다 물리적 전용 이더넷 포트(Physical ethernet port dedicated)를 할당받음
+- 먼저 AWS에 요청을 보내면 AWS Direct Connect 파트너가 처리
+
+**Hosted Connections(호스팅 연결)**
+- 한도: 초당 50Mbp, 500Mbp, ~10Gbp
+- AWS Direct Connect 파트너를 통해 또다시 연결을 요청
+- 필요하면 언제든지 용량을 추가하거나 제거하면 되므로 전용 연결보다 유연
+- 선택한 로케이션에서 초당 1, 2, 5, 10Gbp 이용 가능
+
+전용 연결/호스팅 연결: 새 연결을 만들려면 리드 타임이 한 달보다 길어질 때도 있기 때문에, 가령 일주일 안에 빠르게 데이터를 전송하고 싶다면 Direct Connect는 부적절
+
+### Direct Connect - Encryption
+
+- Direct Connect에는 **암호화 기능이 없음**: 데이터가 암호화되지 않음
+  - 프라이빗 연결이므로 보안을 유지할 수 있음
+- 따로 암호화 추가: Direct Connect + VPN을 설치 -> IPsec으로 암호화된 프라이빗 연결
+  - 추가로 보안을 확보하면 좋지만, 구현이 복잡
+
+**암호화 과정**
+- Direct Connect 로케이션을 가져와 해당 연결에 VPN 연결을 구축하면 Direct Connect에 암호화가 구성됨
+- 기업 데이터 센서와 AWS 간 모든 트래픽을 암호화 가능
+
+### Direct Connect - Resiliency ⭐️⭐️⭐️⭐️⭐️
+
+- 핵심 워크로드(Critical Workloads)의 복원력을 높이기 위해, 여러 Direct Connect를 설치하는 것이 좋음
+
+가령, 기업 데이터 센터가 두 개 있고 Direct Connect 로케이션도 둘이라고 했을 때 두 상황:
+
+**1. High Resiliency for Critical Workloads**
+
+: - 프라이빗 VIF가 하나 있는데 다른 데 또 있다면, 하나의 연결을 여러 로케이션에 수립한 것 
+  - Direct Connect 하나가 망가져도 다른 하나가 예비로 남아 있기 때문에 **복원력이 강해**지기 때문에 **핵심 워크로드에 적합**
+
+**2. Maximum Resiliency for Critical Workloads**
+
+: - 각 Direct Connect 로케이션에 독립적인 연결을 **두 개씩 수립하면 복원력을 최대**로 만들 수 있음
+  - 기업 데이터 센터가 두 개라면, 각 로케이션에 네 개의 연결을 수립해서 AWS에 연결
+  - 즉, 최대의 복원력을 달성하려면 여러 독립적인 연결을 하나 이상의 로케이션에서 각기 다른 장치에 도달하도록 구성
+
+
+## 12. 환승 Gateway
+## 13. VPC 트래픽 미러링
+## 14. VPC용 IPv6
+## 15. 이그레스 전용 인터넷 Gateway
 
