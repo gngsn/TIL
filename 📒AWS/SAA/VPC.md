@@ -484,8 +484,87 @@ Direct Connect
   - 기업 데이터 센터가 두 개라면, 각 로케이션에 네 개의 연결을 수립해서 AWS에 연결
   - 즉, 최대의 복원력을 달성하려면 여러 독립적인 연결을 하나 이상의 로케이션에서 각기 다른 장치에 도달하도록 구성
 
+### DX Backup: Site-to-Site VPN
 
-## 12. 환승 Gateway
+**Connect 연결 실패 시 백업 방식**
+
+1. 또 다른 Direct Connect로 보조 연결: 상당한 비용
+2. Site to Site VPN을 백업 연결: Site to Site VPN을 통해 퍼블릭 인터넷에 연결 가능 -> 안정성 확보
+
+
+## 12. Transit Gateway (환승 Gateway)
+
+**AWS 네트워크 토폴로지는 꽤 복잡함, Example:**
+- VPC 여러 개를 피어링으로 전부 연결
+- VPN 연결과 Direct Connect를 구축
+- Direct Connect Gateway로 여러 VPC를 한 번에 연결
+
+=> Transit Gateway
+: VPC 여러 개를 연결
+: **전이적 피어링 연결**(transitive peering)이 VPC 수천 개와 온프레미스 데이터 센터(Site-to-Site VPN)를 스타형의 Hub-Spoke(허브와 스포크) 형식으로 연결됨
+
+**TransitGateway 조합**
+- Direct Connect Gateway 연결 가능: Transit Gateway에 연결 시 각기 다른 VPC에 직접 연결
+- Site-to-Site VPN 연결: 고객 게이트웨이와 VPN 연결 가능 (Mutliple VPC - TransitGateway - VPN Connection - Customer Gateway)
+
+*즉, Transit Gateway 일부로 모든 VPC에 액세스*
+
+- 리전 리소스 (리전 간에 작동)
+- Cross-Account: Resource Access Manager로 Transit Gateway를 계정 간에 공유 가능
+- Across Region: 리전 간 Transit Gateway를 피어링할 수도 있음
+
+**통신 주체의 관계 정의**
+- Transit Gateway에 라우팅 테이블을 생성
+  - 어느 VPC가 누구와 통신할지 어떤 연결이 액세스할지 제한
+  - Transit Gateway 내 모든 트래픽 경로를 제어해서 네트워크 보안을 제공
+
+⭐️⭐️⭐️ Direct Connect Gateway 및 VPN 연결과 함께 작동하고 AWS에서 **유일하게 IP 멀티캐스트를 지원**
+→ 만약 시험에 IP 멀티캐스트가 나오면 Transit Gateway를 사용해야 함
+
+
+### Site-to-Site VPN ECMP: 연결 대역폭 늘리기 ⭐️⭐️⭐️
+
+**ECMP**: Equal-cost multi-path. 등가 다중 경로 라우팅
+- 여러 최적 경로를 통해 패킷을 전달하는 라우팅 전략
+- Site-to-Site VPN 연결을 많이 생성해서 AWS로의 연결 대역폭을 늘릴 때 사용
+
+<img src="../img/transitGwEcmp.png" alt="transitGwEcmp" />
+
+**Example. Transit Gateway에 VPC 네 개가 연결**
+- 기업 데이터 센터는 Site-to-Site VPN으로 Transit Gateway에 연결
+- Site-to-Site VPN 연결을 구축할 때 각기 앞쪽과 뒤쪽을 향하는 터널 두 개
+- Site-to-Site VPN을 VPC에 직접 연결하면 두 터널 모두 연결 하나로 사용되지만 **Transit Gateway를 사용할 때는 두 터널이 동시에 사용**
+- 두 번째 Site-to-Site VPN을 생성해 Transit Gateway로 연결하면 총 네 개의 터널
+=> Site-to-Site VPN에 터널 네 개가 있으면 연결 처리량이 증가
+-> 기업 데이터 센터를 직접 VPC에 연결한 경우에는 사용할 수 없는 기능
+
+### throughput with ECMP ⭐️⭐️⭐️
+
+**CASE1. VPN to virtual private gateway**
+*가상 프라이빗 게이트웨이에 VPN을 연결*
+- VPC마다 터널 하나 즉 연결이 하나씩 생김 (1 connection tunnel per 1 VPC)
+- 연결 하나당 1.25Gbps를 제공하며 최대 처리량으로 제한
+- VPN connection = 2 tunnels 구성
+
+**CASE2. VPN to virtual private gateway**
+*VPN을 Transit Gateway로 연결*
+- 여러 VPC에 Site-to-Site **VPN 하나**(2 tunnels)가 생성
+  - 동일한 Transit Gateway에 모두 전이적으로 연결되기 때문
+- **Site-to-Site VPN 연결 하나**는 ECMP 덕에 최대 처리량 2.5Gbps(2 tunnels = 1.25Gbps * 2)
+
+=> 두세 개 정도만 더해도 ECMP를 사용하면 처리량이 두세 배가 됨
+
+- 성능 최적화 비용이 추가되어 Transit Gateway를 통과할 때 1GB마다 요금이 청구됨 (+$ PER GB of TGW processed data)
+
+### Share Direct Connect across multi accounts
+
+여러 계정에서 Direct Connect 공유 시, 기업 데이터 센터와 Direct Connect 로케이션 간 Transit Gateway 사용
+
+1. Transit Gateway를 서로 다른 계정의 VPC 두 개 모두에 생성
+2. Direct Connect 로케이션에 연결한 Direct Connect Gateway를 Transit Gateway에 연결
+=> 여러 계정과 VPC 사이에 Direct Connect 연결을 공유할 수 있게 됨
+
+
 ## 13. VPC 트래픽 미러링
 ## 14. VPC용 IPv6
 ## 15. 이그레스 전용 인터넷 Gateway
