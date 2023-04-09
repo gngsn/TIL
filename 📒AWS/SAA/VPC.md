@@ -393,7 +393,8 @@ Site-to-Site VPN을 구축하려면 두 가지 Gateway가 필요: VGW, CGW
 Direct Connect
 : 원격 네트워크로부터 VPC로의 전용 프라이빗 연결을 제공
 
-- 사용 조건: 전용 연결(Dedicated Connection) 생성: 고객 DC - AWS Direct Connect 로케이션
+**사용 방법**
+- 전용 연결(Dedicated Connection) 생성: 고객 DC - AWS Direct Connect 로케이션
 - VPC에는 가상 프라이빗 게이트웨이를 설치해야 온프레미스 데이터 센터와 AWS 간 연결이 가능
 - 퍼블릭 리소스(ie. Amazon S3)와 프라이빗 리소스(ie. EC2 인스턴스)를 같은 연결상에서 퍼블릭 및 프라이빗 VIF를 사용해 액세스 가능
 
@@ -565,7 +566,45 @@ Direct Connect
 => 여러 계정과 VPC 사이에 Direct Connect 연결을 공유할 수 있게 됨
 
 
-## 13. VPC 트래픽 미러링
+## 13. VPC Traffic Mirroring, VPC 트래픽 미러링
+
+*VPC에서 네트워크 트래픽을 수집하고 검사하되 방해되지 않는 방식으로 실행하는 기능*
+
+**Concepts**
+Source — The network interface to monitor.
+Target — The destination for mirrored traffic.
+Filter — A set of rules that defines the traffic that is copied in a traffic mirror session.
+Session — An entity that describes Traffic Mirroring from a source to a target using filters.
+
+소스 ENI 정의: 트래픽을 수집해 수집하려는 트래픽. 관리 중인 보안 어플라이언스로 트래픽을 라우팅해야 함
+타겟 정의: ENI나 네트워크 로드 밸런서 등 트래픽을 보낼 대상 정의.
+
+**Diagram 설명**
+1. EC2 인스턴스와 ENI(탄력적 네트워크 인터페이스)가 연결돼 EC2 인스턴스는 인터넷에 액세스 중
+2. ENI에서 EC2 인스턴스로 많은 인바운드 및 아웃바운드 트래픽 발생
+3. 트래픽을 분석하기 위해 로드 밸런서를 설정
+   - 네트워크 로드 밸런서 뒤에 보안 소프트웨어가 있는 EC2 인스턴스 오토 스케일링 그룹 존재
+4. VPC 트래픽 미러링을 설정: 소스 A의 기능을 방해없이 소스 A 트래픽 모두 수집
+
+
+**트래픽 미러링 기능**
+- ENI나 소스 A로 전송되는 트래픽은 전부 네트워크 로드 밸런서로도 보내짐: 트래픽 미러링
+- 일부 데이터만 얻고 싶다면 선택적으로 필터를 사용 가능
+
+**여러 소스에 적용 가능**
+  - 조건1: 다른 EC2 인스턴스에 또 다른 ENI가 있을 때, 동시에 네트워크 로드 밸런서로 트래픽을 미러링할 수 있음
+  - 조건2: 동일 VPC에 소스와 대상이 있거나, VPC 피어링을 활성화한 경우 다른 VPC
+
+**사용 사례**
+- Content inspection - 콘텐츠 검사
+- Threat monitoring - 위협 모니터링
+- troubleshooting networking problems - 네트워킹 문제 해결
+
 ## 14. VPC용 IPv6
+EC2 instances: 최소 private internal IPv4 & a public IPv6 가짐
+- IPv4는 VPC, Subnet에서 비활성 불가
+- 
+You can enable IPv6 (they’re public IP addresses) to operate in dual-stack mode
+
 ## 15. 이그레스 전용 인터넷 Gateway
 

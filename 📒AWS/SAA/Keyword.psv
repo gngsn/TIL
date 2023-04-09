@@ -1,0 +1,7 @@
+keywords | description
+
+DX Backup | 
+
+Transit Gateway |  유일하게 IP 멀티캐스트를 지원하는 전이적 피어링 연결(transitive peering) 게이트웨이. 여러 VPC와 온프레미스 데이터 센터(Site-to-Site VPN)를 Hub-Spoke(허브와 스포크, 스타형) 형식으로 연결됨.
+Transit Gateway ECMP | Equal-cost multi-path. 등가 다중 경로 라우팅. 여러 최적 경로를 통해 패킷을 전달하는 라우팅 전략
+VPC Traffic Mirroring | VPC에서 아무런 방해없이 네트워크 트래픽을 수집하고 검사
