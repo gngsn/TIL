@@ -603,8 +603,60 @@ Session — An entity that describes Traffic Mirroring from a source to a target
 ## 14. VPC용 IPv6
 EC2 instances: 최소 private internal IPv4 & a public IPv6 가짐
 - IPv4는 VPC, Subnet에서 비활성 불가
-- 
-You can enable IPv6 (they’re public IP addresses) to operate in dual-stack mode
+- IPv6 CIDR 추가해서 IPv6 활성 가능 to operate in dual-stack mode
 
-## 15. 이그레스 전용 인터넷 Gateway
+
+## 15. Egress-only Internet Gateway (이그레스 전용 인터넷 Gateway)
+
+: IPv4인 NAT Gateway와 비슷하지만 IPv6 전용
+
+- VPC 인스턴스에서 IPv6상 아웃바운드 연결을 허용하고, 인터넷이 인스턴스로 IPv6 연결을 시작하지 못하게 막음
+
+- 라우팅 테이블 업데이트 필수: 
+- Internet Gateway: Ingress & Egress, EC2 인스턴스와 인터넷가 서로 액세스 
+- Egress: 인터넷은 IPv6를 사용하여 인스턴스로 연결
+
+
+### AWS Network Firewall
+
+**AWS 네트워크 보호 방법**
+- 네트워크 액세스 제어 목록(NACL)
+- Amazon VPC security groups (보안 그룹)
+- AWS WAF (특정 서비스의 악성 HTTP 요청을 막는 방화벽)
+- AWS Shield & Shield Advanced: DDoS를 막음
+- AWS Firewall Manager: 여러 계정에 적용할 수 있는 WAF, Shield 등에 대한 규칙 관리자
+
+**AWS Network Firewall**
+- VPC를 방화벽으로 보호하는 서비스
+- 전체 VPC를 보호할 수 있는 수준 높은 방법
+- 트래픽 필터링, 플로우 검사를 지원 
+,
+- 내부적으로 AWS Gateway Load Balancer를 사용
+- 계층 3에서 계층 7까지 보호
+- AWS Firewall Manager가 관리하는 여러 계정과 많은 VPC를 적용하여 중앙 집중식으로 관리
+
+
+**포함 범위**
+  - VPC, VPC 간 트래픽 
+  - 인터넷 아웃바운드 / 인바운드
+  - Direct Connect & Site to Site VPN
+
+**대상**
+- 인터넷, Peered VPC, Direct Connect, Site to Site VPN 등을 오가는 모든 트래픽을 보호
+
+
+### Fine Grained Controls
+
+- VPC 수준에서 수천 개의 규칙을 지원
+  - 수만 개의 IP & 포트별로 필터링
+  - 프로토콜 필터링: ie. 아웃바운드 통신에서는 SMB 프로토콜을 비활성화
+  - 도메인 필터링: ie. VPC의 아웃바운드 트래픽에 대해서는 기업 도메인에만 액세스를 허용하거나 타사 소프트웨어 리포지토리에만 액세스를 허용 가능
+
+- regex 등을 이용해서 일반 패턴 매칭도 가능
+- 트래픽 허용, 차단, 알림 등을 설정해서 설정한 규칙에 맞는 트래픽을 필터링
+- Active flow inspection: 활성 플로우 검사. 침입 방지
+
+AWS가 관리하는 게이트웨이 로드 밸런서처럼 말이죠
+
+- Amazon S3와 CloudWatch Logs 및 Kinesis Data Firehose로 전송하여 분석 가능
 
