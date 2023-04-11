@@ -145,3 +145,50 @@ cat ExampleFileDecrypted.base64 | base64 --decode > ExampleFileDecrypted.txt
 # base64 decode for Windows
 certutil -decode .\ExampleFileDecrypted.base64 .\ExampleFileDecrypted.txt
 ```
+
+
+## KMS: Multi Region Key, 다중 리전 키
+
+
+- 한 리전에 기본 키를 갖고 다른 리전에 키 구성 요소가 복제된 동일한 키를 가짐: 키 ID가 완전히 똑같음
+  - *ex. us-east-1에 기본 키를 두고, 다른 리전 (ie. us-west-2, eu-west-1, ap-southeast-2)로 복제*
+
+- ⭐️ **리전 간 교차 사용**: 한 리전에서 암호화한 후 다른 리전에서 복호화
+  - ⚠️ KMS 다중 리전 키는 **전역 사용 불가**, **기본 키가 있고 복제본이 있는 것**
+  - 다른 리전으로 복제할 때나 교차 리전 API 호출을 실행할 때, 데이터를 재암호화 필요 없음
+- 동일한 키 ID와 동일한 키 구성 요소를 갖음
+- 기본 키의 자동 교체를 활성화 시, 자동 교체 키가 다른 리전에도 복제됨
+
+- KMS 키는 단일 리전에 제한되는 것을 선호: 특정 사례를 제외하고 다중 리전 키 사용을 권장하지 않음
+  - 클라이언트 측 전역 암호화: 한 리전에서 클라이언트 측 암호화 -> 다른 리전에서 클라이언트 측 복호화
+  - DynamoDB 전역 테이블 or Global Aurora 암호화
+
+
+#### DynamoDB Global Tables / Aurora Global Tables + KMS Multi-Region Keys Client-Side Encryption
+
+- ✔️ 전체 테이블뿐 아니라, 저장 데이터(테이블 속성)를 암호화
+- 특정 클라이언트만 사용 가능: 데이터베이스 관리자도 사용 불가
+- Amazon DynamoDB Encryption Client 사용
+
+**Example.**
+
+<img src="../img/kmsDynamoDbEncryption.png" />
+
+1. us-east-1의 KMS 다중 리전 키(기본 키)를 ap-southeast-2 리전에 복제(복제본)
+2. 클라이언트 애플리케이션에서 DynamoDB에 데이터를 삽입하려면 먼저 속성을 암호화
+3. 다중 리전 키를 사용해 암호화할 속성을 암호화
+
+<pre>
+- 대부분의 DynamoDB 테이블 필드는 클라이언트 측 암호화가 필요없지만, 가령 사회 보장 번호는 암호화 필요
+- DynamoDB 테이블에 액세스할 수 있는 DBA가 '사회 보장 번호' 속성을 암호화하는 데 사용한 KMS 키에 액세스할 수 있는 권한이 없다면 해당 데이터에 액세스할 수 없음
+- 데이터베이스 관리자로부터도 보호 가능
+</pre>
+
+4. DynamoDB 테이블이 전역 테이블인 경우, 해당 테이블의 데이터는 ap-southeast-2 리전으로 복제
+5. ap-southeast-2 리전의 클라이언트 애플리케이션은 데이터 중 암호화된 속성이 있는지 확인한 후, API 호출을 실행해 복제된 다중 리전 키를 사용해 해당 속성을 복호화 -> 다중 리전 키로 데이터 속성을 암호화하기로 했기 때문에 가능
+
+**Benefits**
+- Low-Latency API: 지연 시간이 단축
+- 클라이언트 측 암호화 기술을 사용하면 데이터의 특정 필드나 속성을 보호
+- API 키 액세스 권한이 있는 클라이언트만 복호화 가능
+
