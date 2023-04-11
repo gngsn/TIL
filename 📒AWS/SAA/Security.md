@@ -192,3 +192,158 @@ certutil -decode .\ExampleFileDecrypted.base64 .\ExampleFileDecrypted.txt
 - 클라이언트 측 암호화 기술을 사용하면 데이터의 특정 필드나 속성을 보호
 - API 키 액세스 권한이 있는 클라이언트만 복호화 가능
 
+
+### S3 Replication Encryption Consideration
+
+- S3는 암호화되지 않은 객체 & SSE-S3로 암호화된 객체들의 복제가 기본 제공
+
+- SSE-C(고객 제공 키) 암호화 복제: 지원 X
+  - 매번 키 제공 불가
+- SSE-KMS
+  - 옵션을 활성화 후 사용 가능
+  - 어떤 KMS 키로 암호화할지 지정 필요
+  - KMS 키 정책을 대상 키에 적용 필요
+  - S3 복제 서비스를 허용하는 IAM 역할을 생성 -> 소스 버킷의 데이터를 먼저 복호화 -> KMS 키로 대상 버킷 데이터를 다시 암호화
+  - 수많은 암호화와 복호화 발생: KMS 스로틀링 오류가 발생 가능 -> Service Quotas(서비스 할당) 요청
+
+✔️ **다중 리전 키**로 **S3 복제**
+- S3 복제에 다중 리전 키 사용 가능
+- 하지만 S3 서비스 독립 키로 다루던 암/복호화는 지속
+- 다중 리전 키도 동시에 암호화
+
+
+### AMI Sharing Process Encrypted via KMS ⭐️⭐️⭐️⭐️⭐️
+
+- 다른 계정과 AMI 공유
+
+**Account A 계정의 AMI -> Account B 계정에 EC2 인스턴스 시작**
+
+1. 소스 계정에 있는 AMI는 KMS 키로 암호화됨
+2. AMI 속성 수정
+  - Launch Permission(시작 권한) 추가: AMI가 시작하도록 허용하도록 B 계정 ID 추가
+  - AMI 공유
+3. B 계정으로 KMS 키 공유 (Key Policy, 키 정책)
+4. B 계정에서 KMS 키와 AMI를 모두 사용할 수 있는 권한을 가진 IAM 역할이나 IAM 사용자를 생성: DescribeKey, ReEncrypted, CreateGrant, Decrypt API 호출에 대한 KMS 측 액세스 권한
+5. AMI에서 EC2 인스턴스를 시작
+  - (선택 사항) 대상 계정에서 볼륨을 재암호화하는 새로운 KMS 키로 볼륨 전체를 재암호화할 수 있음
+
+
+### SSM Parameter Store
+
+- **SSM Parameter Store**: Systems Manager Parameter Store. 
+- **구성**(Configuration) 및 **암호**(Secret)를 위한 보안 스토리지
+- KMS 서비스를 이용한 암호화 지원
+- 서버리스, 확장성, 내구성이 있고 SDK도 사용이 용이
+- 매개변수를 업데이트 시, 구성 혹은 암호의 버전을 추적 가능
+- IAM을 통한 보안 제공
+- Amazon EventBridge 알림 수신 가능
+- CloudFormation 통합 가능
+
+
+### SSM Parameter Store Hierarchy
+
+계층 구조가 있는 Parameter Store에 매개변수를 저장할 수 있음
+
+<pre>
+/my-department/
+- my-app/
+  ㄴ dev/
+    ㄴ db-url
+    ㄴ db-password
+  ㄴ prod/
+    ㄴ db-url
+    ㄴ db-password
+- other-app/
+</pre>
+
+- 구조화 -> IAM 정책을 간소화 가능 (*my-app/\** or */my-department/\**)
+- Secrets Manager의 암호에 액세스할 수도 있음
+- AWS에서 발행하는 퍼블릭 매개변수도 사용 가능 (ie. 특정 리전에서 Amazon Linux 2의 최신 AMI를 찾으려 할 때 Parameter Store에서 API 호출을 대신해 쓸 수 있음)
+
+| | Standard | Advanced |
+|---|---|---|
+| 생성 가능한 parameters 수 (per AWS account and Region) | 10,000 | 100,000 |
+| Maximum size of a parameter value | **4 KB** | **8 KB** |
+| Parameter policies available | No | Yes | 
+| Cost | No additional charge | Charges apply | 
+| Storage Pricing | Free | $0.05 per advanced parameter / a month |
+
+✔️ 고급 매개변수에서만 사용할 수 있는 매개변수 정책 - TTL(만료 기한)를 매개변수에 할당 가능
+  - 민감한 정보를 업데이트 또는 삭제하도록 강제
+  - 여러 정책을 할당 가능
+
+**만료 정책 예시**
+
+<table>
+<tr>
+  <th>Expiration</th>
+  <th>ExpirationNotification</th>
+  <th>NoChangeNotification</th>
+</tr>
+<tr>
+<td><pre>{
+    "Type": "Expiration",
+    "Version": "1.0",
+    "Attributes": {
+        "Timestamp": "2018-12-02T21:34:33.000Z"
+    }
+}</pre>
+
+- 타임스탬프의 시간이 되면 해당 매개변수를 반드시 삭제
+</td>
+  <td><pre>{
+    "Type": "ExpirationNotification",
+    "Version": "1.0",
+    "Attributes": {
+        "Before": "15",
+        "Unit": "Days"
+    }
+}</pre>
+
+- EventBridge와 통합함해서 EventBridge에서 알림을 받을 수 있음
+
+- 매개변수가 만료되기 15일 전에 EventBridge 알림을 받음
+</td>
+<td><pre>{
+    "Type": "NoChangeNotification",
+    "Version": "1.0",
+    "Attributes": {
+        "After": "20",
+        "Unit": "Days"
+    }
+}</pre>
+
+- EventBridge가 변경이 없다는 알림 제공
+</td>
+</tr>
+</table>
+
+
+### Practice Section
+
+```bash
+# GET PARAMETERS / + DECRYPTION
+aws ssm get-parameters --names /my-app/dev/db-url /my-app/dev/db-password
+aws ssm get-parameters --names /my-app/dev/db-url /my-app/dev/db-password --with-decryption
+
+# GET PARAMETERS BY PATH / + RECURSIVE / + DECRYPTION
+aws ssm get-parameters-by-path --path /my-app/dev/
+aws ssm get-parameters-by-path --path /my-app/ --recursive
+aws ssm get-parameters-by-path --path /my-app/ --recursive --with-decryption
+```
+
+아래와 같이 SSM에서 Parameter를 가져올 수 있음 (복호화 후 조회 가능)  
+
+```python
+import json
+import boto3
+import os
+
+ssm = boto3.client('ssm', region_name="eu-west-3")
+dev_or_prod = os.environ['DEV_OR_PROD']
+
+def lambda_handler(event, context):
+    db_url = ssm.get_parameters(Names=["/my-app/" + dev_or_prod + "/db-url"])
+    db_password = ssm.get_parameters(Names=["/my-app/" + dev_or_prod + "/db-password"], WithDecryption=True)
+    return "worked!"
+```
