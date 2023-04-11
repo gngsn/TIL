@@ -453,9 +453,33 @@ AWS Certificate Manager와 통합해 ALB에서 직접 TLS 인증서를 프로비
 - Route 53에서 CNAME이나 별칭 레코드가 목표 DNS를 가리키도록 설정
 
 
+## 6. Web Application Firewall, WAF
+
+*웹 애플리케이션 방화벽*
+
+- AWS WAF는 Layer 7 (HTTP)에서 일반적인 웹 취약점 공격을 보호
+- 웹 애플리케이션 방화벽(WAF) 적용
+  - Application Load Balancer, API Gateway, CloudFront, AppSync GraphQL API, Cognito User Pool
+  - NLB ❌
+
+**웹 액세스 제어 목록(ACL) 규칙 정의**
+- Filtering
+  - IP 세트: IP 주소를 기반으로 필터링하는 등의 규칙, 최대 IP 주소 10,000개
+  - HTTP headers 및 body, URI strings 보호 - SQL Injection -> 크로스 사이트 스크립팅(XSS) 등 공격 차단
+  - 용량 제약 (ie. 최대 2MB)
+  - 지역 일치(Geo-match) -> 특정 국가 허용 또는 차단
+  - Rate-based 규칙: IP당 요청 수를 측정 -> 디도스 공격 차단 (ie. 특정 IP - 11 req per a sec)
+- 웹 ACL은 리전에만 적용 (CloudFront는 글로벌로 정의)
+- 규칙 그룹: 여러 웹 ACL에 추가할 수 있는 재사용 가능한 규칙 모음 (규칙 정리)
 
 
-## 6. 웹 애플리케이션 방화벽
+**WAF 유용한 사용 사례**
+: 애플리케이션에 **고정 IP**를 사용하면서 **로드 밸런서**와 함께 **WAF**를 사용하고 싶을 때
+
+- 애플리케이션 로드 밸런서는 고정 IP ❌ -> **AWS Global Accelerator**로 고정 IP 할당
+- ALB에서 WAF를 활성화
+
+
 
 ## 7. 실드 - DDoS 보호
 
