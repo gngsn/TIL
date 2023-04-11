@@ -2,26 +2,26 @@
 
 \# KMS \# Encryption SDK \# SSM Parameter Store
 
-### 1/ SSL: Encryption in flight (전송 중 암호화)
+#### 1/ SSL: Encryption in flight (전송 중 암호화)
 
 - 데이터를 **송신 전 암호화 + 수신 후 복호화**
 - SSL Certificates: HTTPS - SSL 암호화 + SSL 복호화
 - 전송 중 암호화는 MITM (Man In The Middle Attack)의 안정성 보장
 
-### 2/ Server side Encryption at rest
+#### 2/ Server side Encryption at rest
 
 - 데이터를 **서버에서 수신 후 암호화 + 전송 전 복호화**
 - Data Key를 통해 암호화하여 저장
 - Encryption/Decryption Key는 어딘가에(ie. KMS) 관리 및 저장 서버(ie. EBS)가 접근할 수 있어야 함
 
-### 3/ Client side Encryption
+#### 3/ Client side Encryption
 
 - 데이터를 **클라이언트가 전송 전 암호화 + 수신 후 복호화**
 - 서버는 절대 데이터를 알 수 없음
 - leverage Envelope Encryption: 봉투 암호화에 효과적
 
 
-## KMS
+## 1. KMS
 
 : AWS의 키 관리 서비스
 
@@ -147,7 +147,7 @@ certutil -decode .\ExampleFileDecrypted.base64 .\ExampleFileDecrypted.txt
 ```
 
 
-## KMS: Multi Region Key, 다중 리전 키
+## 2. KMS: Multi Region Key, 다중 리전 키
 
 
 - 한 리전에 기본 키를 갖고 다른 리전에 키 구성 요소가 복제된 동일한 키를 가짐: 키 ID가 완전히 똑같음
@@ -228,7 +228,7 @@ certutil -decode .\ExampleFileDecrypted.base64 .\ExampleFileDecrypted.txt
   - (선택 사항) 대상 계정에서 볼륨을 재암호화하는 새로운 KMS 키로 볼륨 전체를 재암호화할 수 있음
 
 
-### SSM Parameter Store
+## 3. SSM Parameter Store
 
 - **SSM Parameter Store**: Systems Manager Parameter Store. 
 - **구성**(Configuration) 및 **암호**(Secret)를 위한 보안 스토리지
@@ -260,13 +260,17 @@ certutil -decode .\ExampleFileDecrypted.base64 .\ExampleFileDecrypted.txt
 - Secrets Manager의 암호에 액세스할 수도 있음
 - AWS에서 발행하는 퍼블릭 매개변수도 사용 가능 (ie. 특정 리전에서 Amazon Linux 2의 최신 AMI를 찾으려 할 때 Parameter Store에서 API 호출을 대신해 쓸 수 있음)
 
-| | Standard | Advanced |
+| | Standard | Advanced | 
 |---|---|---|
 | 생성 가능한 parameters 수 (per AWS account and Region) | 10,000 | 100,000 |
 | Maximum size of a parameter value | **4 KB** | **8 KB** |
 | Parameter policies available | No | Yes | 
-| Cost | No additional charge | Charges apply | 
-| Storage Pricing | Free | $0.05 per advanced parameter / a month |
+
+**Storage Pricing**
+| Standard | Advanced | Secret Manager |
+|---|---|---|
+ | Free | $0.05 per advanced parameter / a month | \$0.40 per secrets per month / \$0.05 per 10,000 API calls |
+
 
 ✔️ 고급 매개변수에서만 사용할 수 있는 매개변수 정책 - TTL(만료 기한)를 매개변수에 할당 가능
   - 민감한 정보를 업데이트 또는 삭제하도록 강제
@@ -347,3 +351,53 @@ def lambda_handler(event, context):
     db_password = ssm.get_parameters(Names=["/my-app/" + dev_or_prod + "/db-password"], WithDecryption=True)
     return "worked!"
 ```
+
+
+## 4. Secrets Manager
+
+- 암호를 저장하는 최신 서비스
+- N 일마다 암호 교체를 강제
+- 새 암호를 생성할 Lambda 함수를 정의해서 교체할 암호를 강제 생성 및 자동화 가능
+- AWS 서비스 통합: Amazon RDS, MySQL PostgreSQL, Aurora ...
+  - 데이터베이스 접근 시 사용할 사용자 이름과 비밀번호를 저장 및 교체 가능
+- KMS 서비스를 통해 암호화
+
+(⭐️ **RDS와 Aurora의 통합 or 암호 -> AWS Secrets Manager**)
+
+### Multi-Region Secrets
+
+*다중 리전 암호*
+
+- 복수 AWS 리전에 암호를 복제할 수 있고 기본 암호와 동기화된 읽기 전용 복제본을 유지한다는 개념
+- 기본 리전에 암호를 하나 만들면 보조 리전에 동일한 암호가 복제된
+
+**Why**
+- 한 리전에 문제가 발생 시, 암호 복제본을 독립 실행형 암호로 승격할 수 있음
+- 다중 리전 앱을 구축
+- 재해 복구 전략도 짤 수 있음
+- 다른 리전으로 복제되는 RDS 데이터베이스에 동일한 암호로 접근 가능
+
+**Parameter Store 과의 차별점**
+- Secret Manager는 교체, 관리 가능
+- MySQL, PostgreSQL, Aurora, RDS 등 DB와 built-in integration(통합) 지원
+
+
+## 5. AWS Certificate Manager (ACM)
+
+## 6. 웹 애플리케이션 방화벽
+
+## 7. 실드 - DDoS 보호
+
+## 8. Firewall Manager
+
+## 9. WAF 및 실드 - 실습
+
+## 10. DDoS Protection Best Practices
+
+## 11. Amazon GuardDuty
+
+## 12. Amazon Inspector
+
+## 13. Amazon Macie
+
+
