@@ -56,7 +56,7 @@
 }
 ```
 
-## Advanced IAM
+## 02. Advanced IAM
 
 <table>
 <tr>
@@ -238,3 +238,164 @@ API 호출 리전을 제한: 특정 리전에서 특정 서비스에 대한 액�
 
 - **PrincipleOrgID의 계정에서 API 호출이 생성된 경우**에만 PutObject, GetObject 작업 수행 가능
 - 조직 내의 멤버 계정만 S3 버킷에 액세스 & 조직 외부의 사용자는 거부
+
+
+## 03. IAM Roles vs Resource-Based Policies
+
+#### EX. S3 - Cross account(교차 계정) 접근:
+
+1. **IAM 역할이 S3 버킷에 액세스**
+   - 역할을 맡으면 기존의 권한을 모두 포기하고 해당 역할에 할당된 권한을 상속하게 됨
+   - **⭐️ 해당 역할에 부여된 작업은 할 수 있지만, 기존 권한은 사용할 수 없음**
+2. **S3 버킷 정책이 사용자의 액세스**
+   - <small><i>리소스에 resource-based policy (example: S3 bucket policy) 추가</i></small>
+   - 리소스 기반 정책을 사용하면 본인이 역할을 맡지 않으므로 권한을 포기할 필요가 없음
+   - 가령, **계정 A**의 사용자가 **본인 계정의 DynamoDB 테이블**을 스캔 후 **계정 B**의 **S3 버킷**에 넣을 경우
+     - *DynamoDB 테이블을 스캔 + 다른 계정의 S3 버킷에 쓰기 작업* 권한 필요
+     - 리소스 기반 정책을 사용하는 것이 좋음
+
+- Amazon S3 버킷, SNS topic, SQS queue, Lambda 등에서 지원
+
+이 차이는 Amazon EventBridge에서 사용할 때 가장 크게 드러남
+
+### Amazon EventBridge
+
+- Amazon EventBridge에서 원하는 작업을 하려면, 대상에 대한 권한이 요구됨
+- 리소스 기반 정책: Lambda, SNS, SQS, CloudWatch Logs, API Gateway 등
+- IAM 역할: Kinesis Data Streams, Systems Manager Run Command, ECS 태스크
+
+
+## 04. IAM Permissions boundary
+
+- IAM 개체의 최대 권한을 정의
+- User와 Role 지원, Group은 지원 X
+
+**Example.**
+1. John에게 권한 추가(Add permissions)로 AdministratorAccess에 연결 (슈퍼 사용자)
+2. John 계정에 권한 경계로 AmazonS3FullAccess를 지정
+
+### IAM 권한 경계 + AWS Organizations SCP
+
+유효(effective) 권한, 사용자가 주어지는 권한은 아래 세 개의 교집합
+
+- Organizations SCP: 사용자나 그룹에 부여된 자격 증명 기반 정책
+- Identity-based policy: 그룹이 아닌 사용자나 역할에만 적용되는 권한
+- Permission boundary: 계정상 모든 IAM 개체에 적용되는 Organizations SCP
+
+
+### IAM Policy Evaluation Logic
+
+<img src="../img/iamEvaluationRule.png" />
+
+
+## 05. Amazon Cognito
+
+Amazon Cognito를 알아보겠습니다
+
+- **사용자에게 웹 및 모바일 앱과 상호 작용할 수 있는 자격 증명을 부여**
+- 일반적으로 AWS 계정 외부 사용자 대상 (모르는 사용자들에게 자격 증명을 부여해 인식; Cognito)
+
+#### Cognito User Pools
+
+- 앱 사용자에게 가입 기능을 제공
+- API Gateway & Application Load Balancer 원활한 통합
+
+#### Cognito Identity Pools (Federated Identity):
+
+- Cognito 자격 증명 풀 (페더레이션 자격 증명)
+- 앱 사용자에게 임시 AWS 자격 증명을 제공해서 일부 AWS 리소스에 직접 액세스할 수 있도록 함 
+- Cognito 사용자 풀과 원활히 통합
+
+⭐️ AWS 외부의 **'수백 명의 사용자' '모바일 사용자' 'SAML을 통한 인증'** 웹과 모바일 앱 사용자를 대상
+
+
+### Cognito User Pools (CUP) – User Features
+
+- 웹 및 모바일 앱을 대상의 **서버리스 사용자 데이터베이스**
+- 사용자 이름 / 이메일 / 비밀번호의 조합으로 간단한 로그인 절차를 정의
+- 비밀번호 재설정 / 이메일 및 전화번호 검증 / 사용자 멀티팩터 인증 가능
+- 소셜 로그인: Facebook / Google과 통합
+- API Gateway / 애플리케이션 로드 밸런서와 통합
+
+### Cognito User Pools (CUP) - Integrations
+
+#### + API Gateway
+1. 사용자는 Cognito 사용자 풀에 접속해서 토큰을 받음
+2. 검증을 위해 토큰을 API Gateway에 전달
+3. 검증 후 사용자 자격 증명으로 변환
+4. 백엔드의 Lambda 함수로 전달
+5. Lambda 함수는 처리할 사용자가 인증된 사용자 임을 인식
+
+### + Application Load Balancer
+
+1. Cognito 사용자 풀을 애플리케이션 로드 밸런서 위에 배치
+2. 애플리케이션이 Cognito 사용자 풀에 연결
+3. 애플리케이션 로드 밸런서에 전달해서 유효한 로그인인지 확인
+4. 검증 후 요청을 백엔드로 리다이렉트; 사용자의 자격 증명과 함께 추가 헤더를 전송
+
+- API Gateway나 ALB를 통해 사용자를 **한곳**에서 확실히 검증
+- 검증 책임을 백엔드로에서 로드를 밸런싱하는 실제 위치(API gateway 또는 ALB)로 옮긴 것
+
+### Cognito Identity Pools (Federated Identities)
+- Cognito 자격 증명 풀 = 페더레이션 자격 증명
+- API Gateway나 ALB를 통하지 않고 **임시 AWS 자격 증명**을 사용해 AWS 계정에 직접 액세스
+- 사용자는 Cognito 사용자 풀 내의 사용자 or 타사 로그인
+- 자격 증명에 적용되는 IAM 정책은 Cognito 자격 증명 풀 서비스에 사전 정의되어 있음
+- user_id를 기반으로 사용자 정의하여 세분화된 제어 가능
+- 게스트 사용자나 특정 역할이 정의되지 않은 인증된 사용자는 **기본 IAM 역할**을 상속
+  - 원한다면 기본 IAM 역할을 정의할 수도 있음
+
+<img src="./img/../../img/cognitoIdentityPools.png" />
+
+조건: 웹 & 모바일 앱에서 **Cognito 자격 증명 풀을 사용**하여 S3 버킷 or DynamoDB 테이블에 직접 액세스
+
+1. 웹, 모바일 앱 로그인으로 토큰을 받음
+   - 인증 방식은 Cognito 사용자 풀 / 소셜 자격 증명 제공자 / SAML OpenID Connect
+2. 토큰을 Cognito 자격 증명 풀 서비스에 전달 -> 임시 AWS 자격 증명과 교환
+   - Cognito 자격 증명 풀은 전달 받은 토큰이 올바른지, 즉 유효한 로그인인지 평가
+   - 해당 사용자에게 적용되는 IAM 정책을 생성
+3. AWS의 S3 버킷이나 DynamoDB 테이블에 직접 액세스
+   - IAM 정책이 적용된 임시 자격 증명 덕분
+
+### Cognito Identity Pools Row Level Security in DynamoDB
+
+Cognito 자격 증명 풀을 사용하면 DynamoDB에 행 수준 보안을 설정할 수 있음
+
+<pre><code lang="json">
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Effect": "Allow",
+            "Action": [
+                "dynamodb:DeleteItem",
+                "dynamodb:GetItem",
+                "dynamodb:PutItem",
+                "dynamodb:Query",
+                "dynamodb:UpdateItem"
+            ],
+            "Resource": ["arn:aws:dynamodb:*:*:table/MyTable"],
+            "Condition": {
+                "ForAllValues:StringEquals": {
+                    "dynamodb:LeadingKeys": [
+                        <b>"${cognito-identity.amazonaws.com:sub}"</b>
+                    ]
+                }
+            }
+        }
+    ]
+}
+</code></pre>
+
+: DynamoDB의 LeadingKeys가 Cognito 자격 증명 사용자 ID와 같아야 한다는 조건
+
+- 위 정책이 적용된 사용자는 DynamoDB 테이블의 모든 항목을 읽고 쓸 수 있는 것이 아니라, 해당 조건을 통해 액세스를 얻은 항목에만 액세스할 수 있음
+
+
+## 06. AWS IAM Identity Center
+
+## 07. AWS 디렉토리 서비스
+
+## 08. AWS Control Tower
+
+
