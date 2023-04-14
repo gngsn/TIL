@@ -55,7 +55,7 @@ CLI를 통해서만 제어 가능
 
 #### Application Load Balancer VS Network Load Balancer
 
-Elastic Load Balancing 는 세 가지로 나눌 수 있습니다.
+Elastic Load Balancing 는 세 가지로 나눌 수 있음
 
 - Application Load Balancer (HTTP, HTTPS) : OSI 7 계층
 
@@ -65,11 +65,8 @@ Elastic Load Balancing 는 세 가지로 나눌 수 있습니다.
 
 
 
-
-
-급격한 트래픽 상승에 어떻게 확장을 시킬까?
-
-여러대의 컴퓨터를 두면 되겠지. 
+> 급격한 트래픽 상승에 어떻게 확장을 시킬까?
+> "여러대의 컴퓨터를 두면 되겠지."
 
 단일 진입점에서 여러대의 컴퓨터에게 트래픽을 분산시켜주는 것을 로드 밸런서라고 합니다.
 

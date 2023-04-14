@@ -423,8 +423,8 @@ AWS Certificate Manager와 통합해 ALB에서 직접 TLS 인증서를 프로비
 1. Edge-Optimized 
    - default, 엣지 최적화 유형
    - 글로벌 클라이언트를 위한 유형
-   - 먼저 CloudFront 엣지 로케이션으로 요청을 라우팅하여 지연을 줄임
-   - 한 리전에만 위치한 API Gateway로 보내는 경우
+   - CloudFront 엣지 로케이션으로 요청을 라우팅하여 지연을 줄임
+   - 한 리전에 위치한 API Gateway로 보내는 경우
 
 2. Regional
    - 리전 엔드 포인트 유형
