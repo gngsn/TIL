@@ -45,10 +45,6 @@
 - 배스천 호스트의 EC2 보안 그룹을 최대한 제한하여 특정 IP만 액세스가 가능하도록 설정할 수 있음
 
 
-
-
-## 5. NAT Gateway
-
 ## 6. NACL
 
 ### Security Groups & Network Access Control List
