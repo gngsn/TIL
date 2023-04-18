@@ -13,7 +13,40 @@
 ## 1. VPC
 ## 2. Subnet
 ## 3. Internet Gateway
+
 ## 4. Bastion Host
+
+
+- 프라이빗 서브넷에 대한 인터넷 액세스는 없는데, 사용자가 프라이빗 서브넷에 없는 EC2 인스턴스에 액세스하고 싶을 때
+=> 배스천 호스트를 사용
+
+**배스천 호스트?**
+- EC2 인스턴스이며 퍼블릭 서브넷에 위치
+- 퍼블릭 서브넷에 있는 EC2 인스턴스로, 프라이빗 서브넷에 있는 EC2 인스턴스에 액세스
+
+**보안 그룹**
+  - 프라이빗 서브넷에 있는 EC2 인스턴스
+  - 배스천 호스트 보안 그룹이라는 보안 그룹
+
+**프라이빗 서브넷에 있는 EC2 인스턴스에 액세스**
+1. SSH로 배스천 호스트에 연결
+2. 이 배스천 호스트에서 다시 SSH로 프라이빗 서브넷의 EC2 인스턴스에 연결
+
+
+**보안 규칙**
+1. 퍼블릭 서브넷에 인터넷 액세스 최소한으로 제한 - 퍼블릭 CIDR 액세스 혹은 사용자의 인터넷 액세스만 허용하는 등
+2. 프라이빗 서브넷의 EC2 인스턴스 보안 그룹에서는 반드시 SSH 액세스를 허용
+- 포트 22번이 배스천 호스트의 프라이빗 IP가 되거나 배스천 호스트의 보안 그룹이 되는 셈
+
+
+- 배스천 호스트를 위해서는 보안 그룹이 반드시 인터넷 액세스를 허용해야 함
+- 모든 인터넷 액세스를 허용하면 보안상 위험이 큼
+- 퍼블릭 CIDR 액세스만 허용하거나 사용자의 인터넷 액세스만 허용하는 등 제한
+- 배스천 호스트의 EC2 보안 그룹을 최대한 제한하여 특정 IP만 액세스가 가능하도록 설정할 수 있음
+
+
+
+
 ## 5. NAT Gateway
 
 ## 6. NACL
@@ -88,7 +121,7 @@ NACL: Network Access Control List
 
 ## Default NACL ⭐️⭐️⭐️
 
-<img src="../img/DefaultNACL.png">
+<img src="../../img/DefaultNACL.png">
 
 - 연결된 서브넷을 가지고 인바운드/아웃바운드의 모든 요청을 허용 → 기본 NACL은 매우 개방적
 - 기본 NACL을 수정하지 않는 것 추천
@@ -205,7 +238,7 @@ VPC Flow Logs
 
 ### VPC Flow Logs Syntax
 
-<img src="../im/../img/vpcFlowSyntax.png"/>
+<img src="../im/../../img/vpcFlowSyntax.png"/>
 
 -> VPC를 통과하는 네트워크 패킷의 메타데이터: version, account-id, interface-id, 소스 주소(srcaddr), 대상 주소(dstaddr) 소스 포트(srcport), 대상 포트(dstport), 프로토콜(protocol), 패킷 수(packets), 바이트 수(bytes) 시작 동작(start action), 로그 상태(log-status)
 
@@ -406,7 +439,7 @@ Direct Connect
 - 여러 최적 경로를 통해 패킷을 전달하는 라우팅 전략
 - Site-to-Site VPN 연결을 많이 생성해서 AWS로의 연결 대역폭을 늘릴 때 사용
 
-<img src="../img/transitGwEcmp.png" alt="transitGwEcmp" />
+<img src="../../img/transitGwEcmp.png" alt="transitGwEcmp" />
 
 **Example. Transit Gateway에 VPC 네 개가 연결**
 - 기업 데이터 센터는 Site-to-Site VPN으로 Transit Gateway에 연결
