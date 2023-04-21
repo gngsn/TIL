@@ -1,6 +1,5 @@
 # Serverless
 
-
 ## Customization At the Edge
 
 : 엣지에서의 사용자 지정

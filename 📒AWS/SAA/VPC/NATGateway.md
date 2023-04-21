@@ -1,6 +1,6 @@
 # NAT
 
-NAT: Network Address Translation,네트워크 주소 변환
+NAT: Network Address Translation, 네트워크 주소 변환
 
 ## NAT Instance
 
@@ -48,3 +48,53 @@ NAT: Network Address Translation,네트워크 주소 변환
 - 인바운드에서는, 사설 서브넷의 HTTP/HTTPS 트래픽을 허용하고, SSH도 허용해야 함
 
 
+
+## NAT Gateway
+
+- AWS의 관리형 NAT 인스턴스로 가용성이 높음
+- 사용량 및 NAT Gateway의 대역폭에 따라 요금 청구
+- NAT Gateway는 특정 AZ에서 생성되고 탄력적 IP를 이어받음
+- EC2 인스턴스와 **같은 서브넷에서 사용할 수 없음**, 다른 서브넷에서 액세스할 때만 사용
+- 인터넷 게이트웨이 필요
+- 높은 대역폭: 초당 5GB이며 자동으로 초당 45GB까지 확장 가능
+- 사설 서브넷에서 NAT Gateway로 다시 인터넷 게이트웨이까지입니다
+- 보안 그룹을 관리할 필요가 없음 (포트 활성화 고민 X)
+
+### 작동 구조
+
+1. 사설 인스턴스와 서브넷이 있고 인터넷에 액세스가 없는 상태
+2. 공용 서브넷을 인터넷 게이트웨이에 연결
+3. NAT Gateway를 공용 서브넷에 배포 -> NAT Gateway에 인터넷 연결이 생김
+4. 사설 서브넷의 루트를 수정: EC2 인스턴스를 NAT Gateway에 연결
+
+
+### NAT Gateway 고가용성
+
+- NAT Gateway은 단일 AZ에서 복원 가능
+- 다중 NAT Gateway를 여러 AZ에 배치: AZ가 중지 시 결함 허용 (resilient, 장애 대응)
+
+**배치 방식**
+
+- 하나의 NAT Gateway가 하나의 특정 AZ(AZ-A)에 위치
+- 두 번째 AZ(AZ-B)에 추가 NAT Gateway를 생성
+- 각 네트워크 트래픽은 AZ 안에 제한
+
+**작동 방식**
+
+AZ-A가 중지 -> AZ-B는 계속 작동
+- AZ-B에도 NAT Gateway가 있기 때문
+- 라우팅 테이블을 통해 AZ를 서로 연결할 필요는 없음: 그 AZ의 EC2 인스턴스가 액세스 불가 상태
+
+
+## NAT Gateway vs. NAT Instance
+
+|Attribute	| NAT gateway |	NAT instance |
+|---|---|---|
+|Availability|	Highly available within AZ (create in another AZ) |	Use a script to manage failover between instances |
+| Bandwidth |	Up to 45 Gbps |	Depends on EC2 instance type |
+| Maintenance |	Managed by AWS | Managed by you (e.g., software, OS patches, …) |
+| Cost | Per hour & amount of data transferred | Per hour, EC2 instance type and size, + network $ |
+| Public IPv4 | ✔️ | ✔️ |
+| Private IPv4 | ✔️ | ✔️ |
+| Security groups | ❌ (관리 필요 X) | ✔️ |
+| Use as Bastion Host? | ❌ | ✔️ (Bastion Host로도 사용 가능) |
