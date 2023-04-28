@@ -40,6 +40,43 @@
 
 **⭐️ 즉, CloudFront는 전세계 대상 컨텐츠 전송 네트워크, S3 교차 리전 복제는 다른 리전으로의 버킷 복제**
 
+## ALB or EC2 as an Origin
+
+### 1. CloudFront -> EC2 Instance
+
+[**사용자**] --*request*--> [**Edge Location**] --*Allow Public IPs*--> [**EC2 Instance**]
+
+-> EC2 인스턴스은 반드시 **Public**으로 설정 필수
+✔️ CloudFront에는 VPC가 없기 때문에 EC2 인스턴스에 접근 X
+✔️ 엣지 로케이션의 모든 공용 IP가 EC2에 접근할 수 있도록 하는 보안 그룹 또한 설정해줘야 함
+
+
+### 2. CloudFront -> Application Load Balancer
+
+[**사용자**] --*request*--> [**Edge Location**] --*Allow Public IPs*--> [**ALB**] --*Allow Security Group*--> [**EC2 Instance**]
+
+✔️ ALB Public 설정 필수, but EC2 Instance는 Private 가능
+-> 로드 밸런서와 인스턴스 간 가상 프라이빗 네트워크가 설정되어 있기 때문
+
+### Geo Restriction
+
+- 사용자들의 지역에 따라 배포 객체 접근 제한
+  - Allowlist: 접근 가능한 국가 목록
+  - Blocklist: 반대로 접근이 불가능한 국가 목록
+- 3 rd party Geo-IP database -> 사용자의 IP가 어떤 국가에 해당하는지를 확인
+- Use case: Copyright Laws to control access to content
+
+### Cache Invalidations
+
+- CloudFront는 백엔드 오리진을 업데이트될 때 인지 불가
+  -> 단순히 TTL 만료 시 업데이트된 콘텐츠를 받아옴
+
+- CloudFront Invalidations: 최대한 빨리 새 콘텐츠를 받고 싶다면, 전체/일부 캐시를 강제 새로고침해서 캐시에 있는 TTL를 모두 제거 가능
+
+- 이때 특정 파일 경로를 전달: 별표(<code>\*</code>)로 시작하는 파일이나 /images/*와 같은 특정 경로를 무효화할 수 있음
+
+
+<br/>
 
 ## Global Accelerator vs. CloudFront
 
