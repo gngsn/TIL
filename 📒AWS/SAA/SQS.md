@@ -20,8 +20,6 @@
 ⭐️ SQS FIFO는 그룹 ID 숫자에 따른 동적 소비자 수를 원할 때
 
 
-
-
 ## SQS vs SNS vs Kinesis ⭐️⭐️⭐️⭐️⭐️
 
 ### SQS 
