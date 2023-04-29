@@ -115,13 +115,7 @@ Elastic Load Balancing 는 세 가지로 나눌 수 있음
 
 
 
-
-
-
-
 ## Network Load Balancer (OSI 4 계층)
-
-
 
 ![게시물 이미지](https://miro.medium.com/max/2426/1*QHwnbA9mWakm1SS9atzk9g.png)
 
