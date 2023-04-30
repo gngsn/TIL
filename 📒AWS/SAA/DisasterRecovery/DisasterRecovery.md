@@ -32,6 +32,8 @@ Disaster Recovery? 회사의 사업이나 재정에 부적적인 영향을 미�
 ### Backup and Restore (High RPO)
 
 #### Backup
+AWS 백업을 사용하면 AWS 서비스 전반에 걸친 데이터 보호를 중앙 집중화하고 자동화 가능. 이는 데이터 보호를 위한 규정 준수, 혹은 기업의 정책을 지원하는 데에 도움이 됨.
+
 - 기업 데이터 센터 ==> AWS Cloud(S3 버킷)
   - **AWS Storage Gateway**: 시간에 따른 데이터를 백업. ie. 수명 주기 정책을 만들어 비용 최적화 목적으로 Glacier에 데이터를 입력
   - **AWS Snowball**: RPO는 대략 일주일. 일주일에 한 번씩 많은 양의 데이터를 Glacier로 전송할 수도 있음
@@ -119,22 +121,30 @@ Example. 각 데이터 센터, AWS Cloud가 아래 처럼 있을 때
 ## SCT: Schema Conversion Tool
 - 소스 데이터베이스와 대상 데이터베이스가 다른 엔진을 갖고 있을 때, 데이터베이스의 스키마를 다른 엔진으로 변환
 
+
+<pre>
+<b>Q. AWS로, 특히 Amazon Aurora로 이전시키려는 온프레미스 Oracle 데이터베이스가 있습니다. 어떻게 이전해야 할까요?</b>
+데이터베이스 스키마를 변환하기 위해 AWS 스키마 변환 도구(AWS SCT)을 사용한 후, AWS 데이터베이스 이전 서비스(AWS DMS)를 사용해 데이터를 이전
+</pre>
+
 ## AWS Application Discovery Service
 
 - **온프레미스 서버**나 **데이터 센터**에서 클라우드로 마이그레이션 할 때, 서버를 스캔하고 마이그레이션에 중요한 서버 설치 데이터 및 종속성 매핑에 대한 정보를 수집
 - 어떻게 마이그레이션할지, 무엇을 먼저 마이그레이션할지 알 수 있음
 
-### Agentless Discovery (AWS Agentless Discovery Connector)
+**1. AWS Agentless Discovery Connector**
+- Agentless Discovery
 - VM inventory, configuration, and performance history such as CPU, memory, and disk usage
 : 가상 머신, 구성, CPU와 메모리 및 디스크 사용량과 같은 성능 기록에 대한 정보를 제공
 
-### Agent-based Discovery (AWS Application Discovery Agent)
+**2. AWS Application Discovery Agent**
+- Agent-based Discovery
 - System configuration, system performance, running processes, and details of the network connections between systems
 : 시스템 구성, 성능, 실행 중인 프로세스, 시스템 사이의 네트워크 연결에 대한 세부 정보 얻음, 종속성 매핑을 얻는 데 좋음
 
 
+### AWS Application Migration Service (MGN)
+: Lift-and-shift(rehost) 솔루션. 물리적, 가상, 또는 클라우드에 있는 다른 서버를 AWS 클라우드 네이티브로 실행
 
-### MGN: Migration Service
-: Lift-and-shift 솔루션. 물리적, 가상, 또는 클라우드에 있는 다른 서버를 AWS 클라우드 네이티브로 실행
-
+<pre>회사에서 자사의 기존 웹 사이트, 애플리케이션, 서버, 가상 머신 및 데이터를 AWS로 이전하는 계획을 세울 때, 최소 다운타임과 최소 비용으로 리프트 앤 시프트(Lift and Shift) 마이그레이션을 진행 가능</pre>
 
