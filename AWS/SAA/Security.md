@@ -488,3 +488,5 @@ Q. 다음 중 자동 순환을 지원하며, RDS DB 비밀번호를 저장하는
 Q. AWS Firewall Manager는 보안 관리 서비스로 AWS Organizations에 있는 계정과 애플리케이션 간에서 방화벽 규칙을 구성하고 중앙 관리할 수 있게 해줍니다. AWS Organizations에 통합되어 있기 때문에, AWS WAF 규칙, AWS Shield Advanced 보호, 보안 그룹, AWS Network Firewall 규칙, Amazon Route 53 Resolver와 DNS 방화벽 규칙을 활성화할 수 있습니다.
 
 Q. Amazon Macie는 완전 관리형 데이터 보안 서비스로, 머신 러닝을 사용해 S3 버킷 내에 저장된 민감한 데이터를 발견하고 보호합니다. 이는 암호화되지 않은 버킷의 목록, 공용으로 액세스 가능한 버킷 및 다른 AWS 계정과 공유된 버킷을 포함한 S3 버킷의 인벤토리를 자동으로 제공합니다. 이를 사용하면, 개인 식별 정보(PII)와 같이 민감한 데이터를 식별해 경고해 줍니다.
+
+Q. 엣지 최적화 API Gateway는 배후에서 AWS가 관리하는 사용자 지정 CloudFront 배포를 사용하여 CloudFront 엣지 로케이션을 거쳐 전 세계로 요청을 라우팅하기 때문에 ACM 인증서는 us-east-1 리전에 생성해야 합니다.
