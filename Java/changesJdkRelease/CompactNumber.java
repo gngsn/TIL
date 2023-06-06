@@ -1,7 +1,7 @@
 import java.text.NumberFormat;
 import java.util.Locale;
 
-public class JDK12CompactNumber {
+public class CompactNumber {
     public static void main(String[] args) {
         enLocaleShort();
         krLocaleShort();

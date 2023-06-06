@@ -13,23 +13,25 @@ class TextBlocks {
                 "  \"address\": \"Doe Street, 23, Java Town\"\n" +
                 "}";
         System.out.println(text);
+        System.out.println(text.translateEscapes());
     }
 
     private static void jsonBlock() {
         String text = """
-            {
-              "name": "John Doe",
-              "age": 45,
-              "address": "Doe Street, 23, Java Town"
-            }
-    """;
+                        {
+                          "name": "John Doe",
+                          "age": 45,
+                          "address": "Doe Street, 23, Java Town"
+                        }
+                """;
         System.out.println(text);
     }
+
 
     private static void emptyBlock() {
         String text = """
                 """;
-     System.out.println("||" + text + "||");
+        System.out.println("||" + text + "||");
     }
 
     private static void escapeSequence() {
