@@ -9,6 +9,7 @@
 - 명령의 부수효과를 쉽고 명확하게 표현할 수 있는 커뮤니케이션 수단 필요
 
 **👉🏻 설계(Design By Contract, DBC)**
+
 - 실행 가능한 검증 도구로 사용하고 명확한 커뮤니케이션 가능
   - 협력에 필요한 **다양한 제약**과 **부수효과**를 **명시적으로 정의하고 문서화**할 수 있음
   - 계약: 실행 가능 → 구현에 동기화돼 있는지 여부를 런타임에 검증할 수 있음
@@ -19,14 +20,14 @@
 
 ### 부수효과를 명시적으로
 
-
 **구현 조건:**
+
 1. `IsSatisfied` 메서드를 호출
    - `RecurringSchedule` 의 조건을 만족 여부 확인
 2. `Reschedule` 메서드를 호출
 
 - **Interface**
-  - 메서드의 순서와 관련된 제약을 설명하기 쉽지 않음 
+  - 메서드의 순서와 관련된 제약을 설명하기 쉽지 않음
 - **Code Contracts**
   - 계약에 의한 설계 라이브러리
   - IsSatisfied 메서드의 실행 결과가 true 일 때만 Reschedule 메서드를 호출할 수 있다는 사실을 명확하게 표현할 수 있음
@@ -45,6 +46,7 @@ class Event {
 <br/>
 
 #### 일반 if 문과 대표적인 차이점 👉🏻 문서화
+
 - Code Contracts: 일반 로직과 구분할 수 있도록 제약 조건을 명시적으로 표현
   - 일반적인 정합성 체크 로직은 코드의 구현 내부에 숨겨져 있어 정확하게 파악하기가 쉽지 않음
   - 일반 로직과 조건을 기술한 로직을 구분하기도 쉽지 않음
@@ -53,16 +55,17 @@ class Event {
 
 #### 계약
 
-> - 각 계약 당사자는 계약으로부터 <b>이익(benefit)</b>을 기대하고 이익을 얻기 위해 <b>의무(obligation)</b>를 이행한다. 
+> - 각 계약 당사자는 계약으로부터 <b>이익(benefit)</b>을 기대하고 이익을 얻기 위해 <b>의무(obligation)</b>를 이행한다.
 > - 각 계약 당사자의 이익과 의무는 계약서에 **문서화**된다.
 
 👉🏻 **한쪽의 의무가 반대쪽의 권리가 된다**
 
-두 계약 당사자 중 어느 한쪽이라도 계약서에 명시된 내용을 위반한다면 계약은 정상적으로 완료되지 않음 
+두 계약 당사자 중 어느 한쪽이라도 계약서에 명시된 내용을 위반한다면 계약은 정상적으로 완료되지 않음
 
 <br/>
 
 **Example.** 집 리모델링을 위해 인테리어 전문가에게 작업을 위탁하고 계약을 체결한다고 가정.
+
 - **본인의 의무**: 인테리어 전문가에게 대금을 지급하는 것 👉🏻 리모델링된 집을 얻는 것
 - **인테리어 전문가의 의무**: 집을 리모델링하는 것 👉🏻 대금을 지급받는 것
 
@@ -72,20 +75,17 @@ class Event {
 
 ## 02. 계약에 의한 설계
 
-
 #### 의도를 드러내는 인터페이스
 
-오퍼레이션의 시그니처만으로도 어느 정도까지는 클라이언트와 서버가 협력을 위해 수행해야 하는 제약조건을 명시 가능 
+오퍼레이션의 시그니처만으로도 어느 정도까지는 클라이언트와 서버가 협력을 위해 수행해야 하는 제약조건을 명시 가능
 
 <img src="./image/imageA1.png" />
 
 - 오퍼레이션이 클라이언트에게 어떤 것을 제공하려고 하는지를 충분히 설명할 수 있음
 - 의도를 드러내는 인터페이스를 만들면 오퍼레이션의 시그니처만으로도 클라이언트와 서버가 협력을 위해 수행해야 하는 제약조건을 어느 정도 명시 가능
 
-
 > 계약은 여기서 한걸음 더 나아감.
 > 즉, 위의 내용과 더불어 **협력하는 클라이언트는 정상적인 상태를 가진 객체와 협력해야 함**
-
 
 <img src="./image/imageA2.png" />
 
@@ -97,7 +97,7 @@ class Event {
 
 - 사전조건: 메서드가 정상적으로 실행되기 위해 만족해야 하는 조건
 - 사후조건: 메서드가 실행된 후에 클라이언트에게 보장해야 하는 조건
-- 
+-
 
 <br/>
 
@@ -106,11 +106,10 @@ class Event {
 :: 메서드가 정상적으로 실행되기 위해 만족해야 하는 조건
 
 - 메서드가 호출되기 위해 만족돼야 하는 조건. 메서드의 요구사항을 명시.
-- 사전조건이 만족되지 않을 경우, 메서드가 실행돼서는 안 된다. 
+- 사전조건이 만족되지 않을 경우, 메서드가 실행돼서는 안 된다.
 - 사전조건을 만족시키는 것은 메서드를 실행하는 클라이언트의 의무다.
 
-
-_Example._ 
+_Example._
 
 <table>
 <tr><th>메서드에 전달된 인자의 정합성을 체크하기 위해 사용</th></tr>
@@ -121,10 +120,11 @@ _Example._
 public Reservation Reserve(Customer customer, int audienceCount) {
     Contract.Requires(customer != null);
     Contract.Requires(audienceCount >= 1);
-    return new Reservation(customer, this, 
+    return new Reservation(customer, this,
         calculateFee(audienceCount), audienceCount);
 }
 ```
+
 <small>_사전 조건을 만족시킬 책임은 Reserve 메서드를 호출하는 클라이언트에게 있음_</small>
 
 </td>
@@ -133,7 +133,7 @@ public Reservation Reserve(Customer customer, int audienceCount) {
 <td>
 
 - customer가 null이 아니어야 하고, audienceCount 의 값은 1 보다 크거나 같음
-- 이 조건을 만족시키지 못할 경우 Reserve 메서드는 실행되면 안됨 
+- 이 조건을 만족시키지 못할 경우 Reserve 메서드는 실행되면 안됨
 
 따라서 이 조건을 메서드의 **사전조건으로 정의**함으로써 **메서드가 잘못된 값을 기반으로 실행되는 것을 방지**할 수 있음
 
@@ -153,21 +153,21 @@ var reservation = screening.Reserve(null, 2);  // ContractException 예외 발�
 <br/>
 
 ### Postcondition, 사후조건
+
 :: 메서드가 실행된 후에 클라이언트에게 보장해야 하는 조건
 
 - 클라이언트가 사전조건을 만족시켰다면 메서드는 사후조건에 명시된 조건을 만족시켜야 함
 - 메서드의 **실행 결과가 올바른지를 검사**하고, **실행 후에 객체가 유효한 상태로 남아 있는지**를 검증
   - 인스턴스 변수의 상태가 올바른지
-  - 메서드에 전달된 파라미터의 값이 올바르게 변경됐는지 
+  - 메서드에 전달된 파라미터의 값이 올바르게 변경됐는지
   - 반환값이 올바른지
 - 만약 클라이언트가 사전조건을 만족시켰는데도 사후조건을 만족시키지 못한 경우에는 클라이언트에게 예외를 던져야 함
 - 사후조건을 만족시키는 것은 서버의 의무
 
-
 #### 사후조건을 정의하는 것이 어려운 이유
 
 - 한 메서드 안에서 return 문이 여러 번 나올 경우
-  - 모든 return 문마다 결괏값이 올바른지 검증하는 코드를 추가해야 함. 
+  - 모든 return 문마다 결괏값이 올바른지 검증하는 코드를 추가해야 함.
   - _대부분의 라이브러리는 사후조건을 한 번만 기술할 수 있게 지원_
 - 실행 전과 실행 후의 값을 비교해야 하는 경우
   - 다른 값으로 변경됐을 수 있기 때문에 비교하기 어려울 수 있음.
@@ -231,7 +231,8 @@ public string Middle(string text){
 - 사전조건과 사후조건에 추가되는 공통의 조건으로 생각할 수 있음
 
 **특성**
-- 불변식은 클래스의 모든 인스턴스가 생성된 후에 만족돼야 함 
+
+- 불변식은 클래스의 모든 인스턴스가 생성된 후에 만족돼야 함
   - 이것은 클래스에 정의된 모든 생성자는 불변식을 준수해야 한다는 것을 의미.
 - 불변식은 클라이언트에 의해 호출 가능한 모든 메서드에 의해 준수돼야 함.
   - 메서드가 실행되는 중에는 객체의 상태가 불안정한 상태로 빠질 수 있기 때문에 불변식을 만족시킬 필요는 없지만 메서드 실행 전과 메서드 종료 후에는 항상 불변식 을 만족하는 상태가 유지돼야 한다
@@ -239,6 +240,7 @@ public string Middle(string text){
 <br/>
 
 #### Code Contracts
+
 - `Contract.Invariant` 메서드를 이용해 불변식을 정의
 - `ContractInvariantMethod` 애튜리뷰트가 지정된 메서드를 불변식을 체크해야 하는 모든 지점에 자동으로 추가
 
@@ -247,9 +249,9 @@ public class Screening {
     private Movie movie;
     private int sequence;
     private DateTime whenScreened;
-    
+
     // [ContractInvariantMethod]: Code Contracts가 적절한 타이밍에 자동으로 메서드를 호출해서 객체가 불변식을 유지하고 있는지를 검증
-    
+
     private void Invariant() {
         Contract.Invariant(movie != null);
         Contract.Invariant(sequence >= 1);
@@ -260,44 +262,101 @@ public class Screening {
 
 <small>≪Thinking in Java≫ 에서 Bruce Ekel은 특별한 라이브러리를 사용하지 않고, 계약에 의한 설계 개념을 설명하기 위해 자바의 assert를 이용해 불변식을 체크하는 코드를 모든 메서드에서 직접 호출하는 예제를 소개</small>
 
+<br/>
 
+## 03. 계약에 의한 설계와 서브타이핑
 
+- **리스코프 치환 원칙**: 슈퍼타입의 인스턴스와 협력하는 클라이언트의 관점에서, 서브타입의 인스턴스가 슈퍼타입을 대체하더라도 협력에 지장이 없어야 한다는 것을 의미
 
+> 서브타입이 리스코프 치환 원칙을 만족시키기 위해서는 클라이언트와 슈퍼타입 간에 **체결된 계약을 준수**해야 한다.
 
+<br/>
 
+**리스코프 치환 원칙을 세분화한 두 가지 규칙**
 
+1. **계약 규칙**
 
+   - : 슈퍼타입과 서브타입 사이의 사전조건, 사후조건, 불변식에 대해 서술할 수 있는 제약에 관한 규칙
+   - 서브타입에 더 강력한 사전조건을 정의할 수 없음
+   - 서브타입에 더 완화된 사후조건을 정의할 수 없음
+   - 슈퍼타입의 불변식은 서브타입에서도 반드시 유지돼야 함
 
+2. **가변성 규칙**
+   - : 파라미터와 리턴 타입의 변형과 관련된 규칙
+   - 서브타입의 메서드 파라미터는 반공변성을 가져야 함
+   - 서브타입의 리턴 타입은 공변성을 가져야 함
+   - 서브타입은 슈퍼타입이 발생시키는 예외와 다른 타입의 예외를 발생시켜서는 안됨
 
+<small>공변성과 반공변성이 중요해지는 곳은 상속이 제네릭 프로그래밍과 만나는 지점</small>
 
+<br/>
 
+- `C#`의 Code Contracts와 같은 라이브러리를 사용하는 대신 자바에서 기본적으 로 제공하는 단정문인 assert를 사용해 사전조건, 사후조건, 불변식을 직접 구현
+- 계약에 의한 설계를 위한 라이브러리가 없거나 언어에서 지원하지 않아도 계약에 의한 설계를 적용하는 것은 가능
 
+<br/>
 
+### 계약 규칙
 
+<img src="./image/imageA3.png" />
 
+위의 이 클래스들은 리스코프 치환 원칙을 만족하는가?
 
+```java
+public interface RatePolicy {
+    Money calculateFee(List<Call> calls);
+}
+```
 
+```java
+public class Bill {
+    private Phone phone;
+    private Money fee;
 
+    public Bill(Phone phone, Money fee) {
+        if (phone == null) {
+            throw new IllegalArgumentException();
+        }
 
+        if (fee.isLessThan(Money.ZERO)) {
+            throw new IllegalArgumentException();
+        }
 
+        this.phone = phone;
+        this.fee = fee;
+    }
+}
+```
 
+```java
+public class Phone {
+    private RatePolicy ratePolicy;
+    private List<Call> calls = new ArrayList<>();
 
+    public Phone(RatePolicy ratePolicy) {
+        this.ratePolicy = ratePolicy;
+    }
 
+    public void call(Call call) {
+        calls.add(call);
+    }
 
+    /**
+     * 가입자에게 청구할 요금을 담은 Bill 인스턴스를 생성한 후 반환
+    */
+    public Bill publishBill() {
+        return new Bill(this, ratePolicy.calculateFee(calls));
+    }
+}
+```
 
+- `**publishBill**`: `calculateFee` 의 반환값을 Bill 생성자에 전달.
+  - 사후 조건: 청구서의 요금은 최소한 0 원보다 크거나 같아야 하므로 `calculateFee`의 반환값은 0 원보다 커야 함
+  - `assert result.isGreaterThanOrEqual(Money.ZERO);`
+- `**calculateFee**`: 파라미터로 전달된 Call 목록에 대한 요금의 총합을 계산.
+  - 사전 조건: 파라미터인 calls 가 null 이 아니어야 함
+  - `assert calls != null;`
 
+<br/>
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+**BasicRatePolicy 와 AdditionalRatePolicy 를 RatePolicy 의 서브타입으로 제작**
