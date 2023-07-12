@@ -18,13 +18,13 @@
 ```bash
 Creating drawing of shapes...
 Drawing...
-Drawing Rectangle
-Drawing Circle
+Drawing sealed.Rectangle
+Drawing sealed.Circle
 Drawing Triangle with area: 0.4330127018922193 and perimeter: 3.0
 Drawing Triangle with area: 0.4330127018922193 and perimeter: 3.0
 Resizing...
-Resizing Rectangle
-Resizing Circle
+Resizing sealed.Rectangle
+Resizing sealed.Circle
 Triangle object can't be resized. Please create new one with required values.
 Triangle can't be resized. Please create new one with required values.
 ```

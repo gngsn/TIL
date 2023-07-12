@@ -4,16 +4,16 @@ public class Rectangle implements Shape {
 
     @Override
     public void draw() {
-        System.out.println("Drawing Rectangle");
+        System.out.println("Drawing jdk17seal.Rectangle");
     }
 
     @Override
     public void resize() {
-        System.out.println("Resizing Rectangle");
+        System.out.println("Resizing jdk17seal.Rectangle");
     }
 
     @Override
     public String description() {
-        return "Rectangle object";
+        return "jdk17seal.Rectangle object";
     }
 }

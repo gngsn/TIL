@@ -1,6 +1,6 @@
 package adapter.extra;
 
-// Part of Extra-Geometric-Shape API
+// Part of Extra-Geometric-jdk17seal.Shape API
 public class Rhombus implements GeometricShape {
     // sides
     private final double a;

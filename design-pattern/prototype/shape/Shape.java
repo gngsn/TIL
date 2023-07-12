@@ -7,9 +7,9 @@ public abstract class Shape {
     public int y;
     public String color;
 
-//    public Shape() {}
+//    public jdk17seal.Shape() {}
 //
-//    public Shape(Shape target) {
+//    public jdk17seal.Shape(jdk17seal.Shape target) {
 //        if (target != null) {
 //            this.x = target.x;
 //            this.y = target.y;
