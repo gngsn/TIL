@@ -466,3 +466,99 @@ public abstract class BasicRatePolicy implements RatePolicy {
 </table>
 
 <br/>
+
+#### ✔️ 서브타입에 더 완화된 사후조건을 정의할 수 없다
+
+_RatePolicy 의 calculateFee 오퍼레이션의 반환값이 0 원보다 작은 경우의 시나리오_
+
+```java
+/**
+ * - 일반 요금제(RegularPolicy): 10 초당 100 원 부과
+ * - 기본 요금 할인 정책(RateDiscountablePolicy): 1000원 할인
+ **/
+Phone phone = new Phone(
+    new RateDiscountablePolicy(Money.wons(1000),
+        new RegularPolicy(Money.wons(100), Duration.ofSeconds(10))));
+
+/**
+ * 통화 시간 1 분 → 통화 요금 600 원
+ **/
+phone.call(new Call(LocalDateTime.of(2017, 1, 1, 10, 10),
+    LocalDateTime.of(2017, 1, 1, 10, 11)));
+Bill bill = phone.publishBill();
+```
+
+- calculateFee 오퍼레이션은 반환값이 0원보다 커야 한다는 사후조건을 정의
+- 사후조건 을 만족시킬 책임은 클라이언트가 아니라 서버에 있음
+
+<br/>
+
+<table>
+<tr><th>완화된 사후 조건</th><th>강화된 사후 조건</th></tr>
+<tr><td>
+
+```java
+public abstract class AdditionalRatePolicy implements RatePolicy {
+
+    @Override
+    public Money calculateFee(List<Call> calls) {
+        assert calls != null;
+
+        Money fee = next.calculateFee(calls);
+        Money result = calculate(fee);
+
+        // 사후조건
+        // assert result.isGreaterThanOrEqual(Money.ZERO);
+
+        return result;
+    }
+
+    abstract protected Money calculate(Money fee);
+}
+```
+
+- Phone과의 협력은 문제없이 처리 가능
+  - AdditionalRatePolicy는 마이너스 금액도 반환할 수 있기 때문
+- Bill의 생성자에서 예외 발생
+  - fee가 마이너스 금액일 경우 예외를 던지도록 구현돼 있기 때문 (아래 코드 참고)
+
+```java
+public class Bill {
+    public Bill(Phone phone, Money fee) {
+        if (fee.isLessThan(Money.ZERO)) {
+            throw new IllegalArgumentException();
+        }
+        // ...
+    }
+}
+```
+
+- 오류는 Bill의 생성자 문제라고 하지만, 실제적으론 Bill의 문제가 아님
+  - Bill의 입장에서 요금이 0 원보다 크거나 같다고 가정하는 것은 자연스러움.
+- 문제는 기존에 Phone과 RatePolicy 사이에 체결된 계약을 위반했기 때문에 발생한 것
+  - AdditionalRatePolicy 가 사후조건을 완화했기 때문에 발생
+- 클라이언트인 Phone 의 입장에서 AdditionalRatePolicy 는 더 이상 RatePolicy의 서브타입이 아님
+
+</td><td>
+
+```java
+public abstract class AdditionalRatePolicy implements RatePolicy {
+
+    @Override
+    public Money calculateFee(List<Call> calls) {
+        // ...
+        // 사후조건
+        assert result.isGreaterThanOrEqual(Money.wons(100));
+        return result;
+    }
+    abstract protected Money calculate(Money fee);
+}
+```
+
+- Phone은 반환된 요금이 0 원보다 크기만 하다면 아무런 불만도 가지지 않기 때문에 위 변경은 클라이언 트에게 아무런 영향도 미치지 않음
+- 즉, 사후조건 강화는 계약에 영향을 미치지 않음
+
+</td></tr>
+</table>
+
+<br/>
