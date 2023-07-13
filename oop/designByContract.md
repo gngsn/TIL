@@ -360,3 +360,109 @@ public class Phone {
 <br/>
 
 **BasicRatePolicy 와 AdditionalRatePolicy 를 RatePolicy 의 서브타입으로 제작**
+
+#### BasicRatePolicy - 기본 정책 구현
+
+```java
+public abstract class BasicRatePolicy implements RatePolicy {
+
+    @Override
+    public Money calculateFee(List<Call> calls) {
+        assert calls != null; // 사전조건
+
+        Money result = Money.ZERO;
+
+        for(Call call : calls) {
+            result.plus(calculateCallFee(call));
+        }
+
+        assert result.isGreaterThanOrEqual(Money.ZERO); // 사후조건
+        return result;
+    }
+
+    protected abstract Money calculateCallFee(Call call);
+}
+```
+
+<br/>
+
+#### AdditionalRatePolicy - 부가 정책 구현
+
+```java
+public abstract class AdditionalRatePolicy implements RatePolicy {
+    private RatePolicy next;
+
+    public AdditionalRatePolicy(RatePolicy next) {
+        this.next = next;
+    }
+
+    @Override
+    public Money calculateFee(List<Call> calls) {
+        assert calls != null; // 사전조건
+
+        Money fee = next.calculateFee(calls);
+        Money result = afterCalculated(fee);
+
+        assert result.isGreaterThanOrEqual(Money.ZERO);  // 사후조건
+        return result;
+    }
+
+    abstract protected Money afterCalculated(Money fee);
+}
+```
+
+### 계약 규칙과 가변성 규칙
+
+#### ✔️ 서브타입에 더 강력한 사전조건을 정의할 수 없다
+
+_한 번도 통화가 발생하지 않은 Phone에 대한 청구서를 발행하는 시나리오_
+
+```java
+Phone phone = new Phone(new RegularPolicy(Money.wons(100), Duration.ofSeconds(10)));
+Bill bill = phone.publishBill();
+```
+
+<table>
+<tr><th>더 강력한 사전 조건</th><th>더 약한 사전 조건</th></tr>
+<tr><td>
+
+```java
+public abstract class BasicRatePolicy implements RatePolicy {
+
+    @Override
+    public Money calculateFee(List<Call> calls) {
+        // 사전조건
+        assert calls != null;
+        assert !calls.isEmpty();  // calls가 빈 리스트여서는 안 된다는 사전조건 추가
+        // ...
+    }
+}
+```
+
+- BasicRatePolicy는 사전조건에 새로운 조건을 추가함으로써 Phone과 RatePolicy 사이에 맺은 계약을 위반.
+  - Phone의 입장에서 더 이상 RatePolicy 와 BasicRatePolicy는 동일하지 않음
+- 따라서, 클라이언트의 관점에서 BasicRatePolicy 는 RatePolicy 를 대체할 수 없기 때문에 **리스코프 치환 원칙을 위반**
+
+</td><td>
+
+```java
+public abstract class BasicRatePolicy implements RatePolicy {
+
+    @Override
+    public Money calculateFee(List<Call> calls) {
+        if (calls == null) {
+            return Money.ZERO;
+        }
+        // ...
+    }
+}
+```
+
+- 사전조건을 보장해야 하는 책임은 클라이언트
+  - 이미 클라이언트인 Phone은 인자가 null 이 아닌 값을 전달하도록 보장
+- 즉, 사전조건을 완화시키는 것 은 리스코프 치환 원칙을 위반하지 않음
+
+</td></tr>
+</table>
+
+<br/>
