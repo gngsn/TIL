@@ -562,3 +562,76 @@ public abstract class AdditionalRatePolicy implements RatePolicy {
 </table>
 
 <br/>
+
+#### ✔️ 슈퍼타입의 불변식은 서브타입에서도 반드시 유지돼야 한다
+
+- `AdditionalRatePolicy`에서 다음 요금제를 가리키는 next 는 null 이어서는 안 됨
+- 따라서 AdditionalRate Policy 의 모든 메서드 실행 전과 후, 그리고 생성자의 마지막 지점에서 next 가 null 이어서는 안 된다는 불변식을 만족시켜야 함
+
+```java
+public abstract class AdditionalRatePolicy implements RatePolicy {
+
+    protected RatePolicy next;
+
+    public AdditionalRatePolicy(RatePolicy next) {
+        this.next = next;
+        assert next != null; // 불변식
+    }
+
+    @Override
+    public Money calculateFee(List<Call> calls) {
+        assert next != null; // 불변식
+        assert calls != null; // 사전조건
+
+        // ...
+
+        assert result.isGreaterThanOrEqual(Money.ZERO);  // 사후조건
+        assert next != null; // 불변식
+        return result;
+    }
+}
+```
+
+- 주목: next 가 private이 아니라 protected 변수
+- AdditionalRatePolicy 의 자식 클래스는 부모 클래스 next의 값 수정 가능
+
+<br/>
+
+**불변식을 위반하는 자식 클래스 예시**
+
+```java
+public class RateDiscountablePolicy extends AdditionalRatePolicy {
+    public void changeNext(RatePolicy next) {
+        this.next = next;
+    }
+}
+```
+
+```java
+RateDiscountablePolicy policy = new RateDiscountablePolicy(
+    Money.wons(1000),
+    new RegularPolicy(Money.wons(100), Duration.ofSeconds(10))));
+policy.changeNext(null); // 불변식 위반
+```
+
+- 캡슐화의 중요성: 모든 인스턴스 변수의 가시성을 `private` 으로 제한해야 함
+- 자식 클래스에서 인스턴스 변수의 상태를 변경하고 싶다면, 부모 클래스에 protected 메서드를 제공하고 이 메서드를 통해 불변식을 체크하게 해야함
+
+<br/>
+
+```java
+public abstract class AdditionalRatePolicy implements RatePolicy {
+
+    private RatePolicy next;
+
+    public AdditionalRatePolicy(RatePolicy next) {
+        changeNext(next);
+    }
+
+    protected void changeNext(RatePolicy next) {
+        this.next = next;
+        assert next != null; // 불변식
+    }
+
+}
+```
