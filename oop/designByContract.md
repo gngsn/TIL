@@ -635,3 +635,89 @@ public abstract class AdditionalRatePolicy implements RatePolicy {
 
 }
 ```
+
+<br/><br/>
+
+### 가변성 규칙
+
+- 중요도에 비해 대부분의 사람들이 크게 관심을 가지지는 않음
+- 리스코프 치환 원칙의 깊은 부분까지 이해하기 위해서는 가변성 규칙을 이해하는 것이 좋음
+- 특히 예외와 관련된 규칙은 알아둘 만한 가치가 있음
+
+<br/>
+
+#### 서브타입은 슈퍼타입이 발생시키는 예외와 다른 타입의 예외를 발생시켜서는 안 됨
+
+<br/>
+
+<table>
+<tr><th>슈퍼타입</th><th>서브타입</th><th>RatePolicy와 협력하는 메서드</th></tr>
+<tr><td>
+
+```java
+public class EmptyCallException extends RuntimeException { ... }
+
+public interface RatePolicy {
+    Money calculateFee(List<Call> calls) throws EmptyCallException;
+}
+```
+
+</td><td>
+
+```java
+public abstract class BasicRatePolicy implements RatePolicy {
+
+    @Override
+    public Money calculateFee(List<Call> calls) {
+        if (calls == null || calls.isEmpty()) {
+            throw new EmptyCallException();
+        }
+        ...
+    }
+}
+```
+
+</td><td>
+
+```java
+public void calculate(RatePolicy policy, List<Call> calls) {
+
+    try {
+        return policy.calculateFee(calls);
+    } catch(EmptyCallException ex) {
+        return Money.ZERO;
+    }
+}
+```
+
+- EmptyCallException 예외가 던져질 경우 이를 캐치한 후 0원을 반환
+
+</td></tr>
+</table>
+
+<br/>
+
+**RatePolicy 를 구현하는 클래스가 EmptyCallException 예외가 아닌 다른 예외를 던진다면?**
+
+```java
+public abstract class AdditionalRatePolicy implements RatePolicy {
+
+    @Override
+    public Money calculateFee(List<Call> calls) {
+        if (calls == null || calls.isEmpty()) {
+            throw new NoneElementException();
+        }
+        ...
+    }
+}
+```
+
+```java
+public class EmptyCallException extends RuntimeException { ... }
+
+public class NoneElementException extends EmptyCallException { ... }
+```
+
+다음과 같이 상속 계층이 다르다면 하나의 catch 문으로 두 예외 모두를 처리할 수 없기 때문에 NoneElementException 은 예외 처리에서 잡히지 않게 된
+
+결과적으로 클라이언트 입장에서 협력의 결과가 예상을 벗어났기 때문에 AdditionalRatePolicy는 RatePolicy를 대체할 수 없다.
