@@ -718,6 +718,35 @@ public class EmptyCallException extends RuntimeException { ... }
 public class NoneElementException extends EmptyCallException { ... }
 ```
 
-다음과 같이 상속 계층이 다르다면 하나의 catch 문으로 두 예외 모두를 처리할 수 없기 때문에 NoneElementException 은 예외 처리에서 잡히지 않게 된
+catch 문으로 `EmptyCallException`을 잡고 있고, `NoneElementException`은 예외 처리에서 잡히지 않음
 
-결과적으로 클라이언트 입장에서 협력의 결과가 예상을 벗어났기 때문에 AdditionalRatePolicy는 RatePolicy를 대체할 수 없다.
+- 클라이언트 입장에서 협력의 결과가 예상을 벗어남.
+- AdditionalRatePolicy는 RatePolicy를 대체할 수 없음
+
+**비슷한 예시**: Bird - Penguin
+
+```java
+public class Bird {
+    public void fly() { ... }
+}
+
+public class Penguin extends Bird {
+
+    @Override
+    public void fly() {
+        throw new UnsupportedOperationException();
+    }
+}
+```
+
+- fly의 행위를 예외를 던자는 것으로 대체하면서 정상 동작의 예상을 벗어남
+
+```java
+public class Penguin extends Bird {
+
+...
+    @Override
+        public void fly() {
+    }
+}
+```
