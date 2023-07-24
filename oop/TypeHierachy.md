@@ -132,12 +132,65 @@ public interface Effect extends GameObject {
 
 <br/>
 
-### 인터페이스를 이용한 타입 계층 구현
+### 추상 클래스를 이용한 타입 계층 구현
 
-- 클래스와 타입의 차이점을 이해하는 것은 설계 관점에서 매우 중요
-  - 타입은 동일한 퍼블릭 인터페이스를 가진 객체들의 범주
-  - 클래스는 타입에 속하는 객체들을 구현하기 위한 구현 메커니즘
-- 객 체지향에서 중요한 것은 협력 안에서 객체가 제공하는 행동이라는 사실을 기억하라 (중요한 것은 클래스 자체가 아니라 타입)
-  - 타입이 식별된 후에 타입에 속하는 객체를 구현하기 위해 클래스를 사용하는 것이
+<table>
+<tr>
+<td>
 
+```java
+public abstract class DiscountPolicy {
+    private List<DiscountCondition> conditions = new ArrayList<>();
+
+    public DiscountPolicy(DiscountCondition ... conditions) {
+        this.conditions = Arrays.asList(conditions);
+    }
+
+    public Money calculateDiscountAmount(Screening screening) {
+        for(DiscountCondition each : conditions) {
+            if (each.isSatisfiedBy(screening)) {
+                return getDiscountAmount(screening);
+            }
+        }
+        return screening.getMovieFee();
+    }
+
+    abstract protected Money getDiscountAmount(Screening Screening);
+}
+```
+
+</td>
+<td>
+
+```java
+public class AmountDiscountPolicy extends DiscountPolicy {
+    private Money discountAmount;
+
+    public AmountDiscountPolicy(Money discountAmount, DiscountCondition... conditions) {
+        super(conditions);
+        this.discountAmount = discountAmount;
+    }
+
+    @Override
+    protected Money getDiscountAmount(Screening screening) {
+        return discountAmount;
+    }
+}
+```
+
+</td>
+</tr>
+</table>
+
+#### 구체 클래스의 타입 상속 vs 추상 클래스 타입 상속
+
+1. 첫 번째, 의존하는 대상의 추상화 정도
+   - 구체 클래스 상속: 구체적인 내부 구현에 강하게 결합 (부모 클래스가 변경되면 자식 클래스도 변경될 가능성이 큼)
+   - 추상 클래스 상속: 내부 구현이 아닌 추상 메서드의 시그니처에만 의존
+   - **⭐️ 모든 구체 클래스의 부모 ㅖ클래스를 항상 추상 클래스로 만들기 위해 노력하라.**
+2. 두 번째, 상속을 사용하는 의도
+   - `Phone` 클래스의 경우 자식 클래스인 `NightlyDiscountPhone` 의 `calculateFee` 메서드가 부모 클래스인 Phone의 `calculateFee` 메서드의 구체적인 내부 구현에 강하게 결합
+     - `Phone` 클래스가 변경될 경우 자식 클래스인 `NightlyDiscountPhone` 도 함께 변경될 가능성이 높음
+
+<br/>
 <br/>
