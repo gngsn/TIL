@@ -34,13 +34,6 @@ public class Account {
                 this.activityWindow.calculateBalance(this.id));
     }
 
-    public boolean withdraw(Money money, AccountId targetAccountId) {
-        if (!mayWithdraw(money)) {
-            return false;
-        }
-        // ...
-    }
-
-    public static class AccountId {
+    public record AccountId(@Getter Long value) {
     }
 }
