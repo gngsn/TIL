@@ -1,5 +1,5 @@
 package com.gngsn.account.application.port.in;
 
-public interface SendMoneyUsecase {
+public interface SendMoneyUseCase {
     boolean sendMoney(SendMoneyCommand command);
 }
