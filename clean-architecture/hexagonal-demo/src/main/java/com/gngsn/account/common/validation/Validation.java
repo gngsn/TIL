@@ -1,10 +1,8 @@
-package com.gngsn.shared;
+package com.gngsn.account.common.validation;
 
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
-import jakarta.validation.Validation;
 import jakarta.validation.Validator;
-import jakarta.validation.ValidatorFactory;
 
 import java.util.Set;
 
@@ -15,7 +13,7 @@ import static jakarta.validation.Validation.buildDefaultValidatorFactory;
  * - 유스케이스 구현체 주위에 사실상 오류 방지 레이어(anti corruption layer)를 생성.
  *   - 해당 레이어는 계층형 아키텍처의 계층이 아니라, 잘못된 입력을 호출자에게 돌려주는 유스케이스 보호막
  */
-public class Validating<T> {
+public class Validation<T> {
 
     // Your IDE may complain that the ValidatorFactory needs to be closed, but if we do that here,
     // we break the contract of ValidatorFactory#close.

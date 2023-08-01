@@ -4,7 +4,7 @@ import com.gngsn.account.application.domain.model.Account;
 import com.gngsn.account.application.domain.model.Money;
 import jakarta.validation.constraints.NotNull;
 
-import static com.gngsn.shared.Validating.validate;
+import static com.gngsn.account.common.validation.Validation.validate;
 
 public record SendMoneyCommand(
         @NotNull Account.AccountId sourceAccountId,
