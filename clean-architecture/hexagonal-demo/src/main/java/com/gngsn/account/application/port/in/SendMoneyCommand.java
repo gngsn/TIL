@@ -1,20 +1,16 @@
 package com.gngsn.account.application.port.in;
 
-import com.gngsn.account.domain.Account;
-import com.gngsn.account.domain.Money;
-import com.gngsn.shared.SelfValidating;
+import com.gngsn.account.application.domain.model.Account;
+import com.gngsn.account.application.domain.model.Money;
 import jakarta.validation.constraints.NotNull;
 
-import static java.util.Objects.requireNonNull;
+import static com.gngsn.shared.Validating.validate;
 
-public class SendMoneyCommand extends SelfValidating<SendMoneyCommand> {
-
-    @NotNull
-    private final Account.AccountId sourceAccountId;
-    @NotNull
-    private final Account.AccountId targetAccountId;
-    @NotNull
-    private final Money money;
+public record SendMoneyCommand(
+        @NotNull Account.AccountId sourceAccountId,
+        @NotNull Account.AccountId targetAccountId,
+        @NotNull Money money
+) {
 
     /**
      * 입력 유효성 체크하는 생성자
@@ -27,21 +23,21 @@ public class SendMoneyCommand extends SelfValidating<SendMoneyCommand> {
         this.sourceAccountId = sourceAccountId;
         this.targetAccountId = targetAccountId;
         this.money = money;
-        requireNonNull(sourceAccountId);
-        requireNonNull(targetAccountId);
-        // requireGreaterThan(money, 0);
-        this.validateSelf();
+        validate(this);
     }
 
-    public Account.AccountId getSourceAccountId() {
+    @Override
+    public Account.AccountId sourceAccountId() {
         return sourceAccountId;
     }
 
-    public Account.AccountId getTargetAccountId() {
+    @Override
+    public Account.AccountId targetAccountId() {
         return targetAccountId;
     }
 
-    public Money getMoney() {
+    @Override
+    public Money money() {
         return money;
     }
 }

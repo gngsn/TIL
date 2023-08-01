@@ -1,12 +1,12 @@
 package com.gngsn.account.adapter.out.persistence;
 
-import com.gngsn.account.domain.Account;
-import com.gngsn.account.domain.Account.AccountId;
+import com.gngsn.account.application.domain.model.Account;
+import com.gngsn.account.application.domain.model.Account.AccountId;
 
-import com.gngsn.account.domain.Activity;
-import com.gngsn.account.domain.Activity.ActivityId;
-import com.gngsn.account.domain.ActivityWindow;
-import com.gngsn.account.domain.Money;
+import com.gngsn.account.application.domain.model.Activity;
+import com.gngsn.account.application.domain.model.Activity.ActivityId;
+import com.gngsn.account.application.domain.model.ActivityWindow;
+import com.gngsn.account.application.domain.model.Money;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;

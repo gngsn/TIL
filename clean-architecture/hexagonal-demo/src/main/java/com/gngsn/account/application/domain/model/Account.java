@@ -1,4 +1,4 @@
-package com.gngsn.account.domain;
+package com.gngsn.account.application.domain.model;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;

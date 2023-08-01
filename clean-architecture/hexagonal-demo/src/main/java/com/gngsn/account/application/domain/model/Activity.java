@@ -1,6 +1,6 @@
-package com.gngsn.account.domain;
+package com.gngsn.account.application.domain.model;
 
-import com.gngsn.account.domain.Account.AccountId;
+import com.gngsn.account.application.domain.model.Account.AccountId;
 import lombok.Getter;
 
 import java.time.LocalDateTime;

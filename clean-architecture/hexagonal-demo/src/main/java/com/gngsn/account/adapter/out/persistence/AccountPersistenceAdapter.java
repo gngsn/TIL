@@ -2,9 +2,8 @@ package com.gngsn.account.adapter.out.persistence;
 
 import com.gngsn.account.application.port.out.LoadAccountPort;
 import com.gngsn.account.application.port.out.UpdateAccountStatePort;
-import com.gngsn.account.domain.Account;
+import com.gngsn.account.application.domain.model.Account;
 import jakarta.persistence.EntityNotFoundException;
-import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;

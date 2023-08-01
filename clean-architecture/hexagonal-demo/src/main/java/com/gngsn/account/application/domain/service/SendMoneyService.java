@@ -1,4 +1,4 @@
-package com.gngsn.account.application;
+package com.gngsn.account.application.domain.service;
 
 import com.gngsn.account.application.port.in.SendMoneyCommand;
 import com.gngsn.account.application.port.in.SendMoneyUsecase;
