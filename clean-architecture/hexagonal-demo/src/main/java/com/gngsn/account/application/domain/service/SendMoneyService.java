@@ -1,5 +1,7 @@
 package com.gngsn.account.application.domain.service;
 
+import com.gngsn.account.application.domain.model.Account;
+import com.gngsn.account.application.domain.model.Account.AccountId;
 import com.gngsn.account.application.port.in.SendMoneyCommand;
 import com.gngsn.account.application.port.in.SendMoneyUseCase;
 import com.gngsn.account.application.port.out.AccountLock;
@@ -8,13 +10,14 @@ import com.gngsn.account.application.port.out.UpdateAccountStatePort;
 import com.gngsn.account.common.UseCase;
 import jakarta.transaction.Transactional;
 
+import java.time.LocalDateTime;
+
 @UseCase
 @Transactional
 public class SendMoneyService implements SendMoneyUseCase {
     private final LoadAccountPort loadAccountPort;
     private final AccountLock accountLock;
     private final UpdateAccountStatePort updateAccountStatePort;
-
     private final MoneyTransferProperties moneyTransferProperties;
 
     public SendMoneyService(final LoadAccountPort loadAccountPort, final AccountLock accountLock, final UpdateAccountStatePort updateAccountStatePort, final MoneyTransferProperties moneyTransferProperties) {
@@ -30,8 +33,42 @@ public class SendMoneyService implements SendMoneyUseCase {
         checkThreshold(command);
 
         // TODO: 모델 상태 조작
+
+        LocalDateTime baselineDate = LocalDateTime.now().minusDays(10);
+
+        Account sourceAccount = loadAccountPort.loadAccount(
+                command.sourceAccountId(),
+                baselineDate);
+
+        Account targetAccount = loadAccountPort.loadAccount(
+                command.targetAccountId(),
+                baselineDate);
+
+        AccountId sourceAccountId = sourceAccount.getId()
+                .orElseThrow(() -> new IllegalStateException("expected source account ID not to be empty"));
+        AccountId targetAccountId = targetAccount.getId()
+                .orElseThrow(() -> new IllegalStateException("expected target account ID not to be empty"));
+
+        accountLock.lockAccount(sourceAccountId);
+        if (!sourceAccount.withdraw(command.money(), targetAccountId)) {
+            accountLock.releaseAccount(sourceAccountId);
+            return false;
+        }
+
+        accountLock.lockAccount(targetAccountId);
+        if (!targetAccount.deposit(command.money(), sourceAccountId)) {
+            accountLock.releaseAccount(sourceAccountId);
+            accountLock.releaseAccount(targetAccountId);
+            return false;
+        }
+
+        updateAccountStatePort.updateActivities(sourceAccount);
+        updateAccountStatePort.updateActivities(targetAccount);
+
+        accountLock.releaseAccount(sourceAccountId);
+        accountLock.releaseAccount(targetAccountId);
         // TODO: 출력 값 반환
-        return false;
+        return true;
     }
 
     private void checkThreshold(SendMoneyCommand command) {

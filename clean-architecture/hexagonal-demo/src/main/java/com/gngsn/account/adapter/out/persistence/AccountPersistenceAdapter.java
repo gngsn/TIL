@@ -3,6 +3,7 @@ package com.gngsn.account.adapter.out.persistence;
 import com.gngsn.account.application.port.out.LoadAccountPort;
 import com.gngsn.account.application.port.out.UpdateAccountStatePort;
 import com.gngsn.account.application.domain.model.Account;
+import com.gngsn.account.application.domain.model.Account.AccountId;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Component;
 
@@ -16,11 +17,8 @@ public record AccountPersistenceAdapter(
         AccountMapper accountMapper
 ) implements LoadAccountPort, UpdateAccountStatePort {
 
-
-    public Account loadaccount(
-            Account.AccountId accountId,
-            LocalDateTime baselineDate) {
-
+    @Override
+    public Account loadAccount(final AccountId accountId, final LocalDateTime baselineDate) {
         AccountJpaEntity account = accountRepository.findById(accountId.value())
                 .orElseThrow(EntityNotFoundException::new);
 
@@ -46,5 +44,10 @@ public record AccountPersistenceAdapter(
                 activities,
                 withdrawalBalance,
                 depositBalance);
+    }
+
+    @Override
+    public void updateActivities(final Account account) {
+
     }
 }
