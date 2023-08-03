@@ -5,7 +5,6 @@ import lombok.Getter;
 import lombok.NonNull;
 
 import java.time.LocalDateTime;
-import java.util.Optional;
 
 /**
  * Activity Entity.
@@ -22,9 +21,9 @@ public class Activity {
     @Getter private final Money money;
 
     public Activity(
-            @NonNull Account.AccountId ownerAccountId,
-            @NonNull Account.AccountId sourceAccountId,
-            @NonNull Account.AccountId targetAccountId,
+            @NonNull AccountId ownerAccountId,
+            @NonNull AccountId sourceAccountId,
+            @NonNull AccountId targetAccountId,
             @NonNull LocalDateTime timestamp,
             @NonNull Money money) {
         this.id = null;
@@ -35,6 +34,21 @@ public class Activity {
         this.money = money;
     }
 
-    public record ActivityId(Long value) {
+    public Activity(
+            @NonNull ActivityId id,
+            @NonNull AccountId ownerAccountId,
+            @NonNull AccountId sourceAccountId,
+            @NonNull AccountId targetAccountId,
+            @NonNull LocalDateTime timestamp,
+            @NonNull Money money) {
+        this.id = id;
+        this.ownerAccountId = ownerAccountId;
+        this.sourceAccountId = sourceAccountId;
+        this.targetAccountId = targetAccountId;
+        this.timestamp = timestamp;
+        this.money = money;
+    }
+
+    public record ActivityId(@Getter Long value) {
     }
 }

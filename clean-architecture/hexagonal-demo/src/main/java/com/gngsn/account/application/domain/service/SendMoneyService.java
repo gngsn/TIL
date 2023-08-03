@@ -32,8 +32,7 @@ public class SendMoneyService implements SendMoneyUseCase {
         // 비즈니스 규칙 검증
         checkThreshold(command);
 
-        // TODO: 모델 상태 조작
-
+        // 모델 상태 조작
         LocalDateTime baselineDate = LocalDateTime.now().minusDays(10);
 
         Account sourceAccount = loadAccountPort.loadAccount(
@@ -67,7 +66,7 @@ public class SendMoneyService implements SendMoneyUseCase {
 
         accountLock.releaseAccount(sourceAccountId);
         accountLock.releaseAccount(targetAccountId);
-        // TODO: 출력 값 반환
+        // 출력 값 반환
         return true;
     }
 
