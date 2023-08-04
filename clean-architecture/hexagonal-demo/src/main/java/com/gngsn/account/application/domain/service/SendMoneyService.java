@@ -1,5 +1,7 @@
 package com.gngsn.account.application.domain.service;
 
+import com.gngsn.account.application.domain.common.MoneyTransferProperties;
+import com.gngsn.account.application.domain.exception.ThresholdExceededException;
 import com.gngsn.account.application.domain.model.Account;
 import com.gngsn.account.application.domain.model.Account.AccountId;
 import com.gngsn.account.application.port.in.SendMoneyCommand;
@@ -24,7 +26,7 @@ public class SendMoneyService implements SendMoneyUseCase {
         this.loadAccountPort = loadAccountPort;
         this.accountLock = accountLock;
         this.updateAccountStatePort = updateAccountStatePort;
-        this.moneyTransferProperties = moneyTransferProperties;
+        this.moneyTransferProperties = new MoneyTransferProperties();
     }
 
     @Override

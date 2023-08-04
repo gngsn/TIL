@@ -1,4 +1,4 @@
-package com.gngsn.account.application.domain.service;
+package com.gngsn.account.application.domain.exception;
 
 import com.gngsn.account.application.domain.model.Money;
 
