@@ -9,7 +9,6 @@ import jakarta.transaction.Transactional;
 import java.util.List;
 
 @UseCase
-@Transactional
 public class UserService implements GetUserListUseCase {
     private final UserClient userClient;
 
@@ -19,6 +18,6 @@ public class UserService implements GetUserListUseCase {
 
     @Override
     public List<User> get() {
-        return userClient.getUsers("ko").toUserList();
+        return userClient.getUsers("us").toUserList();
     }
 }
