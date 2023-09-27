@@ -1,6 +1,6 @@
 import java.text.MessageFormat;
 
-import static java.lang.StringTemplate.STR;
+//import static java.lang.StringTemplate.STR;
 
 class StringTemplate {
 
@@ -45,25 +45,25 @@ class StringTemplate {
     */
 
     public void templateExpression() {
-        String name = "Joan";
-        String info = STR."My name is \{name}";
-        assert info.equals("My name is Joan");   // true
-
-        // Embedded expressions can be strings
-        String firstName = "Bill";
-        String lastName  = "Duck";
-        String fullName  = STR."\{firstName} \{lastName}";  // "Bill Duck"
-        String sortName  = STR."\{lastName}, \{firstName}"; // "Duck, Bill"
-
-
-        // Embedded expressions can perform arithmetic
-        int x = 10, y = 20;
-        String s1 = STR."\{x} + \{y} = \{x + y}";  // "10 + 20 = 30"
-
-        // Embedded expressions can invoke methods and access fields
-        String s2 = STR."You have a \{getOfferType()} waiting for you!";
-        // "You have a gift waiting for you!"
-        String t = STR."Access at \{req.date} \{req.time} from \{req.ipAddress}";
-        //  "Access at 2022-03-25 15:34 from 8.8.8.8"
+//        String name = "Joan";
+//        String info = STR."My name is \{name}";
+//        assert info.equals("My name is Joan");   // true
+//
+//        // Embedded expressions can be strings
+//        String firstName = "Bill";
+//        String lastName  = "Duck";
+//        String fullName  = STR."\{firstName} \{lastName}";  // "Bill Duck"
+//        String sortName  = STR."\{lastName}, \{firstName}"; // "Duck, Bill"
+//
+//
+//        // Embedded expressions can perform arithmetic
+//        int x = 10, y = 20;
+//        String s1 = STR."\{x} + \{y} = \{x + y}";  // "10 + 20 = 30"
+//
+//        // Embedded expressions can invoke methods and access fields
+//        String s2 = STR."You have a \{getOfferType()} waiting for you!";
+//        // "You have a gift waiting for you!"
+//        String t = STR."Access at \{req.date} \{req.time} from \{req.ipAddress}";
+//        //  "Access at 2022-03-25 15:34 from 8.8.8.8"
     }
 }
