@@ -1,17 +1,15 @@
 import java.time.Duration;
 import java.util.concurrent.Executors;
-import java.util.concurrent.ThreadFactory;
 import java.util.stream.IntStream;
 
 class VirtualThread {
     public static void main(String[] args) {
-        ThreadFactory factory = Thread.ofVirtual().name("test-virtual-thread").factory();
+        // 1. time : 1,024 ms
         long start = System.currentTimeMillis();
         try (var executor = Executors.newVirtualThreadPerTaskExecutor()) {
-            IntStream.range(0, 10_000).forEach(i -> {
+            IntStream.range(0, 1_000).forEach(i -> {
                 executor.submit(() -> {
                     Thread.sleep(Duration.ofSeconds(1));
-//                    System.out.println(Thread.currentThread());
                     return i;
                 });
             });
@@ -19,24 +17,18 @@ class VirtualThread {
         long elapsedTime = System.currentTimeMillis() - start;
         System.out.println("1. time : " + (elapsedTime));
 
+        // 2. time : 100,382 ms
         start = System.currentTimeMillis();
-        try (var executor = Executors.newSingleThreadExecutor()) {
-            IntStream.range(0, 10_000).forEach(i -> {
+        try (var executor = Executors.newFixedThreadPool(10)) {
+            IntStream.range(0, 1_000).forEach(i -> {
                 executor.submit(() -> {
                     Thread.sleep(Duration.ofSeconds(1));
-                    System.out.println(Thread.currentThread());
                     return i;
                 });
             });
         }
         elapsedTime = System.currentTimeMillis() - start;
         System.out.println("2. time : " + (elapsedTime));
-    }
-
-    private static Thread virtualThread(String name, Runnable runnable) {
-        return Thread.ofVirtual()
-                .name(name)
-                .start(runnable);
     }
 }
 
