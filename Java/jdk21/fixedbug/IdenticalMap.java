@@ -18,8 +18,7 @@ public class IdenticalMap {
 
         users.put(key, new User("Sun Park"));
         // try to remove an EQUAL but not IDENTICAL combination
-        var removed = users
-                .remove(key, new User("Sun Park"));
+        var removed = users.remove(key, new User("Sun Park"));
 
         // according to the `IdentityHashMap` contract there should've been no removal
         // ❌ up to Java 19: assertion fails
