@@ -1,0 +1,66 @@
+version: "3"
+services:
+  manager01:
+    container_name: manager01
+    image: docker:dind
+    privileged: true
+    tty: true
+    ports:
+      - 8000:80
+      - 9000:9000
+    expose:
+      - 3375
+    volumes:
+      - "./stack:/stack"
+
+  manager02:
+    container_name: manager02
+    image: docker:dind
+    privileged: true
+    tty: true
+    ports:
+      - 8001:80
+      - 9001:9000
+    expose:
+      - 2375
+    volumes:
+      - "./stack:/stack"
+
+  worker01:
+    container_name: worker01
+    image: docker:dind
+    privileged: true
+    tty: true
+    depends_on:
+      - manager01
+      - manager02
+    expose:
+      - 7946
+      - 7946/udp
+      - 4789/udp
+
+  worker02:
+    container_name: worker02
+    image: docker:dind
+    privileged: true
+    tty: true
+    depends_on:
+      - manager01
+      - manager02
+    expose:
+      - 7946
+      - 7946/udp
+      - 4789/udp
+
+  worker03:
+    container_name: worker03
+    image: docker:dind
+    privileged: true
+    tty: true
+    depends_on:
+      - manager01
+      - manager02
+    expose:
+      - 7946
+      - 7946/udp
+      - 4789/udp
