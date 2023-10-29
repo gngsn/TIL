@@ -24,15 +24,6 @@ Swarm은 따로 설치나 설정 없이도 바로 사용할 수 있는 Out-of-th
 쿠버네티스는 훨씬 더 많은 탄력성과 더 활발한 커뮤니티 및 생태계를 가지고 있습니다.
 그러나 스웜(Swarm)은 사용이 훨씬 쉽고 많은 중소기업과 애플리케이션 배포에 인기 있는 선택입니다. 학습 스웜(Learning Swarm)은 쿠버네티스를 학습하기 위한 디딤돌입니다.
 
----
-
-- orchestrate: 오케스트라용으로 편곡하다. (복잡한 계획·행사를 세심히 또는 은밀히) 조작하다 (=stage-manage)
-- disruptively: 분열시켜, 분열성으로
-- momentum: 탄력, 가속도, 운동량
-- stepping-stone: 징검다리돌
-
----
-
 ## Docker Swarm - The Deep Dive
 
 이 장에서 딥 다이브 부분을 다음과 같이 나누어 보겠습니다:
@@ -76,18 +67,6 @@ Service를 향상된 컨테이너로 생각하면 유용합니다.
 
 
 프라이머는 이제 됐어요. 몇 가지 예를 들어 손을 더럽히도록 합시다.
-
----
-
-- primer: 시발체
-- swarm: 떼 (cluster of nodes)
-- dispatch: (특별한 목적을 위해) 보내다[파견하다], 발송하다
-- conscious: 의식하는, 자각하는 self-conscious, 의식이 있는
-- plaudits: 칭찬, 찬사
-- as the icing on the cake: 금상첨화
-- get one's hands dirty: do manual, menial(하인), or other hard work.
-
----
 
 ## Initializing a new swarm
 
@@ -167,13 +146,6 @@ Docker service가 관리자에서 다시 시작되었지만 Swarm에 다시 조�
 
 운영 환경에서는 스웜을 잠그고 unlock 키를 보호하는 것이 좋습니다.
 
----
-
-- has the potential to V: 할 가능성이 있다
-- compromise: 타협, 절충해서 나온 것, 타협하다
-
----
-
 ## Dedicated manager nodes
 기본적으로 manager 노드와 worker 노드는 사용자 응용프로그램을 실행할 수 있습니다.
 프로덕션 환경에서는 Swarm을 구성하는 것이 일반적인데, worker만 사용자 애플리케이션을 실행합니다.
@@ -194,7 +166,19 @@ $ docker node update --availability drain mgr3
 
 ---
 
-- to focus solely on:
+- disruptively: 분열시켜, 분열성으로
+- momentum: 탄력, 가속도, 운동량
+- stepping-stone: 징검다리돌
+- primer: 시발체
+- swarm: 떼 (cluster of nodes)
+- dispatch: (특별한 목적을 위해) 보내다\[파견하다\], 발송하다
+- conscious: 의식하는, 자각하는 self-conscious, 의식이 있는
+- plaudits: 칭찬, 찬사
+- as the icing on the cake: 금상첨화
+- get one's hands dirty: do manual, menial(하인), or other hard work.
+- has the potential to V: 할 가능성이 있다
+- compromise: 타협, 절충해서 나온 것, 타협하다
+- to focus solely on
 
 ---
 
