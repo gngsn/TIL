@@ -1,0 +1,40 @@
+version: "3"
+
+services:
+  master:
+    image: registry:5000/gngsn/tododb-master:latest
+    deploy:
+      replicas: 1
+      placement:
+        constraints: [node.role != manager]
+    environment:
+      MYSQL_ROOT_PASSWORD: gngsn
+      MYSQL_DATABASE: tododb
+      MYSQL_USER: gngsn
+      MYSQL_PASSWORD: gngsn
+      MYSQL_MASTER: "true"
+    networks:
+      - todoapp
+
+  slave:
+    image: registry:5000/gngsn/tododb-slave:latest
+    deploy:
+      replicas: 2
+      placement:
+        constraints: [node.role != manager]
+    depends_on:
+      - master
+    environment:
+      MYSQL_MASTER_HOST: gngsn
+      MYSQL_ROOT_PASSWORD: gngsn
+      MYSQL_DATABASE: tododb
+      MYSQL_USER: gngsn
+      MYSQL_PASSWORD: gngsn
+      MYSQL_REPL_USER: repl
+      MYSQL_REPL_PASSWORD: gngsn
+    networks:
+      - todoapp
+
+networks:
+  todoapp:
+    external: true
