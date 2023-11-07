@@ -10,21 +10,21 @@ services:
     depends_on:
       - web
     environment:
-      SERVICE_PORTS: 80   # 📌
+      SERVICE_PORTS: 80
       WORKER_PROCESSES: 2
       WORKER_CONNECTIONS: 1024
       KEEPALIVE_TIMEOUT: 65
       GZIP: "on"
-      BACKEND_HOST: todo_app_api:3000   # 📌
+      BACKEND_HOST: todo_frontend_web:3000
       BACKEND_MAX_FAILS: 3
       BACKEND_FAIL_TIMEOUT: 10s
       SERVER_PORT: 80
-      SERVER_NAME: todo_app_nginx
+      SERVER_NAME: localhost
       LOG_STDOUT: "true"
     networks:
       - todoapp
     volumes:
-      - assets:/var/www/_nuxt   # 📌
+      - assets:/var/www/_nuxt
 
   web:
     image: registry:5000/gngsn/todoweb:latest
@@ -33,16 +33,18 @@ services:
       placement:
         constraints: [node.role != manager]
     environment:
-      TODO_API_URL: http://todo_app_nginx   # 📌
+      TODO_API_URL: http://todo_app_nginx
+    ports:
+      - 3000:3000
     networks:
       - todoapp
     volumes:
-      - assets:/todoweb/.nuxt/dist   # 📌
+      - assets:/todoweb/.nuxt/dist
 
 networks:
   todoapp:
     external: true
 
-volumes:  # 📌
+volumes:
   assets:
     driver: local

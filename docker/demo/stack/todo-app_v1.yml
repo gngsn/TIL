@@ -1,0 +1,17 @@
+version: "3"
+
+services:
+  api:
+    image: registry:5000/gngsn/todoapi:latest
+    deploy:
+      replicas: 2
+    environment:
+      TODO_BIND: ":8080"
+      TODO_MASTER_URL: "gngsn:gngsn@tcp(todo_mysql_master:3306)/tododb?parseTime=true"
+      TODO_SLAVE_URL: "gngsn:gngsn@tcp(todo_mysql_slave:3306)/tododb?parseTime=true"
+    networks:
+      - todoapp
+
+networks:
+  todoapp:
+    external: true
