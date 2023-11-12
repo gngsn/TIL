@@ -1,0 +1,26 @@
+version: "3"
+services:
+  nginx:
+    image: gihyodocker/nginx-proxy:latest
+    deploy:
+      replicas: 3
+      placement:
+        constraints: [node.role != manager]
+    environment:
+      SERVICE_PORTS: 80
+      BACKEND_HOST: echo_api:8000
+    depends_on:
+      - api
+    networks:
+      - stacknet
+  api:
+    image: registry:5000/gngsn/echo:latest
+    deploy:
+      replicas: 3
+      placement:
+        constraints: [node.role != manager]
+    networks:
+      - stacknet
+networks:
+  stacknet:
+    external: true

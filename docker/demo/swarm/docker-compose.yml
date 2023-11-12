@@ -1,0 +1,84 @@
+version: "3" 
+services:
+  registry:
+    container_name: registry
+    image: registry:2.6
+    ports:
+      - 5000:5000
+    volumes:
+      - "./registry-data:/var/lib/registry"
+
+  manager:
+    container_name: manager
+    image: docker:dind
+    privileged: true
+    tty: true
+    ports:
+      - 8000:80
+      - 9000:9000
+    depends_on:
+      - registry
+    expose:
+      - 3375
+    command: "--insecure-registry registry:5000"
+    volumes:
+      - "./stack:/stack"
+
+  worker01:
+    container_name: worker01
+    image: docker:dind
+    privileged: true
+    tty: true
+    depends_on:
+      - manager
+      - registry
+    expose:
+      - 7946
+      - 7946/udp
+      - 4789/udp
+    command: "--insecure-registry registry:5000"
+
+  worker02:
+    container_name: worker02
+    image: docker:dind
+    privileged: true
+    tty: true
+    depends_on:
+      - manager
+      - registry
+    expose:
+      - 7946
+      - 7946/udp
+      - 4789/udp
+    command: "--insecure-registry registry:5000"
+
+  worker03:
+    container_name: worker03
+    image: docker:dind
+    privileged: true
+    tty: true
+    depends_on: 
+      - manager
+      - registry
+    expose:
+      - 7946
+      - 7946/udp
+      - 4789/udp
+    command: "--insecure-registry registry:5000"
+
+  visualizersvc:
+    image: dockersamples/visualizer
+    depends_on:
+      - manager
+      - registry
+      - worker01
+      - worker02
+      - worker03
+    deploy:
+      placement:
+        constraints:
+          - 'node.role==manager'
+    ports:
+      - '5050:8080'
+    volumes:
+      - '/var/run/docker.sock:/var/run/docker.sock'
