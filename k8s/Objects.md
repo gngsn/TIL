@@ -61,7 +61,30 @@ A Pod models an application-specific "logical host": it contains one or more app
 
 As well as application containers, a Pod can contain init containers that run during Pod startup. You can also inject ephemeral containers for debugging if your cluster offers this.
 
+<br/>
 
+<table><tr><td>
+
+**Examples**
+Create the objects defined in a configuration file:
+
+``Bash
+kubectl create -f nginx.yaml
+```
+
+Delete the objects defined in two configuration files:
+
+``Bash
+kubectl delete -f nginx.yaml -f redis.yaml
+```
+
+Update the objects defined in a configuration file by overwriting the live configuration:
+
+``Bash
+kubectl replace -f nginx.yaml
+```
+
+</td></tr></table>
 
 
 
