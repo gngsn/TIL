@@ -1,33 +1,156 @@
-쿠버네티스
+# Kubernetes
 
-[🔗 Terms](https://kubernetes.io/ko/docs/reference/glossary/?all=true#term-control-plane)
-
-
-쿠버네티스는 컨테이너화된 워크로드와 서비스를 관리하기 위한 이식성이 있고, 확장가능한 오픈소스 플랫폼이다. 쿠버네티스는 선언적 구성과 자동화를 모두 용이하게 해준다. 쿠버네티스는 크고, 빠르게 성장하는 생태계를 가지고 있다. 쿠버네티스 서비스, 기술 지원 및 도구는 어디서나 쉽게 이용할 수 있다.
-
-쿠버네티스란 명칭은 키잡이(helmsman)나 파일럿을 뜻하는 그리스어에서 유래했다. K8s라는 표기는 "K"와 "s"와 그 사이에 있는 8글자를 나타내는 약식 표기이다. 구글이 2014년에 쿠버네티스 프로젝트를 오픈소스화했다. 쿠버네티스는 프로덕션 워크로드를 대규모로 운영하는 15년 이상의 구글 경험과 커뮤니티의 최고의 아이디어와 적용 사례가 결합되어 있다.
-
-
-
-### Kubernetes Components
-
-쿠버네티스를 배포하면 클러스터를 얻는다.
-
-✔️ 쿠버네티스 클러스터: 컨테이너화된 애플리케이션을 실행하는 노드라고 하는 워커 머신의 집합.
-모든 클러스터는 최소 한 개의 워커 노드를 가진다.
-
-✔️ 워커 노드:
-애플리케이션의 구성요소인 파드를 호스트.
-
-✔️ 컨트롤 플레인:
-워커 노드와 클러스터 내 파드를 관리.
-
-프로덕션 환경에서는 일반적으로 컨트롤 플레인이 여러 컴퓨터에 걸쳐 실행되고,
-클러스터는 일반적으로 여러 노드를 실행하므로 내결함성과 고가용성이 제공.
-
-<br/><img src="https://kubernetes.io/images/docs/components-of-kubernetes.svg" alt="components-of-kubernetes" width="60%" /><br/>
+Docker Compose, Swarm, Stack 을 이용한 애플리케이션의 기초를 익힘
 
 <br/>
+
+## Role of Kubernetes
+
+- Docker: 컨테이너를 관리하는 데몬인 `dockerd`와 명령행 도구로 구성
+- Swarm: 여러 대의 호스트를 묶어 기초적인 컨테이너 오케스트에리션 기능을 제공하는 도커 관련 기술
+- Kubernetes: Compose/Stack/Swarm 보다 더 높은 수준의 기능을 갖춘 컨테이너 오케스트레이션 시스템이자 도커를 비롯해 여러 가지 컨테이너 런타임을 다룰 수 있음
+
+<br/>
+
+#### 로컬 PC에서 Kubernetes 실행
+
+_[Minikube](https://github.com/kubernetes/minikube): minikube implements a local Kubernetes cluster on macOS, Linux, and
+Windows._
+
+<br/>
+
+#### 쿠버네티스 연동 설정
+
+1. kubernetes 환경 구축
+
+Docker Desktop > Enable Kubernetes
+
+2. **kubectl** 설치
+
+- `kubectl`: 쿠버네티스를 다루기 위한 명령행 도구
+  - Local/Managed 환경에서 모두 사용 가능
+
+<br/>
+
+#### kubectl 설치 - macOS
+
+macOS에서 Homebrew 패키지 관리자를 사용하는 경우, Homebrew로 kubectl을 설치할 수 있다.
+
+설치 명령을 실행한다.
+
+```Bash
+❯ brew install kubectl
+```
+
+또는
+
+```Bash
+❯ brew install kubernetes-cli
+```
+
+설치한 버전이 최신 버전인지 확인한다.
+
+```Bash
+❯ kubectl version --output=json
+{
+  "clientVersion": {
+    "major": "1",
+    "minor": "27",
+    "gitVersion": "v1.27.2",
+    "gitCommit": "7f6f68fdabc4df88cfea2dcf9a19b2b830f1e647",
+    "gitTreeState": "clean",
+    "buildDate": "2023-05-17T14:20:07Z",
+    "goVersion": "go1.20.4",
+    "compiler": "gc",
+    "platform": "darwin/arm64"
+  },
+  "kustomizeVersion": "v5.0.1",
+  "serverVersion": {
+    "major": "1",
+    "minor": "27",
+    "gitVersion": "v1.27.2",
+    "gitCommit": "7f6f68fdabc4df88cfea2dcf9a19b2b830f1e647",
+    "gitTreeState": "clean",
+    "buildDate": "2023-05-17T14:13:28Z",
+    "goVersion": "go1.20.4",
+    "compiler": "gc",
+    "platform": "linux/arm64"
+  }
+}
+```
+
+<br/>
+
+<table><tr><td>
+<b>Minkube</b>
+
+windows/macOS 용 도커에 쿠버네티스 연동 기능이 추가되기 전까지는 로컬 환경에 쿠버네티스 환경을 구축하기 위해 Minkube를 많이 사용했다.
+쿠버네티스 연동 기능이 추가 되면서 쿠버네티스가 여러 환경에서 안정적으로 동작하게 된 만큼 Minikube 는 앞으로 점점 덜 사용하게 될 것이다.
+windows/macOS 용 도커 연동 기능은 이미 실행중인 `dockerd` 를 대상으로 쿠버네티스 환경을 구축하지만, Minkube는 로컬에 `dockerd`를 새로 띄워 이를 대상으로 쿠버네티스 환경을 구축하는 방식이다.
+로컬에서 dockerd를 2개 다루기 때문에 windows/macOS 용 도커 보다 좀 더 까다로운 면이 있다.
+물론 Minkube 에도 이점은 있다.
+윈도우 용 도커가 Hyper-V, macOS용 도커가 `Hypervisor.framework`에서 동작하는데 반해,
+Minikube는 이런 하이퍼바이저 뿐만아니라 VirtualBox나 VMWare에서도 실행이 가능하므로 지원 플랫폼의 다양성 면에서 이점이 있다.
+Minikube는 애드온(확장 기능)도 충실히 갖추고 있다. 예를 들면 조금 전 설명했던 대시보드는 Minikube에는 기본으로
+포함 돼 있어 별도로 설치할 필요가 없다. `nginx-ingress-controler`도 애드온을 활성화하는 것만으로 사용할 수 있다
+</td></tr></table>
+
+<br/>
+
+## 03. Kubernetes Components
+
+### Objects
+
+_Objects In Kubernetes_
+
+[🔗 official] (https://kubernetes.io/docs/concepts/overview/working-with-objects/#kubernetes-objects)
+
+<br/>
+
+#### Object spec and status
+
+Kubernetes Objects는 Kubernetes 시스템의 persistent 엔터티이다.
+Kubernetes는 당신의 cluster의 상태를 나타내기 위해 이러한 엔티티를 사용.
+
+- 어떤 컨테이너화된 애플리케이션이 실행되는지 혹은, 어떤 노드들인지
+- 이러한 애플리케이션들이 사용할 수 있는 리소스
+- 이러한 애플리케이션이 어떻게 행동하는지에 관련된 정책; 가령, restart 정책, upgrade, 그리고 fault-tolerance.
+
+Kubernetes object 는 "record of intent" 으로,
+한 번 object를 생성하면, Kubernetes 시스템은 해당 객체가 존재를 지속적으로 보장한다.
+object를 생성하는 것은 Kubernetes 시스템에 당신의 cluster가 어떤 워크로드처럼 동작할지 결정하는 것이다.
+(object를 생성함으로써, 당신은 Kubernetes 시스템에 당신이 원하는 cluster의 워크로드이 어떻게 보일지 효과적으로 말하는 것이다.)
+-> 이것이 바로 cluster의 목표 상태 (desired state)이다.
+
+Kubernetes object 와 동작하기 위해서는 - 그것들을 생성, 수정, 혹은 삭제하는 것에 상관없이 - Kubernetes API가 사용된다.
+가령, `kuberctl` 명령어를 사용하게 되면 CLI는 필요한 Kubernetes API 호출을 당신을 위해 만들 것이다.
+또한, Client Library 를 사용해서 당신의 프로그램에서 Kubernetes API를 바로 호출할 수도 있다.
+
+<br/>
+
+#### Object spec and status (Skip)
+
+<br/>
+
+#### Required fields
+[🔗 official] (https://kubernetes.io/docs/concepts/overview/working-with-objects/#required-fields)
+
+<br/>
+
+생성하려는 Kubernetes 개체의 매니페스트(YAML 또는 JSON 파일)에는 이래와 같은 필드 값을 설정 필요:
+
+- `apiVersion`: 해당 object를 생성하기 위해 사용하는 Kubernetes API 버전
+- `kind`: 생성하고자 하는 object의 종류 (kind)
+- `metadata`: object 를 구별할 용도의 `name`, `UID`(, 선택적으로 `namespace`) 등을 포함한 object 데이터
+- `spec` - object가 가질 상태 정의. 객체 spec의 정확한 형식은 모든 쿠버네티스 객체마다 다르며, 한 객체에 특정된 중첩된 필드를 포함. 쿠버네티스 API 참조를 통해 쿠버네티스를 사용하여 생성할 수 있는 모든 객체의 사양 형식을 찾을 수 있다.
+
+가령, Pod API의 spec 필드 문서를 참고해보면, 각 Pod의 경우, `.spec` 필드는 `Pod` 와 `Pod`가 가질 상태를 지정 (예: 해당 Pod 내의 각 컨테이너에 대한 컨테이너 이미지 이름).
+다른 예로, StatefulSet의 경우, `.spec` 필드는 `StatefulSet`와 원하는 상태를 지정.
+StatefulSet의 `.spec` 내에는 Pod 개체에 대한 템플릿이 있음. 해당 템플릿은 StatefulSet 컨트롤러가 StatefulSet 규격을 만족시키기 위해 만들 Pods를 설명함.
+다른 종류의 개체도 다른 `.status`를 가질 수 있으며, 또 API 참조 페이지는 해당 `.status` 필드의 구조와 각 다른 유형의 개체에 대한 내용을 자세히 설명함
+
+
+FYI. [Configuration Best Practices] (https://kubernetes.io/docs/concepts/configuration/overview/)
 
 
 | 리소스                      | 용도                                         |
@@ -53,32 +176,55 @@
 | Cluster Role Binding     | 쿠버네티스 리소스 사용자와 클러스터 Role 을 연결 지음           |
 | Service Account          | 파드가 쿠버네티스 리소스를 조작할 때 사용하는 계정               |
 
+<br/>
+
+### Node
+
+: Kubernetes 리소스 중에서 가장 큰 개념
+
+- 쿠버네티스 클러스터의 관리 대상으로 등록된 도커 (컨테이너의) 호스트
+- 컨테이너가 배치되는 대상
+- Kubernetes 는 노드의 리소스 사용 현황 및 배치 전략을 근거로 컨테이너를 적절히 배치
+- 즉, 클러스터에 배치된 노드의 수, 노드의 사양 등에 따라 배치할 수 있는 컨테이너 수가 결정
+- 클러스터의 처리 능력은 노드에 의해 결정
+- Master Node: Kubernetes Cluster 전체를 관리하는 서버이며, 최소 하나 이상 필요
 
 
-### 컨트롤 플레인 컴포넌트
-- 클러스터에 관한 전반적인 결정 수행
-    - ex, 스케줄링
-- 클러스터 이벤트를 감지하고 반응
-    - ex, 디플로이먼트의 replicas 필드에 대한 요구 조건이 충족되지 않을 경우 새로운 파드를 구동시키는 것
+- ❯ `kubectl get nodes`
+- 현재 클러스터에 소속된 노드의 목록 확인
 
-컨트롤 플레인 컴포넌트는
-- 클러스터 내 어떠한 머신에서든지 동작 가능
-- 하지만 간결성을 위해, 보통 동일 머신 상 모든 컨트롤 플레인 컴포넌트에 구성 스크립트를 구동시키고, 사용자 컨테이너는 해당 머신 상에 동작시키지 않음
-- 여러 머신에서 실행되는 컨트롤 플레인 설정의 예제를 보려면 kubeadm을 사용하여 고가용성 클러스터 만들기를 확인해본다.
+```Bash
+❯ kubectl get nodes
+```
 
-<pre>
-fyi. Using kubeadm, 
-you can create a minimum viable Kubernetes cluster that conforms to best practices. 
-In fact, you can use kubeadm to set up a cluster that will pass the Kubernetes Conformance tests.
-kubeadm also supports other cluster lifecycle functions, such as bootstrap tokens and cluster upgrades.
+<br/>
 
-The kubeadm tool is good if you need:
-- A simple way for you to try out Kubernetes, possibly for the first time.
-- A way for existing users to automate setting up a cluster and test their application.
-- A building block in other ecosystem and/or installer tools with a larger scope.
-</pre>
+클라우드에서의 Kubernetes 라면, 아래에 해당
 
----
+- GCP → GCE Instance
+- AWS → EC2 Instance
+
+### Cluster
+
+: Kubernetes 의 여러 리소스를 관리하기 위한 집합체
+
+쿠버네티스를 배포하면 클러스터를 얻음
+
+- **✔️ 쿠버네티스 클러스터**
+  - 컨테이너화된 애플리케이션을 실행하는 노드라고 하는 워커 머신의 집합
+  - 모든 클러스터는 최소 한 개의 워커 노드를 가짐
+
+- **✔️ 워커 노드**
+  - 애플리케이션의 구성요소인 파드를 호스트
+
+- **✔️ 컨트롤 플레인**
+  - 워커 노드와 클러스터 내 파드를 관리
+
+프로덕션 환경에서는 일반적으로 컨트롤 플레인이 여러 컴퓨터에 걸쳐 실행되고,
+클러스터는 일반적으로 여러 노드를 실행하므로 내결함성과 고가용성이 제공.
+
+<br/><img src="https://kubernetes.io/images/docs/components-of-kubernetes.svg" alt="components-of-kubernetes" width="60%" /><br/>
+
 
 - Control Plane (Master 구성) Component
 
@@ -153,4 +299,42 @@ kube-controller-manager와 마찬가지로 cloud-controller-manager는 논리적
 노드 컨트롤러: 노드가 응답을 멈춘 후 클라우드 상에서 삭제되었는지 판별하기 위해 클라우드 제공 사업자에게 확인하는 것
 라우트 컨트롤러: 기본 클라우드 인프라에 경로를 구성하는 것
 서비스 컨트롤러: 클라우드 제공 사업자 로드밸런서를 생성, 업데이트 그리고 삭제하는 것
+
+
+<br/>
+
+### Namespace
+
+- Namespace: 클러스터 안의 가상 클러스터
+  - Kubernetes Cluster 안에 가상 클러스터를 또 만들 수 있음
+  - 클러스터 구축 시 `default`, `docker`, `kube-public`, `kube-system`, 네 개의 Namespace 가 이미 생성되어 있음
+
+- ❯ `kubectl get namespace`
+- 현재 클러스터 내에 존재하는 네임스페이스 목록 확인
+  - 네임스페이스마다 권한을 설정할 수 있어 더욱 견고하고 세세하게 권한을 제어할 수 있음
+
+<br/>
+
+<br/>
+
+
+### Pod
+
+```Bash
+❯ kubectl apply -f simple-pod.yaml
+pod/simple-echo created
+```
+
+<br/>
+
+#### 파드 상태 목록 출력
+
+```Bash
+❯ kubectl get pod
+```
+
+### ReplicaSet
+
+### Deployment
+
 
