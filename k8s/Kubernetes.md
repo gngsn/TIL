@@ -128,10 +128,6 @@ Kubernetes object 와 동작하기 위해서는 - 그것들을 생성, 수정, �
 
 <br/>
 
-#### Object spec and status (Skip)
-
-<br/>
-
 #### Required fields
 [🔗 official] (https://kubernetes.io/docs/concepts/overview/working-with-objects/#required-fields)
 
