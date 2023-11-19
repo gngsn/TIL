@@ -1,0 +1,18 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: core-k8s
+  spec:
+  containers:
+    - name: my-mysql-server
+      image: myregistry.com/mysql-server:v1.0
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: core-k8s-mysql
+  spec:
+  containers:
+    - name: my-sqlclient
+      image: myregistry.com/mysql-custom-client:v1.0
+      command: ['tail','-f','/dev/null']

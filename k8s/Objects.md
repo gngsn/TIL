@@ -151,28 +151,28 @@ StatefulSet의 `.spec` 내에는 Pod 개체에 대한 템플릿이 있음. 해�
 FYI. [Configuration Best Practices] (https://kubernetes.io/docs/concepts/configuration/overview/)
 
 
-| 리소스                      | 용도                                         |
-|--------------------------|--------------------------------------------|
-| Node                     | 컨테이너가 배치되는 서버                              |
-| Namespace                | 쿠버네티스 클러스터 안의 가상 클러스터                      |
-| Pod                      | 컨테이너의 집합 중 가장 작은 단위, 컨테이너의 실행 방법 정의        |
-| Replica Set              | 같은 스펙을 갖는 파드를 여러 개 생성하고 관리하는 역할            |
-| Deployment               | 레플리카 세트의 리비전을 관리                           |
-| Service                  | 파드의 집합에 접근하기 위한 경로 정의                      |
-| Ingress                  | 서비스를 쿠버네티스 클러스터 외부로 노출                     |
-| Config Map               | 설정 정보를 정의하고 파드에 전달                         |
-| Persistence Volume       | 파드가 사용할 스토리지의 크기 및 종류 정의                   |
-| Persistence Volume Claim | Persistence Volume 을 동적으로 확보               |
-| Storage Class            | Persistence Volume 이 확보하는 스토리지의 종류를 정의     |
-| Stateful Set             | 같은 스펙으로 모두 동일한 파드를 여러 개 생성하고 관리            |
-| Job                      | 상주 실행을 목적으로 하지 않는 파드를 여러 개 생성하고 정상적인 종료 보장 |
-| Cron Job                 | 크론 문법으로 스케줄링되는 Job                         |
-| Secret                   | 인증 정보 같은 기밀 데이터 정의                         |
-| Role                     | 네임스페이스 안에서 조작 가능한 쿠버네티스 리소스의 규칙 정의         |
-| Role Binding             | 쿠버네티스 리소스 사용자와 Role 을 연결 지음                |
-| Cluster Role             | 클러스터 전체적으로 조작 가능한 쿠버네티스 리소스의 규칙 정의         |
-| Cluster Role Binding     | 쿠버네티스 리소스 사용자와 클러스터 Role 을 연결 지음           |
-| Service Account          | 파드가 쿠버네티스 리소스를 조작할 때 사용하는 계정               |
+| 리소스                      | 용도                                          |
+|--------------------------|---------------------------------------------|
+| Node                     | 컨테이너가 배치되는 서버                               |
+| Namespace                | 쿠버네티스 클러스터 안의 가상 클러스터                       |
+| Pod                      | 컨테이너의 집합 중 가장 작은 단위, 컨테이너의 실행 방법 정의         |
+| ReplicaSet               | 같은 스펙을 갖는 파드를 여러 개 생성하고 관리하는 역할             |
+| Deployment               | 레플리카 세트의 리비전을 관리                            |
+| Service                  | 파드의 집합에 접근하기 위한 경로 정의                       |
+| Ingress                  | 서비스를 쿠버네티스 클러스터 외부로 노출                      |
+| Config Map               | 설정 정보를 정의하고 파드에 전달                          |
+| Persistence Volume       | 파드가 사용할 스토리지의 크기 및 종류 정의                    |
+| Persistence Volume Claim | Persistence Volume 을 동적으로 확보                |
+| Storage Class            | Persistence Volume 이 확보하는 스토리지의 종류를 정의      |
+| Stateful Set             | 같은 스펙으로 모두 동일한 파드를 여러 개 생성하고 관리             |
+| Job                      | 상주 실행을 목적으로 하지 않는 파드를 여러 개 생성하고 정상적인 종료 보장  |
+| Cron Job                 | 크론 문법으로 스케줄링되는 Job                          |
+| Secret                   | 인증 정보 같은 기밀 데이터 정의                          |
+| Role                     | 네임스페이스 안에서 조작 가능한 쿠버네티스 리소스의 규칙 정의          |
+| Role Binding             | 쿠버네티스 리소스 사용자와 Role 을 연결 지음                 |
+| Cluster Role             | 클러스터 전체적으로 조작 가능한 쿠버네티스 리소스의 규칙 정의          |
+| Cluster Role Binding     | 쿠버네티스 리소스 사용자와 클러스터 Role 을 연결 지음            |
+| Service Account          | 파드가 쿠버네티스 리소스를 조작할 때 사용하는 계정                |
 
 <br/>
 
