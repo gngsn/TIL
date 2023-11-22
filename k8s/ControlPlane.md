@@ -101,3 +101,63 @@ kube-scheduler는 **워커 노드에서 Kubernetes pod의 스케줄링을 담당
 - filtering 단계: 스케줄러는 pod를 스케줄 할 수 있는 가장 적합한 노드를 찾습니다. 예를 들어, pod를 실행할 자원이 있는 워커 노드가 5개인 경우에는 5개의 노드를 모두 선택합니다. 노드가 없으면 pod는 스케줄이 불가능하기 때문에, 스케줄링 큐 _scheduling queue_ 로 이동합니다. 만약 대규모 클러스터일 때, 100개의 워커 노드가 있고, 스케줄러는 모든 노드를 순회하지 않는다고 가정해 보겠습니다. `percentageOfNodesToScore` 라는 스케줄러 구성 파라미터가 있습니다. 기본값은 일반적으로 `50%`입니다. 따라서 round-robin 방식으로 먼저 50% 이상의 노드에 대해 순회를 시도합니다. 워커 노드가 여러 영역 *zone*에 분산되어 있으면 스케줄러는 다른 영역 *zone*의 노드에서 순회합니다. 매우 큰 클러스터의 경우에는, `percentageOfNodesToScore` 의 기본값은 5%입니다.
 - scoring 단계: 스케줄러가 필터링된 워커 노드들에 **점수를 부여하여 노드들의 순위를 매깁**니다. 스케쥴러는 여러 [스케쥴링 플러그인](https://kubernetes.io/docs/reference/scheduling/config/#scheduling-plugins)들을 호출하여 스코어링을 합니다. 그중, 가장 높은 순위를 가지는 워커 노드가 포드 스케쥴링을 위해 선택됩니다. 만약 모든 노드들이 동일한 순위를 가지면, 한 노드가 임의로 선택됩니다.
 - 노드가 선택되면, 스케줄러는 API서버에 binding 이벤트를 생성합니다. 이때 binding 이벤트란, pod와 node를 binding하는 이벤트를 의미합니다.
+
+Here is shat you need to know about a scheduler.
+
+- API 서버에서 pod이 생성되는 이벤트를 듣고 있는 컨트롤러입니다.
+- 스케줄러는 Scheduling cycle과 the Binding cycle 두 단계로 되어 있고, 이를 둘을 합쳐 스케줄링 컨텍스트라고 합니다. scheduling cycle은 워커 노드를 선택하고, binding cycle은 그 변화를 클러스터에 적용합니다.
+- 스케줄러는 스케줄링을 위해 항상 우선순위가 높은 pod들을 우선순위가 낮은 pod들보다 먼저 배치합니다. 또한, 어떤 경우에는, pod가 선택된 노드에서 실행되기 시작한 후에, 포드가 제거되거나 다른 노드들로 이동될 수 있습니다. (ref. [Pod 우선순위 가이드](https://devopscube.com/pod-priorityclass-preemption/))
+- 직접 커스텀한 스케줄러를 생성해서 기본 스케줄러와 함께 두 스케줄러를 클러스터 내 동시에 실행할 수 있습니다. pod를 배포할 때는 pod 매니페스트에서 사용자 지정 스케줄러를 지정할 수 있습니다. 따라서 사용자 지정 스케줄러 로직을 기반으로 스케줄링 결정이 내려지게 됩니다.
+- 스케줄러에 플러그인 가능한 스케줄링 프레임워크가 있습니다. 즉, 사용자 지정 플러그인을 스케줄링 워크플로우에 추가할 수 있습니다.
+
+
+#### Kube Controller Manager
+
+controller의 동작을 실행시키는 컨트롤 플레인 구성 요소입니다.
+논리적으로 각 컨트롤러는 별개의 프로세스이지만, 복잡성을 줄이기 위해, 모두 하나의 바이너리로 컴파일되어 하나의 프로세스로 실행됩니다.
+
+<table><tr><td>
+
+**Controller?**
+로보틱스(robotics)나 자동화 장치(automation)에서는, 제어 루프 _control loop_ 는 시스템의 상태를 조절하기 위해 무한 루프입니다.
+
+제어 루프의 예시를 들자면, '온도 조절기'가 있습니다
+온도를 설정하면 온도 조절기는 원하는 상태를 알려줍니다.
+실제 실내 온도는 *현재 상태*이며, 이 현재 상태를 원하는 상태에 가깝게 만들도록 온도 조절기는 장치를 켜거나 끄는 역할을 합니다.
+
+Kubernetes 에서 컨트롤러는 클러스터의 상태를 관찰한 다음, 필요한 곳에 변경시키거나 변경을 요청하는 컨트롤 루프입니다.
+각 컨트롤러는 현재 클러스터 상태를 원하는 상태에 가까워지도록 조절합니다.
+</td></tr></table>
+
+
+컨트롤러는 무한한 컨트롤 루프를 실행하는 프로그램으로,
+지속적으로 실행되면서 원하는 물체의 상태를 실제와 비교하며 관찰하며 둘이 최대한 가까워지도록 조정합니다.
+
+각 컨트롤러는 현재 클러스터 상태를 원하는 상태에 가깝게 이동하려고 합니다.
+매니페스트 YAML 파일에서 원하는 상태를 지정하고 deployment 를 생성한다고 가정해봅시다.
+가령, 두 개의 레플리카, 각 한 개씩의 volume mount, configmap 맵 등을 지정합니다. 
+내장된 배포 컨트롤러는 배포가 항상 원하는 상태로 유지되도록 보장합니다.
+사용자가 5개의 레플리카으로 deployment 를 업데이트하면, 배포 컨트롤러가 원하는 상태인 5개의 레플리카가 되도록 확인하고 조정합니다.
+
+**Kube controller manager**는 Kubernetes의 모든 Controller를 관리하는 컴포넌트입니다. 
+Kubernetes resources/objects (pod, namespace, job, replicaset 등)은 각각의 Controller에 의해 관리됩니다.
+또, 위에서 살펴본 `Kube scheduler`도 `Kube controller manager`에 의해 관리되는 Controller이기도 합니다.
+
+Kubernetes가 기본적으로 지원하는 것 중, 중요한 Controller 는 다음과 같습니다.
+
+- Node controller: 노드가 다운되었을 때 이를 인지하고 응답하는 역할을 합니다.
+- Job Controller (Kubernetes Jobs): 일회성 작업을 나타내는 작업 객체를 관찰한 다음, Pods를 생성하여 해당 작업을 완료하도록 실행합니다.
+- Endpoints controller: EndpointSlice 개체를 채웁니다 _Populates_. (Service 들과 Pod 들 사이의 링크 제공).
+- Service Accounts controller: 새로운 Namespace 에 대한 기본 ServiceAccounts를 생성합니다.
+- Deployment controller
+- Replicaset controller
+- DaemonSet controller
+- CronJob Controller
+- namespace controller
+- ...
+
+Kube controller manager 에 대해 알아야 할 내용들은 다음과 같습니다.
+
+- Kube controller manager는 모든 컨트롤러를 관리하고 컨트롤러는 클러스터를 원하는 상태로 유지하기 위해 지속적으로 시도합니다.
+- 커스텀한 리소스를 정의하여 **custom controllers**과 함께 사용해서 kubernetes 를 확장할 수 있습니다.
+
