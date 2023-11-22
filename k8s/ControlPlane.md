@@ -161,3 +161,37 @@ Kube controller manager 에 대해 알아야 할 내용들은 다음과 같습�
 - Kube controller manager는 모든 컨트롤러를 관리하고 컨트롤러는 클러스터를 원하는 상태로 유지하기 위해 지속적으로 시도합니다.
 - 커스텀한 리소스를 정의하여 **custom controllers**과 함께 사용해서 kubernetes 를 확장할 수 있습니다.
 
+
+#### CCM: Cloud Controller Manager
+
+_cloud-controller-manager, CCM_
+
+쿠버네티스 컨트롤 플레인 컴포넌트 중 하나로, 클라우드 컨트롤 로직을 처리합니다.
+Kubernetes가 클라우드 환경에 배포되면 cloud-controller-manager 는 Cloud Platform API와 Kubernetes 클러스터 사이의 브리지 역할을 합니다.
+쿠버네티스 핵심 구성 요소가 독립적으로 작동할 수 있으며, 클라우드 공급자가 플러그인을 사용하여 쿠버네티스와 통합할 수 있습니다.
+(예를 들어, 쿠버네티스 클러스터와 AWS 클라우드 API 간의 인터페이스)
+
+클라우드 컨트롤러 통합을 통해 Kubernetes 클러스터는 instances (for nodes), Load Balancers (for services), and Storage Volumes (for
+persistent volumes)과 같은 클라우드 리소스를 프로비저닝할 수 있습니다.
+
+온프레미스 환경에서 쿠버네티스를 실행시킨다면, 클러스터는 cloud-controller-manager 를 갖지 않습니다.
+
+kube-controller-manager와 마찬가지로, cloud-controller-manager도 논리적으로 여러개의 독립된 제어 루프를 하나의 바이너리로 결합시켜 하나의 프로세스로 실행시킵니다.
+성능을 향상시키거나 장애를 견딜 수 있도록 (tolerate failures) 하기 위해, 수평 확장(하나 이상의 복사본 실행)이 가능합니다.
+
+다음 컨트롤러는 클라우드 클라우드 제공자 dependency 들을 가질 수 있습니다:
+
+- Node controller: 응답 중단 후, 클라우드에서 노드가 삭제되었는지 확인하기 위해 클라우드 제공자를 확인. 클라우드 제공자 API와 대화하여 노드 관련 정보를 업데이트
+    - 예를 들어, node labeling & annotation, hostname 가져오기, CPU & memory 사용 가능 여부, nodes health 등
+- Route controller: 기본*underlying* 클라우드 인프라스트럭처에서 Route를 설정
+    - 클라우드 플랫폼의 네트워크 라우팅을 설정하는 책임을 가지며, 이를 통해 Pod들이 서로 통신할 수 있음
+- Service controller: 클라우드 제공자 로드밸런서 생성, 업데이트 및 삭제
+    - 쿠버네티스 서비스를 위한 로드 밸런서 배포나 IP 주소 할당을 책임짐
+
+다음은 클라우드 컨트롤러 관리자의 고전적인 예입니다.
+
+- 로드 밸런서 유형의 Kubernetes Service 배포. 여기서 Kubernetes는 Cloud-specific Loadbalancer를 프로비저닝하고 Kubernetes Service와 통합됩니다.
+- 클라우드 스토리지 솔루션의 지원을 받는 Pod를 위한 스토리지 볼륨(PV) 프로비저닝.
+
+전반적으로 Cloud Controller Manager는 kubernetes가 사용하는 클라우드를 위한 리소스의 라이프사이클을 관리합니다.
+
