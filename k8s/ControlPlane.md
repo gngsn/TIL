@@ -77,10 +77,10 @@ Kubernetes의 api-server는 `etcd`의 watch 기능을 사용하여 객체의 상
 제어 평면에서 유일한 Statefulset 구성 요소인 ecd는 Kubernetes를 위한 훌륭한 데이터베이스입니다.
 
 
-- 'etcd'는 Kubernetes 객체의 모든 구성, 상태 및 메타데이터(pods, secrets, daemonsets, deployments, configmaps, statefulsets, etc))를 저장합니다.
-- 'etcd'는 클라이언트가 `Watch()` API를 이용해 이벤트를 subscribe 할 수 있도록 해줍니다. Kubernetes API-server는 'etcd'의 watch 기능을 이용해 객체의 상태 변화를 추적합니다.
-- 'etcd'는 gRPC를 이용한 key-value API를 제공합니다. 또한 gRPC 게이트웨이는 모든 HTTP API 호출을 gRPC 메시지로 변환하는 RESTful 프록시입니다. 따라서 Kubernetes에 이상적인 데이터베이스입니다.
-- 'etcd'는 모든 개체를 '/registry' 디렉토리 키 아래에 key-value 형식으로 저장합니다. 예를 들어 기본 네임스페이스의 Nginx라는 이름의 Pod 정보는 '/registry/pods/default/nginx' 아래에 있습니다
+- `etcd`는 Kubernetes 객체의 모든 구성, 상태 및 메타데이터(pods, secrets, daemonsets, deployments, configmaps, statefulsets, etc))를 저장합니다.
+- `etcd`는 클라이언트가 `Watch()` API를 이용해 이벤트를 subscribe 할 수 있도록 해줍니다. Kubernetes API-server는 `etcd`의 watch 기능을 이용해 객체의 상태 변화를 추적합니다.
+- `etcd`는 gRPC를 이용한 key-value API를 제공합니다. 또한 gRPC 게이트웨이는 모든 HTTP API 호출을 gRPC 메시지로 변환하는 RESTful 프록시입니다. 따라서 Kubernetes에 이상적인 데이터베이스입니다.
+- `etcd`는 모든 개체를 '/registry' 디렉토리 키 아래에 key-value 형식으로 저장합니다. 예를 들어 기본 네임스페이스의 Nginx라는 이름의 Pod 정보는 '/registry/pods/default/nginx' 아래에 있습니다
 
 또한, etcd 는 오직 컨트롤 플레인의 **Statefulset** 컴포넌트입니다.
 
