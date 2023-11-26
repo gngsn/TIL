@@ -195,3 +195,41 @@ kube-controller-manager와 마찬가지로, cloud-controller-manager도 논리�
 
 전반적으로 Cloud Controller Manager는 kubernetes가 사용하는 클라우드를 위한 리소스의 라이프사이클을 관리합니다.
 
+
+---
+
+### Worker Node
+The Worker nodes are responsible for running containerized applications. 
+The worker Node has the following components.
+
+- kubelet
+- kube-proxy
+- Container runtime
+
+
+#### kubelet
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

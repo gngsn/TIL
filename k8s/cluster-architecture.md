@@ -189,8 +189,12 @@ Kubernetes 노드에서 보내는 Heartbeat 는 클러스터에서 각 노드의
 이 주기는 `kube-controller-manager` 컴포넌트의 `--node-monitor-period` 플래그를 사용하여 구성할 수 있다.
 
 
+---
 
 
+---
+
+## Lease
 리ː스, lease [명사] 기계·설비·기구 따위를 임대하는 제도. 일반적으로는 장기간의 임대를 말함. 순화어는 `임대'.
 
 
