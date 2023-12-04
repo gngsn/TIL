@@ -312,3 +312,29 @@ kube-controller-manager와 마찬가지로 cloud-controller-manager는 논리적
     - 네임스페이스마다 권한을 설정할 수 있어 더욱 견고하고 세세하게 권한을 제어할 수 있음
 
 <br/>
+
+## Container Runtime Interface (CRI)
+
+: Kubelet과 컨테이너 런타임 사이의 통신을 위한 메인 프로토콜 (이하 CRI)
+
+CRI는 노드 컴포넌트 **Kubelet**과 **컨테이너 런타임** 사이의 통신을 위한 메인 gRPC 프로토콜을 정의합니다.
+
+CRI는 클러스터 컴포넌트를 다시 컴파일하지 않아도,
+Kubelet이 다양한 컨테이너 런타임을 사용할 수 있도록 하는 플러그인 인터페이스입니다.
+
+클러스터의 모든 노드에 동작 중인 *Container Runtime이 존재해야, kubelet이 파드들과 컨테이너들을 실행할 수 있습니다.
+
+<table><tr><td>
+
+* **Container Runtime**
+: 컨테이너 실행을 담당하는 소프트웨어.
+
+- containerd
+- CRI-O
+- Docker Engine
+- Mirantis Container Runtime
+
+</td></tr></table>
+### The API
+_FEATURE STATE: Kubernetes v1.23 [stable]_
+
