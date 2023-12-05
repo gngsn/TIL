@@ -1,0 +1,24 @@
+@startuml
+
+rectangle "Control Plane" {
+  node "API Server"
+}
+
+rectangle "Worker Node" {
+  node Kubelet
+  rectangle Containers
+  rectangle CNI
+  collections "<b>Static Pod Specs</b>\n(pod1.yaml, pod2.yaml)" as Specs
+  rectangle "<b>Containers Runtime</b>\n(CRI-O, Containerd etc)" as Runtime
+}
+
+
+"API Server" --> Kubelet
+Kubelet -> CNI
+Kubelet --> Specs
+Kubelet -> Runtime
+Runtime -> Containers
+CNI --> Containers
+
+note top of Specs: /etc/kubernetes/manifests
+@enduml

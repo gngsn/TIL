@@ -1,4 +1,4 @@
-### Worker Node
+## Worker Node
 The Worker nodes are responsible for running containerized applications.
 The worker Node has the following components.
 
@@ -44,3 +44,36 @@ Kubelet의 몇 가지 주요 사항을 확인해보면,
 - CSI(Container Storage Interface) gRPC를 사용하여 블록 볼륨을 구성
 - 클러스터에 구성된 CNI 플러그인을 사용하여 Pod IP 주소를 할당하고 포드에 필요한 네트워크 경로 및 방화벽 규칙을 설정
 
+
+## 2. Kube proxy
+
+Kube 프록시를 이해하려면 Kubernetes Service & Endpoint 개체에 대한 기본 지식이 있어야 합니다.
+
+Kubernetes Service: 
+- 일련의 포드들을 내부적으로 혹은 외부 트래픽에 노출시키는 방법 
+- 서비스 객체가 생성될 때, 해당 객체는 가상 IP 인 **ClusterIP**를 할당 받음
+  - ClusterIP는 Kubernetes 클러스터 내에서만 접근 가능
+
+- Endpoint 객체: Service 객체 아래에 모든 IP 주소들과 pod 그룹의 포트들을 포함  
+- Endpoint Controller: Pod IP 주소 (endpoint) 목록 유지 관리 역할
+- Service Controller: Endpoint를 서비스에 구성하는 역할
+
+Pod IP의 경우에는 ping이 가능하지만,
+ClusterIP는 Service Discovery에만 사용되기 때문에 ping할 수 없음
+
+
+### 그렇다면, Kube Proxy 란?
+
+- Kube-proxy는 데몬셋으로 모든 노드에서 실행되는 데몬
+- Pod에 대한 Kubernetes Services 개념을 구현하는 프록시 구성 요소 (로드 밸런싱 되는 Pod 세트의 단일 DNS). 
+- 주로 UDP, TCP, SCTP를 프록시 함 (HTTP 인식 불가)
+
+- Service (Cluster IP)를 통해 Pod를 노출시킬 때, Kube-proxy는 네트워크 규칙 생성
+  - 네트워크 규칙: Service 객체 아래에 그룹화된 백엔드 Pod(Endpoint)으로 트래픽을 전송
+- 즉, 모든 로드 밸런싱 및 서비스 검색은 Kube 프록시에서 처리 됨
+
+### Kube-proxy 작동 원리?
+
+Kube 프록시는 API 서버와 대화하여 서비스(ClusterIP)와 각 포드 IP 및 포트(endpoint)에 대한 세부 정보를 얻고 서비스 및 엔드포인트의 변경을 모니터링합니다.
+
+그런 다음 Kube-proxy는 다음 모드 중 하나를 사용하여 트래픽을 서비스 뒤의 포드로 라우팅하기 위한 규칙을 생성/업데이트합니다
