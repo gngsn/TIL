@@ -1,7 +1,9 @@
 @startuml
 
 rectangle "Control Plane" {
+  node "<b>Kube Controller Manager</b>\nendpoint/service controller" as kcm
   node "API Server"
+  database "<b>etcd</b>\nservice&endpoint Objects" as etcd
 }
 
 rectangle "Worker Node" {
@@ -10,15 +12,23 @@ rectangle "Worker Node" {
   rectangle CNI
   collections "<b>Static Pod Specs</b>\n(pod1.yaml, pod2.yaml)" as Specs
   rectangle "<b>Containers Runtime</b>\n(CRI-O, Containerd etc)" as Runtime
+
+  node "Kube-Proxy" as Kubeproxy
+  node "<b>Service</b> - ClusterIp (10.8.0.6)\n(IPtables/IPVS)" as Service
 }
 
 
+kcm -> "API Server"
+"API Server" --> etcd
 "API Server" --> Kubelet
+"API Server" --> Kubeproxy
+"API Server" --> Service
+
 Kubelet -> CNI
 Kubelet --> Specs
 Kubelet -> Runtime
 Runtime -> Containers
 CNI --> Containers
 
-note top of Specs: /etc/kubernetes/manifests
+note top of Specs: sds
 @enduml
