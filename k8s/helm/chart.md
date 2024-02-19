@@ -30,7 +30,46 @@ wordpress/
 
 Helm은 `charts/`, `crds/`, `templates/` 디렉터리 명과 위 목록의 파일 명을 미리 예약하여 사용하고 있습니다. 다른 이름들은 그 자체로 남습니다.
 
+<br/>
 
+### The Chart.yaml File
 
+`Chart.yaml` 파일은 Chart를 위해 필수로 정의되어야 합니다.
+해당 파일은 아래와 같은 필드들이 포함됩니다.
+
+<pre>
+<b>apiVersion</b>: The chart API version (required)
+<b>name</b>: The name of the chart (required)
+<b>version</b>: A SemVer 2 version (required)
+<b>kubeVersion</b>: A SemVer range of compatible Kubernetes versions (optional)
+<b>description</b>: A single-sentence description of this project (optional)
+<b>type</b>: The type of the chart (optional)
+<b>keywords</b>:
+  - A list of keywords about this project (optional)
+<b>home</b>: The URL of this projects home page (optional)
+<b>sources</b>:
+  - A list of URLs to source code for this project (optional)
+<b>dependencies</b>: # A list of the chart requirements (optional)
+  - <b>name</b>: The name of the chart (nginx)
+    <b>version</b>: The version of the chart ("1.2.3")
+    <b>repository</b>: (optional) The repository URL ("https://example.com/charts") or alias ("@repo-name")
+    <b>condition</b>: (optional) A yaml path that resolves to a boolean, used for enabling/disabling charts (e.g. subchart1.enabled )
+    <b>tags</b>: # (optional)
+      - Tags can be used to group charts for enabling/disabling together
+    <b>import-values</b>: # (optional)
+      - ImportValues holds the mapping of source values to parent key to be imported. Each item can be a string or pair of child/parent sublist items.
+    <b>alias</b>: (optional) Alias to be used for the chart. Useful when you have to add the same chart multiple times
+<b>maintainers</b>: # (optional)
+  - <b>name</b>: The maintainers name (required for each maintainer)
+    <b>email</b>: The maintainers email (optional for each maintainer)
+    <b>url</b>: A URL for the maintainer (optional for each maintainer)
+<b>icon</b>: A URL to an SVG or PNG image to be used as an icon (optional).
+<b>appVersion</b>: The version of the app that this contains (optional). Needn't be SemVer. Quotes recommended.
+<b>deprecated</b>: Whether this chart is deprecated (optional, boolean)
+<b>annotations</b>:
+  <b>example</b>: A list of annotations keyed by name (optional).
+</pre>
+
+v3.3.2 부터, 추가적인 필드들을 기입할 수 없게 됩니다. 추천하는 방식은 custom metadata를 annotations에 작성하는 것입니다.
 
 
