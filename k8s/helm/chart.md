@@ -70,6 +70,26 @@ Helm은 `charts/`, `crds/`, `templates/` 디렉터리 명과 위 목록의 파�
   <b>example</b>: A list of annotations keyed by name (optional).
 </pre>
 
-v3.3.2 부터, 추가적인 필드들을 기입할 수 없게 됩니다. 추천하는 방식은 custom metadata를 annotations에 작성하는 것입니다.
+`v3.3.2` 부터, 추가적인 필드들을 기입할 수 없게 됩니다. 추천하는 방식은 custom metadata를 annotations에 작성하는 것입니다.
 
+<br/>
+
+#### ✔️ apiVersion
+
+최소 Helm 3 를 필요로하는 Helm Chart를 사용하기 위해선 apiVersion 필드는 v2 이어야 합니다.
+이전 Helm 버전을 지원하는 Chart는 v1 로 설정된 apiVersion 를 가지고 아직까지 Helm 3를 통해 설치할 수 있습니다.
+버전 v1 에서 v2 로 바꾸기:
+- dependencies 필드: 종속성 정의
+    - v1 차트를 위한 독립된 requirements.yaml 파일에 위치( Chart Dependencies 보기).
+- type 필드: 어플리케이션과 라이브러리 차트를 식별( ChartTypes 보기)
+
+<br/>
+
+#### ✔️ appVersion
+appVersion 필드는 version 필드와 아무런 관계가 없습니다. 
+appVersion 은 Application의 버전을 명시합니다.
+
+가령, drupal chart 에 appVersion: "8.2.1" 가 적혀있다면, 이는 해당 차트가 포함한 Drupal의 버전이 8.2.1 임을 나타냅니다. 이 필드는 정보만 제공하고, 차트 버전 계산에 영향이 없습니다.
+ 버전을 따옴표로 감싸는 것을 매우 권장하는데, YAML 파서가 버전 번호를 string으로 다루게 하기 때문입니다. 따옴표 없이 남기면 몇몇의 경우에 파싱 문제가 생길 수 있습니다. 가령, YAML은 1.0 을 소숫점으로, 1234e10 같은 깃 커밋 SHA를 과학적 기수법으로 해석할 수 있습니다.
+현재 Helm v3.5.0에서는, helm create는 기본값으로 appVersion 필드를 따옴표로 감쌉니다.
 
