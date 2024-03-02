@@ -1,3 +1,24 @@
+# Helm
+
+## 📌 Helm Architecture
+### The Purpose of Helm
+Helm은 charts 라고 불리는 Kubernetes packages를 관리하는 도구입니다.
+아래와 같은 일들을 합니다:
+
+- Create new charts from scratch
+- Package charts into chart archive (tgz) files
+- Interact with chart repositories where charts are stored
+- Install and uninstall charts into an existing Kubernetes cluster
+- Manage the release cycle of charts that have been installed with Helm
+
+Helm을 시작하기 위해서는 아래의 세 가지 주요 개념이 있습니다.
+
+- chart : Kubernetes application의 인스턴스를 생성하기 위한 필수 정보 번들
+- config : 릴리즈 객체를 생성하기 위한 패키징된 차트로 병합되는 설정 정보들
+- release : 특정 설정과 함께 포함된 차트의 인스턴스를 실행
+
+<br/>
+
 ## Three Big Concepts
 [🔗 link](https://helm.sh/docs/intro/using_helm/#three-big-concepts)
 
