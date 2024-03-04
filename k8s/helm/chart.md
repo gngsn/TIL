@@ -93,3 +93,47 @@ appVersion 은 Application의 버전을 명시합니다.
  버전을 따옴표로 감싸는 것을 매우 권장하는데, YAML 파서가 버전 번호를 string으로 다루게 하기 때문입니다. 따옴표 없이 남기면 몇몇의 경우에 파싱 문제가 생길 수 있습니다. 가령, YAML은 1.0 을 소숫점으로, 1234e10 같은 깃 커밋 SHA를 과학적 기수법으로 해석할 수 있습니다.
 현재 Helm v3.5.0에서는, helm create는 기본값으로 appVersion 필드를 따옴표로 감쌉니다.
 
+<br/>
+
+#### ✔️ kubeVersion
+(optional) kubeVersion 버전은 Kubernetes 버전을 SemVer 제약에 따라 정의할 수 있습니다.
+Helm은 Chart를 내려 받을 때 버전 제약이 유효한지 검증하고, 만약 클러스터가 지원하지 않는 Kubernetes 버전을 실행하려 하면 실패시킵니다.
+Version 제약은, 아래와 같이, 공백 문자열로 구분되며 비교 연산자로 구성됩니다.
+
+```
+>= 1.13.0 < 1.15.0
+```
+
+혹은, OR || 연산자를 통해 결합시킬 수도 있습니다.
+
+```
+>= 1.13.0 < 1.14.0 || >= 1.14.1 < 1.15.0
+```
+
+위 예제에서는 1.14.0 버전을 제외 시키며, 특정 버전에서 발견되는 버그가 발견될 때를 고려해보면, 왜 이러한 구문이 필요한 지 이해할 수 있을 것입니다.
+버전 제약 연산자들 = != > < >= <= 외에도 아래와 같은 약칭 표기가 지원됩니다.
+
+- `-` hyphen 은 폐구간 범위를 표기: `1.1 - 2.3.4` is equivalent to `>= 1.1 <= 2.3.4`.
+- `x`, `X`, `*` 는 wildcard: `1.2.x` is equivalent to `>= 1.2.0 < 1.3.0`.
+- `~` tilde는 PATCH 변경을 허용하는 범위: `~1.2.3` is equivalent to `>= 1.2.3 < 1.3.0`.
+- `^` caret은 MINOR 변경을 허용하는 범위: `^1.2.3` is equivalent to `>= 1.2.3 < 2.0.0`.
+
+<br/>
+
+For a detailed explanation of supported semver constraints see Masterminds/semver.
+
+```
+FYI. Semantic Versioning 2.0.0: MAJOR.MINOR.PATCH
+- MAJOR version when you make incompatible API changes
+- MINOR version when you add functionality in a backward compatible manner
+- PATCH version when you make backward compatible bug fixes
+```
+
+Additional labels for pre-release and build metadata are available as extensions to the MAJOR.MINOR.PATCH format.
+
+<br/>
+
+#### Chart Types
+type 필드는 Chart의 타입을 정의하는데, 타입은 두 종류가 있습니다: application 혹은 library. Application은 Default 값이며, 완전한 동작을 가능하게 하는 표준 Chart입니다. library chart 는 Chart Builder를 위한 utilities 혹은 functions 를 제공합니다. library 타입의 chart는 Application과 다르게 설치 가능하지가 않고 보통 리소스 객체를 포함하지 않습니다.
+
+**Note**: Application chart는 타입을 library 로 수정하여 library chart로 사용할 수 있습니다. Chart는 모든 유틸리티와 함수 기능을 활용할 수 있는 상태의 library chart로 렌더링됩니다. 그러나, 차트의 모든 리소스 객체는 레더링되지 않습니다.
