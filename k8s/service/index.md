@@ -196,6 +196,35 @@ spec:
     type: front-end
 ```
 
+<br/><br/>
+
+### LoadBalancer
+
+네 개의 노드 클러스터가 있을 때, 외부 사용자가 응용 프로그램에 액세스할 수 있도록 하는 방식을 생각해보자.
+
+<br/><img width="60%" src="./img/image8.png" /><br/>
+
+NodePort 타입에서는 Node의 Port에서 트래픽을 수신해 트래픽을 각각의 포드로 라우팅하는 걸 도왔음.
+
+그럼, 여러 노드일 때는 어떤 URL로 전송해야 할까
+
+<br/><img width="60%" src="./img/image9.png" /><br/>
+
+그림과 같이 IP:Port로 접속할 순 있지만, 사용자는 단일 도메인을 원함
+
+#### **Service의 해결법**
+
+<br/><img width="60%" src="./img/image10.png" /><br/>
+
+VM과 Cloud 서비스와 같이 Cluster를 모두 포괄하는 공간에 LoadBalancer를 구비
+
+구글 클라우드, AWS, Azure 등 클라우드 플랫폼과의 통합을 지원하기 때문에, 쉽게 연결해서 Natvie Load Balancer를 활용 가능
+
+단, 지원되는 클라우드 플랫폼에 한해서만 작동
+
+
+
+
 
 
 ---
