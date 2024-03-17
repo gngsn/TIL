@@ -62,7 +62,7 @@ Deployment의 PodTemplateSpec를 업데이트해서 새로운 상태를 선언�
 Pod가 이전 ReplicaSet에서 새로운 ReplicaSet 하위로의 이동을 관리합니다.
 각각의 새로운 ReplicaSet은 Deployment의 수정을 반영합니다.
 
-
+[//]: # ( TODO )
 ✔️ Rollback to an earlier Deployment revision if the current state of the Deployment is not stable.
 Each rollback updates the revision of the Deployment.
 
@@ -84,8 +84,8 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: nginx-deployment          # ❶
-  labels:                         # ❸.①
-    app: nginx                    # ❸.①
+  labels:
+    app: nginx
 spec:
   replicas: 3                     # ❷
   selector:                       # ❷
@@ -94,7 +94,7 @@ spec:
   template:
     metadata:
       labels:
-        app: nginx
+        app: nginx                # ❸.①
     spec:                         # ❸.②
       containers:                 # ❸.②
       - name: nginx               # ❸.③
@@ -105,27 +105,40 @@ spec:
 
 <br/>
 
-#### ❶
-Kubernetes는 `.metadata.name` field 를 참고하여 `nginx-deployment`를 생성합니다.
+#### ❶ `Deployment` 이름
+Kubernetes는 `.metadata.name`를 참고하여 `nginx-deployment`를 생성합니다.
 이 이름은 나중에 생성될 `ReplicaSets` 나 `Pods` 의 기초가 됩니다.
 자세한 내용은 이후 [Deployment Spec](https://kubernetes.io/docs/concepts/workloads/controllers/deployment/#writing-a-deployment-spec) 을 설명할 때 다루겠습니다.
 
 <br/>
 
-#### ❷
+#### ❷ `ReplicaSet` 정의
 
-`Deployment`는 `.spec.replicas` field 를 참고해서 세 개의 Pod을 생성할 `ReplicaSet`을 생성합니다.
-`.spec.selector` field는 생성된 `ReplicaSet`이 어떤 Pod들을 관리할지를 어떻게 결정할지 정의합니다.
-위 경우엔, 파드의 템플릿 (app: nginx) 로 정의된 레이블을 찾습니다.
-하지만, 파드 템플릿 자체의 규칙을 만족시키는 한, 조금 더 정교한 규칙을 적용할 수 있습니다.
+`Deployment`는 `.spec.replicas` 를 참고하여 `ReplicaSet`이 생성·관리할 Pod의 개수를 설정합니다.
+`.spec.selector`는 생성된 `ReplicaSet`이 어떤 Pod을 관리할지 지정합니다.
+위 경우, 파드의 템플릿 `app: nginx` 로 정의된 레이블을 찾습니다.
+파드 템플릿 규칙을 살펴보면, 조금 더 정교하게 규칙을 설정할 수 있습니다.
 
 <table><tr><td>
 <b>참고</b> 
 
-`.spec.selector.matchLabels` 필드는 `{key,value}`의 쌍으로 매핑되어 있습니다.
-`matchLabels` 에 매핑된 단일 `{key,value}`은 `matchExpressions` 의 요소에 해당하며,
-key 필드는 "key"에 그리고 `operator`는 "In"에 대응되며 value 배열은 "value"만 포함합니다.
-매칭을 위해서는 `matchLabels` 와 `matchExpressions` 의 모든 요건이 충족되어야 합니다.
+`.spec.selector.matchLabels` 필드는 `{key, value}`의 쌍으로 정의합니다.
+비슷하게, `matchExpressions`를 사용할 수 있는데요.
+`matchExpressions` 는 정교한 조건을 담아 `selector`를 설정할 수 있습니다. 
+
+```yaml
+selector:
+  matchLabels:
+    component: redis
+  matchExpressions:
+    - { key: tier, operator: In, values: [cache] }
+    - { key: environment, operator: NotIn, values: [dev] }
+```
+
+이 때, `matchLabels` 에 정의된 `{key, value}` 쌍은,
+`matchExpressions`에 `{ key: ≪key≫, operator: In, values: ≪value≫}` 를 입력하는 것과 동일합니다.
+즉, key 필드는 `matchLabels`의 "key"값을, `operator`는 "In", `values` 는 `matchLabels`의 "value"를 명시하는 것과 동일합니다.
+
 
 </td></tr></table>
 <br/>
@@ -134,34 +147,22 @@ key 필드는 "key"에 그리고 `operator`는 "In"에 대응되며 value 배열
 
 템플릿의 필드는 다음과 같은 하위 필드들을 포함합니다:
 
-- ❸.①: 파드들은 `.metadata.labels` 필드를 통해 `app: nginx`로 라벨링됩니다.
-- ❸.②: 파드 템플리들의 상세 명세나 `.template.spec` 필드는 파드들이 `nginx`라는 하나의 컨테이너에서 동작한다는 것을 의미하는데, 이는 `nginx` 도커 허브 이미지 버전 1.14.2. 에서 동작할 것입니다.
-    - ```yaml
-    selector:
-    matchLabels:
-    component: redis
-    matchExpressions:
-      - { key: tier, operator: In, values: [cache] }
-      - { key: environment, operator: NotIn, values: [dev] }```
-- ❸.③: `.spec.template.spec.containers[0].name` 필드에 명세된 이름 `nginx`으로 컨테이너가 생성됩니다.
+- ❸.①: Pod는 `.metadata.labels`를 통해 `app: nginx`로 라벨링됩니다.
+- ❸.②: 파드 템플릿을 정의하거나 `.spec.template.spec` 필드에 명시한 내용들은 하나의 컨테이너에서 동작한다는 것을 의미합니다.
+  위 예시에서는 파드가 `nginx:1.14.2` 이미지를 사용하여, `nginx` 이름으로 Port 80에서 생성시키라는 설정입니다.
+- ❸.③: `.spec.template.spec.containers[0].name`에 `nginx`을 설정함으로써,`nginx` 명의 컨테이너가 생성됩니다.
 
 
-
----
-
-
-[//]: # (ReplicationController 혹은 ReplicaSet 와 Service 등과 함께 Pod를 운영하고 있다고 가정해봅시다.)
-
-[//]: # (이 때, Pod를 업데이트 할 때 아래의 두 가지를 생각할 것입니다.)
-
-[//]: # ()
-[//]: # (- Pod 제거 후 새로운 Pod 생성)
-
-[//]: # (- Pod 생성 후 기존의 Pod 제거)
-
-[//]: # ()
-[//]: # (두 방식 모두 장·단점이 있습니다. )
+## Deployment command
 
 
-
+| Goal                                                                                          | Command                                                                                                     |
+|-----------------------------------------------------------------------------------------------|-------------------------------------------------------------------------------------------------------------|
+| Create an NGINX Pod                                                                           | kubectl run nginx --image=nginx                                                                             |
+| Generate POD Manifest YAML file (-o yaml). Don't create it(--dry-run)                         | kubectl run nginx --image=nginx --dry-run=client -o yaml                                                    |
+| Create a deployment                                                                           | kubectl create deployment --image=nginx nginx                                                               |
+| Generate Deployment YAML file (-o yaml). Don't create it(--dry-run)                           | kubectl create deployment --image=nginx nginx --dry-run=client -o yaml                                      |
+| Generate Deployment YAML file (-o yaml). Don’t create it(–dry-run) and save it to a file.     | kubectl create deployment --image=nginx nginx --dry-run=client -o yaml > nginx-deployment.yaml              |
+| Make necessary changes to the file (ex, adding more replicas) and then create the deployment. | kubectl create -f nginx-deployment.yaml                                                                     |
+| Create a deployment with 4 replicas by specifying `--replicas` option (In k8s version 1.19+)  | kubectl create deployment --image=nginx nginx --replicas=4 --dry-run=client -o yaml > nginx-deployment.yaml |
 
