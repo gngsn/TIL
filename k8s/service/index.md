@@ -150,6 +150,54 @@ spec:
 추가적인 구성 필요 없음
 
 
+<br/><br/>
+
+### ClusterIP
+
+풀 스택 웹 응용 프로그램은 응용 프로그램의 여러 부분을 호스팅하는 다른 종류의 포드가 존재
+
+<br/><img width="60%" src="./img/image6.png" /><br/>
+
+- 프론트엔드 웹 서버를 실행하는 Port
+- 백엔드 서버를 실행하는 Port
+- Redis 같은 키 값 저장소를 실행하는 Port
+- MySQL 같은 Persistent 데이터베이스 Port
+
+서비스나 계층 간의 연결을 확립하는 방법이 필요
+
+- 조건1. 각 앱마다 원하는 통신 대상이 있음
+  - 가령, 프론트엔드는 백엔드 서버와, 백엔드 서버는 데이터베이스 혹은 Redis 서비스 등과 통신해야함
+- 조건2. 고정 IP
+  - 하지만, Pod는 언제든 제거되고 새로 계속 만들어지니 Port는 정적이지 않음
+
+**서비스의 해결책** 
+
+<br/><img width="60%" src="./img/image7.png" /><br/>
+
+각 그룹 별 Pod를 하나로 묶고 하나의 인터페이스를 통해 단일 Port 접근
+
+- 그 하위에서 부터 요청은 무작위로 Port로 전달
+- 각 그룹 내에서 확장이 용이해짐
+
+각각의 서비스는 클러스터 내부에서 IP와 그에 할당된 이름을 갖으며, 다른 Pod가 접근할 때 해당 이름을 사용
+
+```yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: back-end
+spec:
+  type: ClusterIP
+  ports:
+    targetPort: 80
+    port: 80
+  selector:
+    app: myapp
+    type: front-end
+```
+
+
+
 ---
 
 
