@@ -1,5 +1,6 @@
 # Imperative vs. Declarative
 
+## Imperative vs Declarative
 
 - **Imperative**: What to do & How to do
 - **Declarative**: How to do 
@@ -14,6 +15,7 @@ IaC에서 인프라 프로비저닝의 접근법 두 가지
 - **Declarative**: 선언적 접근에서 요구 사항을 선언
   - Ansible, Puppet, Chef, Terraform
 
+<br/>
 
 만약, Imperative 접근법에서 처음에 단계의 절반만 실행하거나, 혹은 동일한 명령어를 다시 입력한다면? → 추가 단계가 많이 필요함 (존재 여부를 확인 후 조치를 취함)
 (가령, VM을 프로비저닝하는 동안 "웹 서버"라는 이름의 VM이 이미 존재한다거나, 데이터베이스 생성이나 데이터 불러올 때)
@@ -22,6 +24,7 @@ IaC에서 인프라 프로비저닝의 접근법 두 가지
 
 ---
 
+<br/>
 
 ### Kubernetes Command
 
@@ -77,9 +80,9 @@ YAML 파일은 Imperative 방식과 달리 휘발성이 아니라, Git 같은 �
 (FYI. `kubectl create` 나 `kubectl update` 는 이미 존재 / 업데이트가 적용될 수 없다는 오류 발생)
 </small>
 
-<br/>
+<br/><br/>
 
-**생성 / 수정**
+#### 생성 / 수정
 
 Imperative 방법은, 수정 시 명령어를 통해 원하는 사항을 위해 특정 연쇄적인 명령을 내려 기록이 되지 않음
 
@@ -93,3 +96,4 @@ Declarative 방법은, 로컬에 저장된 설정 파일을 새로운 버전으�
 
 개체를 완전히 삭제하고 재생성하고 싶을 때에는, 동일한 명령이되 `--force` 옵션 적용
 
+<br/><br/>
