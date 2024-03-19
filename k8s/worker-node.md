@@ -6,7 +6,7 @@ The worker Node has the following components.
 - kube-proxy
 - Container runtime
 
-Kubernetes Worker Node Components
+## Kubernetes Worker Node Components
 이제 각각의 워커 노드 구성요소를 살펴보도록 하겠습니다.
 
 
@@ -35,7 +35,7 @@ Kubelet 컴포넌트에 Pod YAML 위치를 제공하면 Pod를 생성할 수 있
 하지만, Kubelet이 생성하는 정적 Pod는 API 서버에서 관리하지 않음
 
 실제 정적 Pod 예시를 확인해보면,
-컨트롤 플레인을 부트스트래핑하는 동안 kubelet은 `/etc/kubernetes/manifest`에 있는 podSpecs에서 api-server, scheduler 및 controller Manager를 정적 포드로 시작.
+컨트롤 플레인을 부트스트래핑하는 동안 kubelet은 `/etc/kubernetes/manifest`에 있는 podSpecs에서 `api-server`, `scheduler` 및 `Controller Manager`를 정적 포드로 시작.
 
 Kubelet의 몇 가지 주요 사항을 확인해보면,
 
@@ -203,8 +203,8 @@ CNI(Container Networking Interface)?
 - Replicaset
 - Deployment
 - Daemonset
-- Statefulset
-- Jobs & Cronjobs
+- StatefulSet
+- Jobs & CronJobs
 
 
 또한 CRD 및 Custom Controller를 사용하여 Kubernetes를 확장할 수 있음
