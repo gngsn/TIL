@@ -84,6 +84,9 @@ development 환경에서 작업 시 production 리소스를 분리시켜 실수�
 동일한 Namespace에서는 각 서비스를 호출 시 단순 이름으로만 호출 가능하지만,
 다른 Namespace도 접근 시에는 반드시 Namespace를 같이 명시해야 함
 
+
+<br/><img src="./img/namespace_img1.png" width="60%"/><br/>
+
 ```Bash
 # same namespace 
 mysql.connect("db-service")

@@ -1,4 +1,4 @@
-# kube api
+# kubeapi
 
 
 When you run a kubectl command, the kubectl utility is in fact reaching to the kube-apiserver.

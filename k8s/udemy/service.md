@@ -4,7 +4,7 @@
 
 애플리케이션을 다른 애플리케이션 또는 사용자와 연결하는 걸 도와줌
 
-<br/><img width="60%" src="./img/image1.png" /><br/> 
+<br/><img width="60%" src="./img/service_img1.png" /><br/> 
 
 가령, 위와 같이 설정되어 있다고 가정.
 
@@ -25,7 +25,7 @@
 
 ## Service Types
 
-<br/><img width="60%" src="./img/image2.png" /><br/> 
+<br/><img width="60%" src="./img/service_img2.png" /><br/> 
 
 
 - **NodePort**: 노드에서 포트를 listen 하고 있다가, 요청이 들어오면 해당 포트를 웹 어플리케이션이 실행하고 있는 POD의 포트로 forwarding
@@ -37,7 +37,7 @@
 ### NodePort
 노드에서 포트를 listen 하고 있다가, 요청이 들어오면 해당 포트를 웹 어플리케이션이 실행하고 있는 POD의 포트로 forwarding
 
-<br/><img width="60%" src="./img/image3.png" /><br/> 
+<br/><img width="60%" src="./img/service_img3.png" /><br/> 
 
 모든 용어는 Service의 관점
 <br/>
@@ -129,7 +129,7 @@ spec:
 
 #### ✔️ NodePort - 한 노드에 여러 Pod가 있을 때
 
-<br/><img width="60%" src="./img/image4.png" /><br/>
+<br/><img width="60%" src="./img/service_img4.png" /><br/>
 
 
 서비스는 자동으로 세 개의 Endpoint pod를 선택해, 사용자가 보내는 요청을 전달
@@ -143,7 +143,7 @@ spec:
 
 ####  ✔️ NodePort - 여러 노드에 Pod가 분산되어 있을 때
 
-<br/><img width="60%" src="./img/image5.png" /><br/>
+<br/><img width="60%" src="./img/service_img5.png" /><br/>
 
 자동으로 클러스터 내 모든 노드에 걸친 서비스를 생성하고, 클러스터 내 모든 노드 포트를 동일하게 매핑 (모든 Node Port `30080` 사용)
 
@@ -156,7 +156,7 @@ spec:
 
 풀 스택 웹 응용 프로그램은 응용 프로그램의 여러 부분을 호스팅하는 다른 종류의 포드가 존재
 
-<br/><img width="60%" src="./img/image6.png" /><br/>
+<br/><img width="60%" src="./img/service_img6.png" /><br/>
 
 - 프론트엔드 웹 서버를 실행하는 Port
 - 백엔드 서버를 실행하는 Port
@@ -172,7 +172,7 @@ spec:
 
 **서비스의 해결책** 
 
-<br/><img width="60%" src="./img/image7.png" /><br/>
+<br/><img width="60%" src="./img/service_img7.png" /><br/>
 
 각 그룹 별 Pod를 하나로 묶고 하나의 인터페이스를 통해 단일 Port 접근
 
@@ -202,19 +202,19 @@ spec:
 
 네 개의 노드 클러스터가 있을 때, 외부 사용자가 응용 프로그램에 액세스할 수 있도록 하는 방식을 생각해보자.
 
-<br/><img width="60%" src="./img/image8.png" /><br/>
+<br/><img width="60%" src="./img/service_img8.png" /><br/>
 
 NodePort 타입에서는 Node의 Port에서 트래픽을 수신해 트래픽을 각각의 포드로 라우팅하는 걸 도왔음.
 
 그럼, 여러 노드일 때는 어떤 URL로 전송해야 할까
 
-<br/><img width="60%" src="./img/image9.png" /><br/>
+<br/><img width="60%" src="./img/service_img9.png" /><br/>
 
 그림과 같이 IP:Port로 접속할 순 있지만, 사용자는 단일 도메인을 원함
 
 #### **Service의 해결법**
 
-<br/><img width="60%" src="./img/image10.png" /><br/>
+<br/><img width="60%" src="./img/service_img10.png" /><br/>
 
 VM과 Cloud 서비스와 같이 Cluster를 모두 포괄하는 공간에 LoadBalancer를 구비
 
