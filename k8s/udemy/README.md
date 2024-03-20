@@ -13,13 +13,13 @@
 7. Kube Scheduler
 8. Kubelet
 9. Kube Proxy
-10. Pods
-11. ReplicaSets
-12. Deployments
-13. Services
-14. Namespaces
-15. Imperative vs Declarative
-16. Kubectl Apply Command
+10. [Pods](./pod.md)
+11. [ReplicaSets](./replicaset.md)
+12. [Deployments](./deployment.md)
+13. [Services](./service.md)
+14. [Namespaces](./namespace.md)
+15. [Imperative vs Declarative](./imperative_vs_declarative.md)
+16. [Kubectl Apply Command](./kube_apply_command)
 
 <br/>
 
