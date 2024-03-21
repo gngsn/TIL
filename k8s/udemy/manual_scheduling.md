@@ -1,13 +1,14 @@
 클러스터에 스케쥴러가 없을 땐, 내장된 스케줄러에 의존하는 대신 포드를 직접 스케줄링할 수 있음
 
-
-스케쥴러는 백엔드에서 어떻게 작동할까?
+스케줄러는 백엔드에서 어떻게 작동할까?
 
 간단한 포드 정의 파일부터 시작하죠 
 
+<br/>
+
+_pod-definition.yml_
 
 <pre><code lang="yaml">
-# pod-definition.yml
 apiVersion: v1
 kind: Pod
 metadata:
@@ -22,7 +23,7 @@ spec:
       - containerPort: 8080
   <b>nodeName: node02</b>
 </code></pre>
-
+<br/>
 
 모든 Pod 객체에는 `nodeName` 필드를 가질 수 있으며, 기본값은 설정되어 있지 않음 
 
@@ -40,8 +41,11 @@ nodeName 필드에 해당 노드를 지정함으로써 스케줄링하는데, �
 이미 생성되어 있는 상태에서 노드에 할당시키고 싶다면,
 `Binding` 객체를 생성해서 포드의 binding API에 POST 요청을 보냄 (스케줄러의 일을 모방)
 
+<br/>
+
+_pod-bind-definition.yml_
+
 <pre><code lang="yaml">
-# pod-bind-definition.yml
 apiVersion: v1
 kind: Binding
 metadata:
@@ -51,15 +55,38 @@ target:
   kind: Node
   name: <b>node02</b>
 </code></pre>
+<br/>
 
 바인딩 개체에서 노드 이름을 가진 대상 노드를 지정
 
 그럼 Binding 객체 데이터를 JSON 포맷을 Pod의 Binding API으로 POST 요청 
+
+<br/>
 
 ```Bash
 curl --header "Content-Type:application/json --request POST --data '{"apiVersion": "v1", "kind": "Binding", ...}'
 http://#SERVER/api/v1/namespaces/default/pods/$PODNAME/binding/
 ```
 
-그러니 반드시 YAML 파일을 동등한 JSON 형식으로 변환해야 해요
+<br/><br/>
+
+**강제 수정 delete and recreate pod**
+
+(cannot move a running pod)
+
+```Bash
+❯ kubectl replace --force -f pod-definition.yml
+pod "nginx" deleted
+pod/nginx replaced
+```
+
+delete 시, 오랜 시간이 걸릴 수 있는데, graceful shut down 때문
+
+<br/>
+
+**pod watch**
+
+```Bash
+❯ kubectl get pods --watch
+```
 

@@ -2,9 +2,9 @@
 
 <br/>
 
-## Section1. Introduction
+## Section1. Core Concept
 
-1. Core Concept
+1. 
 2. Cluster Architecture
 3. Docker vs ContainerD
 4. ETCD
@@ -19,13 +19,13 @@
 13. [Services](./service.md)
 14. [Namespaces](./namespace.md)
 15. [Imperative vs Declarative](./imperative_vs_declarative.md)
-16. [Kubectl Apply Command](./kube_apply_command)
+16. [Kubectl Apply Command](./kube_apply_command.md)
 
 <br/>
 
 ## Section2. Scheduling
 
-1. Manual Scheduling
+1. [Manual Scheduling](./manual_scheduling.md)
 2. Labels & Selectors
 3. Resource Limits
 4. daemon Sets
