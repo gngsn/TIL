@@ -26,7 +26,7 @@
 ## Section2. Scheduling
 
 1. [Manual Scheduling](./manual_scheduling.md)
-2. Labels & Selectors
+2. [Labels & Selectors](./labels_and_selectors.md)
 3. Resource Limits
 4. daemon Sets
 5. Multiple Schedulers

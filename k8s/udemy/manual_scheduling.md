@@ -8,8 +8,7 @@
 
 _pod-definition.yml_
 
-<pre><code lang="yaml">
-apiVersion: v1
+<pre><code lang="yaml">apiVersion: v1
 kind: Pod
 metadata:
   name: nginx
