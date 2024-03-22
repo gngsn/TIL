@@ -32,8 +32,7 @@ Selector는 분류한 항목들을 필터링
 
 Pod 생성 시, 아래와 같이 Label을 지정할 수 있음
 
-<pre><code lang="yaml">
-apiVersion: v1
+<pre><code lang="yaml">apiVersion: v1
 kind: Pod
 metadata:
   name: simple-webapp
@@ -42,7 +41,103 @@ metadata:
     function: Front-end</b>
 spec:
   containers:
-    - name: nginx-container
-      image: nginx
+  - name: simple-webapp
+    image: simple-webapp
+    ports:
+      - containerPort: 8080
 </code></pre>
+
+<br/>
+
+### Selectors
+
+위와 같이 Label을 설정했다면, `--selector app=App1` 명령어 옵션을 통해 Label을 필터링 후 확인 가능
+
+```Bash
+❯ kubectl get pods --selector app=App1
+NAME            READY   STATUS             RESTARTS   AGE
+simple-webapp   1/1     Running   0          52s
+```
+
+<br/>
+
+### Label & Selector: ReplicaSet
+
+_replicaset-definition.yaml_
+
+```yaml
+apiVersion: apps/v1
+kind: ReplicaSet
+metadata:
+  name: simple-webapp
+  labels:
+    app: App1
+    type: Front-end
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      type: App1
+  template:
+    metadata:
+      labels:
+        app: App1
+        function: Front-end
+    spec:
+      containers:
+      - name: simple-webapp
+        image: simple-webapp
+```
+
+위에는 세 개의 영역에서 Label을 지정하고 있는데, 구분해보면 다음과 같음
+
+- `.metadata.labels`: ReplicaSet 지정 Label
+
+**ReplicaSet - Pod 연결**
+
+- `.spec.template.metadata.labels`: Pods 지정 Label
+- `.sepc.selector`: ReplicaSet이 관리할 Pod를 필터링하기 위한 구분자
+
+만약, 이미 같은 Label을 가진 두 Pod를 구분하고 싶을 때에는, 각기 다른 Label을 설정해 구분
+
+ReplicaSet 생성 시, Label과 Selector가 일치하면 성공적으로 생성
+
+Service 등 다른 객체들도 마찬가지
+
+<br/>
+
+### Annotations
+
+Annotation은 정보 수집 목적으로 세부 사항을 기록하는 데 사용
+
+
+_replicaset-definition.yaml_
+
+```yaml
+apiVersion: apps/v1
+kind: ReplicaSet
+metadata:
+  name: simple-webapp
+  labels:
+    app: App1
+    type: Front-end
+  annotations:
+    buildVersion: 1.34
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      type: App1
+  template:
+    metadata:
+      labels:
+        app: App1
+        function: Front-end
+    spec:
+      containers:
+      - name: simple-webapp
+        image: simple-webapp
+```
+
+가령, 이름, 버전, 빌드 정보 같은 세부 정보, 혹은 연락처, 전화번호 이메일 ID 등 통합적인 목적으로 사용 가능
 
