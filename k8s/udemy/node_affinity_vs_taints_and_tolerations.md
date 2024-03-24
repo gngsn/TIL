@@ -49,7 +49,7 @@
 
 두 방식을 결합해서 사용하면 의도하는 동작을 정확히 수행 가능
 
-<br/><img src="./img/affinity_vs_taints_and_tolerations_img3.png" width="60%" /><br/>
+<br/><img src="./img/affinity_vs_taints_and_tolerations_img4.png" width="60%" /><br/>
 
 처음에는 Taint 와 Toleration 를 사용해 다른 팀의 Pod가 우리 노드에 놓이는 것을 막음
 
