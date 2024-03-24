@@ -4,22 +4,21 @@
 
 ## Section1. Core Concept
 
-1. 
-2. Cluster Architecture
-3. Docker vs ContainerD
-4. ETCD
-5. Kube-API Server
-6. Kube Controller Manager
-7. Kube Scheduler
-8. Kubelet
-9. Kube Proxy
-10. [Pods](./pod.md)
-11. [ReplicaSets](./replicaset.md)
-12. [Deployments](./deployment.md)
-13. [Services](./service.md)
-14. [Namespaces](./namespace.md)
-15. [Imperative vs Declarative](./imperative_vs_declarative.md)
-16. [Kubectl Apply Command](./kube_apply_command.md)
+1. Cluster Architecture
+2. Docker vs ContainerD
+3. ETCD
+4. Kube-API Server
+5. Kube Controller Manager
+6. Kube Scheduler
+7. Kubelet
+8. Kube Proxy
+9. [Pods](./pod.md)
+10. [ReplicaSets](./replicaset.md)
+11. [Deployments](./deployment.md)
+12. [Services](./service.md)
+13. [Namespaces](./namespace.md)
+14. [Imperative vs Declarative](./imperative_vs_declarative.md)
+15. [Kubectl Apply Command](./kube_apply_command.md)
 
 <br/>
 
@@ -27,11 +26,14 @@
 
 1. [Manual Scheduling](./manual_scheduling.md)
 2. [Labels & Selectors](./labels_and_selectors.md)
-3. Resource Limits
-4. daemon Sets
-5. Multiple Schedulers
-6. Scheduler Events
-7. Configure Kubernetes Scheduler
+3. [Taints and Tolerations](./taints_and_tolerations.md)
+4. [Node Selectors](./node_selectors.md)
+5. Node Affinity
+6. Resource Limits
+7. daemon Sets
+8. Multiple Schedulers
+9. Scheduler Events
+10. Configure Kubernetes Scheduler
 
 <br/>
 
