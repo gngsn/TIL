@@ -139,12 +139,64 @@ taint 이나 toleration이 없을 땐, 위와 같이 배치
 물론 해당 설정을 수정할 수는 있지만, Best Practice는 master 노드 서버에 애플리케이션 워크로드를 배포하지 않는 것
 
 ```Bash
-❯ kubectl describe node kind-control-plane -n kube-system | grep Taint                                                                 ─╯
+❯ kubectl describe node kind-control-plane -n kube-system | grep Taint
 Taints: node-role.kubernetes.io/master:NoSchedule
 ```
 
 > 로컬에서 명령어 했을 때
 > ```Bash
-> ❯ kubectl describe node kind-control-plane -n kube-system | grep Taint                                                                 ─╯
+> ❯ kubectl describe node kind-control-plane -n kube-system | grep Taint
 > Taints:             <none>
 > ```
+
+---
+
+**아래와 같은 스팩을 가진 `bee` Pod를 제작**
+
+- Image name: nginx
+- Key: spray
+- Value: mortein
+- Effect: NoSchedule
+
+```Bash
+❯ kubectl run bee --image=nginx --dry-run=client -o yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  creationTimestamp: null
+  labels:
+    run: bee
+  name: bee
+spec:
+  containers:
+  - image: nginx
+    name: bee
+    resources: {}
+  dnsPolicy: ClusterFirst
+  restartPolicy: Always
+status: {}
+
+❯ vi bee.yaml
+❯ cat bee.yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  creationTimestamp: null
+  labels:
+    run: bee
+  name: bee
+spec:
+  containers:
+  - image: nginx
+    name: bee
+    resources: {}
+  dnsPolicy: ClusterFirst
+  restartPolicy: Always
+  tolerations:
+  - key: spray
+    value: mortein
+    effect: NoSchedule
+    operator: Equal
+❯ kubectl get pods --watch
+```
+
