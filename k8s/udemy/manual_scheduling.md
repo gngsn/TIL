@@ -1,8 +1,8 @@
+# Manual Scheduling
+
 클러스터에 스케쥴러가 없을 땐, 내장된 스케줄러에 의존하는 대신 포드를 직접 스케줄링할 수 있음
 
 스케줄러는 백엔드에서 어떻게 작동할까?
-
-간단한 포드 정의 파일부터 시작하죠 
 
 <br/>
 
@@ -44,8 +44,7 @@ nodeName 필드에 해당 노드를 지정함으로써 스케줄링하는데, �
 
 _pod-bind-definition.yml_
 
-<pre><code lang="yaml">
-apiVersion: v1
+<pre><code lang="yaml">apiVersion: v1
 kind: Binding
 metadata:
   name: nginx
