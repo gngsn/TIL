@@ -392,3 +392,27 @@ Pod 정의 파일에 Resource 나 특정 Limit 없이 생성된 컨테이너에 
 
 - Namespace 레벨에서 생성됨
 - LimitRange는 하나의 쿠버네티스 오브젝트
+
+<br/>
+
+_limit-range-memory.yaml_
+
+```yaml
+apiVersion: v1
+kind: LimitRange
+metadata:
+  name: memory-resource-constraint
+spec:
+  limits:
+  - default:
+      memory: 1Gi
+    defaultRequest:
+      memory: 1Gi
+    max:
+      memory: 1Gi
+    min:
+      memory: 500Mi
+    type: Container
+```
+
+
