@@ -355,5 +355,40 @@ Requests = 1 Gi
 
 CPU와는 달리 메모리를 조절할 수 없기 때문에 Pod 2가 제공된 메모리 보다 더 요청하면 죽음
 
-
 Memory를 되찾을 유일한 방법은 Pod를 죽이고 Pod에 사용한 Memory를 해제(free)시켜주는 것
+
+---
+
+기본적으로 Pod에 구성된 리소스 요청이나 한계가 없다고 했는데,
+그렇다면 Pod 내 Container에 Default로 설정할 Resource Limit을 지정할 수 있을까
+
+→ LimitRange 정의를 설정해서 가능
+
+<br/>
+
+_limit-range-cpu.yaml_
+
+```yaml
+apiVersion: v1
+kind: LimitRange
+metadata:
+  name: cpu-resource-constraint
+spec:
+  limits:
+  - default:
+      cpu: 500m
+    defaultRequest:
+      cpu: 500m
+    max:
+      cpu: "1"
+    min:
+      cpu: 500m
+    type: Container
+```
+
+<br/>
+
+Pod 정의 파일에 Resource 나 특정 Limit 없이 생성된 컨테이너에 한해, Pod 내 모든 컨테이너에 적용됨
+
+- Namespace 레벨에서 생성됨
+- LimitRange는 하나의 쿠버네티스 오브젝트
