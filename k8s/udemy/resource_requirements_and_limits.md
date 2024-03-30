@@ -364,6 +364,13 @@ Memory를 되찾을 유일한 방법은 Pod를 죽이고 Pod에 사용한 Memory
 
 → LimitRange 정의를 설정해서 가능
 
+
+Pod 정의 파일에 Resource 나 특정 Limit 없이 생성된 컨테이너에 한해, Pod 내 모든 컨테이너에 적용됨
+
+- Namespace 레벨에서 생성됨
+- LimitRange는 하나의 쿠버네티스 오브젝트
+
+
 <br/>
 
 _limit-range-cpu.yaml_
@@ -375,23 +382,25 @@ metadata:
   name: cpu-resource-constraint
 spec:
   limits:
-  - default:
-      cpu: 500m
-    defaultRequest:
-      cpu: 500m
-    max:
-      cpu: "1"
-    min:
-      cpu: 500m
-    type: Container
+    - default:           # limit
+        cpu: 500m
+      defaultRequest:    # request
+        cpu: 500m
+      max:               # limit
+        cpu: "1"
+      min:               # request
+        cpu: 500m
+      type: Container
 ```
+_👆🏻 예제 값, 추천 X.
+각자의 앱에 가장 적합한 걸 설정해야함_
 
 <br/>
 
-Pod 정의 파일에 Resource 나 특정 Limit 없이 생성된 컨테이너에 한해, Pod 내 모든 컨테이너에 적용됨
+`default` Limit 을 500m으로 지정하고, `defaultRequest`도 동일하게 500m로 지정
 
-- Namespace 레벨에서 생성됨
-- LimitRange는 하나의 쿠버네티스 오브젝트
+`max`는 Pod 내 Container에 지정할 수 있는 Maximum limit, 
+`min` 은 Pod 내 Container가 만들 수 있는 Minimum request 의미
 
 <br/>
 
@@ -416,3 +425,36 @@ spec:
 ```
 
 
+메모리도 동일
+
+⭐️위 Limitation은 Pod가 생성될 때 강제로 설정됨 
+만약, `LimitRange`를 생성하거나 수정한다면,  기존 Pod에는 적용되지 않고 새로 생성되는 Pod에 한해서만 적용
+
+<br/>
+
+#### 클러스터 Limitation
+
+쿠버네티스 클러스터에 배포된 앱이 사용할 수 있는 전체 리소스를 제한할 방법?
+
+Resource Quota는 네임스페이스 레벨에서, Request와 Limit의 Hard Limit 값을 설정할 수 있음
+
+_resource-quota.yaml_
+
+```yaml
+apiVersion: v1
+kind: ResourceQuota
+metadata:
+  name: my-resource-quota
+spec:
+  hard:
+    request.cpu: 4
+    request.memory: 4Gi
+    limit.cpu: 10
+    limit.memory: 10Gi
+```
+
+
+Reference: 
+- [Manage Memory, CPU, and API Resources](https://kubernetes.io/docs/tasks/administer-cluster/manage-resources/)
+- [LimitRange for CPU](https://kubernetes.io/docs/tasks/administer-cluster/manage-resources/cpu-default-namespace/)
+- [LimitRange for Memory](https://kubernetes.io/docs/tasks/administer-cluster/manage-resources/memory-default-namespace/)
