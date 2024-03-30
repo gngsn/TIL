@@ -402,6 +402,21 @@ _👆🏻 예제 값, 추천 X.
 `max`는 Pod 내 Container에 지정할 수 있는 Maximum limit, 
 `min` 은 Pod 내 Container가 만들 수 있는 Minimum request 의미
 
+✔️ **적용한 Pod에 명시되는 정보**
+
+```Bash
+Name:             myapp-pod
+Namespace:        default
+Priority:         0
+Service Account:  default
+Node:             kind-control-plane/172.21.0.2
+Start Time:       Sat, 30 Mar 2024 17:04:30 +0900
+Labels:           app=myapp
+                  type=front-end
+Annotations:      kubernetes.io/limit-ranger: LimitRanger plugin set: cpu request for container nginx-container; cpu limit for container nginx-container
+Status:           Running
+```
+
 <br/>
 
 _limit-range-memory.yaml_
@@ -458,3 +473,36 @@ Reference:
 - [Manage Memory, CPU, and API Resources](https://kubernetes.io/docs/tasks/administer-cluster/manage-resources/)
 - [LimitRange for CPU](https://kubernetes.io/docs/tasks/administer-cluster/manage-resources/cpu-default-namespace/)
 - [LimitRange for Memory](https://kubernetes.io/docs/tasks/administer-cluster/manage-resources/memory-default-namespace/)
+
+
+---
+
+**⚠️ Caution**
+
+`Terminated` 된 이유를 확인해보면, 현재 상태(`State`)와 마지막 상태 (`Last State`)를 확인할 수 있고,
+각 `Reason` 를 통해 이유를 확인할 수 있음
+
+```Bash
+controlplane ~ ➜  k get pods
+NAME     READY   STATUS             RESTARTS        AGE
+rabbit   0/1     CrashLoopBackOff   5 (2m24s ago)   5m20s
+
+controlplane ~ ✖ k describe pods elephant
+Name:             elephant
+Namespace:        default
+  ...
+    State:          Waiting
+      Reason:       CrashLoopBackOff
+    Last State:     Terminated
+      Reason:       OOMKilled
+      Exit Code:    1
+      Started:      Sat, 30 Mar 2024 08:40:20 +0000
+      Finished:     Sat, 30 Mar 2024 08:40:20 +0000
+    Ready:          False
+    Restart Count:  2
+    Limits:
+      memory:  10Mi
+    Requests:
+      memory:     5Mi
+    ...
+```
