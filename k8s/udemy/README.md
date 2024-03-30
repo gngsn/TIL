@@ -30,8 +30,8 @@
 4. [Node Selectors](./node_selectors.md)
 5. [Node Affinity](./node_affinity.md)
 6. [Node Affinity vs. Taints and Tolerations](./node_affinity_vs_taints_and_tolerations.md)
-7. Resource Limits
-8. daemon Sets
+7. [Resource Limits](./resource_requirements_and_limits.md)
+8. [daemon Sets](./daemonset.md)
 9. Multiple Schedulers
 10. Scheduler Events
 11. Configure Kubernetes Scheduler
