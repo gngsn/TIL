@@ -33,7 +33,7 @@
 7. [Resource Limits](./resource_requirements_and_limits.md)
 8. [Daemon Sets](./daemonset.md)
 9. [Static Pods](./staticpods.md)
-10. Multiple Schedulers
+10. [Multiple Schedulers](./multiple_schedulers.md)
 11. Scheduler Events
 12. Configure Kubernetes Scheduler
 
