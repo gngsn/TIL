@@ -150,3 +150,157 @@ _kube-system 네임스페이스에 Pod를 확인하면, 정적 Pod이기 때문�
 </tr>
 </table>
 
+
+---
+
+<br/><br/>
+
+#### 📌 Static Pod 구분 방법
+
+**1. 이름을 통한 추측**
+
+```Bash
+controlplane ~ ➜  k get pods -A
+NAMESPACE      NAME                                   READY   STATUS    RESTARTS   AGE
+kube-flannel   kube-flannel-ds-b4j9z                  1/1     Running   0          12m
+kube-flannel   kube-flannel-ds-xbkr4                  1/1     Running   0          11m
+kube-system    coredns-69f9c977-8v7km                 1/1     Running   0          12m
+kube-system    coredns-69f9c977-gg67n                 1/1     Running   0          12m
+kube-system    etcd-controlplane                      1/1     Running   0          12m
+kube-system    kube-apiserver-controlplane            1/1     Running   0          12m
+kube-system    kube-controller-manager-controlplane   1/1     Running   0          12m
+kube-system    kube-proxy-j6rwp                       1/1     Running   0          12m
+kube-system    kube-proxy-vx95c                       1/1     Running   0          11m
+kube-system    kube-scheduler-controlplane            1/1     Running   0          12m
+```
+
+Static Pod는 생성 시, 이름 뒤에 노드 이름이 붙음
+
+Ex. `etcd-controlplane`, `kube-apiserver-controlplane`, `kube-controller-manager-controlplane`, `kube-scheduler-controlplane` 
+
+`Q. How many static pods exist in this cluster in all namespaces?` 질문에 대응 가능
+
+
+**2. 각 Pod 상세 조회**
+
+**✔️ Static Pod**: `.metadata.ownerReferences.kind` → `Node`
+
+<pre><code lang="yaml">
+controlplane ~ ➜  k get pods kube-controller-manager-controlplane -n kube-system -o yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  ...
+  name: kube-controller-manager-controlplane
+  namespace: kube-system
+  ownerReferences:
+    - apiVersion: v1
+      controller: true
+      <b>kind: Node</b>
+      name: controlplane
+      uid: 07cf24ac-9926-4125-9f64-f501d99ddd95
+</code></pre>
+
+**✔️ Control Plane을 통해 관리되는 Pod**: `.metadata.ownerReferences.kind` → `ReplicaSet`
+
+<pre><code lang="yaml">
+controlplane ~ ➜  k get pods coredns-69f9c977-8v7km -n kube-system -o yaml 
+apiVersion: v1
+kind: Pod
+metadata:
+  ...
+  name: coredns-69f9c977-8v7km
+  ownerReferences:
+  - apiVersion: apps/v1
+    blockOwnerDeletion: true
+    controller: true
+    <b>kind: ReplicaSet</b>
+    name: coredns-69f9c977
+    uid: 2d54c431-233c-4fdc-9734-f90bb46dcdc5
+</code></pre>
+
+<br/><br/>
+
+#### 📌 ✔️ 다른 Node 에서 생성된 Static Pod 제거
+
+<br/>
+
+**1. 제거하려는 Pod가 어느 노드에 배치되어 있는지 확인**
+
+```Bash
+controlplane / ➜  k get pods
+NAME                          READY   STATUS    RESTARTS   AGE
+static-busybox-controlplane   1/1     Running   0          7m35s
+static-greenbox-<b>node01</b>        1/1     Running   0          6m58s
+```
+
+<br/>
+
+**2. 해당 노드 조회 및 접근 가능한 IP (INTERNAL-IP) 확인**
+
+<pre><code lang="yaml">
+controlplane / ➜ k get nodes -o wide
+NAME           STATUS   ROLES           AGE   VERSION   INTERNAL-IP    EXTERNAL-IP   OS-IMAGE             KERNEL-VERSION   CONTAINER-RUNTIME
+controlplane   Ready    control-plane   59m   v1.29.0   192.6.249.9    <none>        Ubuntu 22.04.3 LTS   5.4.0-1106-gcp   containerd://1.6.26
+node01         Ready    <none>          58m   v1.29.0   <b>192.6.249.11</b>   <none>        Ubuntu 22.04.3 LTS   5.4.0-1106-gcp   containerd://1.6.26
+</code></pre>
+
+<br/>
+
+**3. 노드 접속**
+
+```Bash
+controlplane / ➜  ssh 192.6.249.11
+The authenticity of host '192.6.249.11 (192.6.249.11)' can't be established.
+ED25519 key fingerprint is SHA256:CkBMQQl8A+bWoSfepHCxTVEDl/x8UOBX9rknJd2al7w.
+This host key is known by the following other names/addresses:
+    ~/.ssh/known_hosts:1: [hashed name]
+Are you sure you want to continue connecting (yes/no/[fingerprint])? yes
+Warning: Permanently added '192.6.249.11' (ED25519) to the list of known hosts.
+```
+
+<br/>
+
+**4. 해당 노드의 Static Pods 정의 파일 정의를 위해 지정된 위치 확인**
+
+<pre><code lang="yaml">
+node01 ~ ✖ cat /var/lib/kubelet/config.yaml 
+apiVersion: kubelet.config.k8s.io/v1beta1
+...
+shutdownGracePeriod: 0s
+shutdownGracePeriodCriticalPods: 0s
+<b>staticPodPath: /etc/just-to-mess-with-you</b>
+...
+</code></pre>
+
+<br/>
+
+**5. Static Pod 지정 위치에 파일 존재 확인**
+
+```Bash
+node01 ~ ➜ ls /etc/just-to-mess-with-you
+total 16
+-rw-r--r-- 1 root root  301 Mar 31 05:05 greenbox.yaml
+```
+
+<br/>
+
+**6. 제거할 Static Pod 정의 파일 삭제**
+
+```Bash
+node01 ~ ➜ rm /etc/just-to-mess-with-you/greenbox.yaml
+node01 /etc/just-to-mess-with-you ➜ 
+logout
+Connection to 192.6.249.11 closed.
+```
+
+_SSH 연결 종료는 **Ctrl+d**_
+
+**7. Pod 삭제 여부 확인**
+
+```Bash
+controlplane / ✖ k get pods
+NAME                          READY   STATUS    RESTARTS   AGE
+static-busybox-controlplane   1/1     Running   0          10m
+```
+
