@@ -144,6 +144,10 @@ leaderElection:
 
 **1. 로컬 --볼륨마운트-→ 클러스터** 
 
+🔗 [Configure Multiple Schedulers](https://kubernetes.io/docs/tasks/extend-kubernetes/configure-multiple-schedulers/)
+
+<br/>
+
 파일을 로컬에서 만들어 볼륨 마운트로 넘길 수도 있음 (`--config=/etc/kubernetes/my-scheduler/my-scheduler-config.yaml`)
 
 ```yaml
@@ -253,4 +257,12 @@ kubectl get events -o wide
 
 ```Bash
 kubectl logs my-custom-scheduler --name-space=kube-system
+```
+
+---
+
+
+
+```Bash
+kubectl create configmap my-scheduler-config --from-file=/root/my-scheduler-config.yaml -n kube-system
 ```
