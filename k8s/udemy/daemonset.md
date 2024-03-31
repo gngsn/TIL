@@ -228,3 +228,16 @@ Affinity:  Node 1    Node 2   Node 3   Node 4
 
 **`< v.1.12`**: Pod가 생성될 때 각 노드에 자동 배치
 **`>= v.1.12`**: NodeAffinity + default scheduler
+
+
+---
+
+**Create DaemonSet in a Imperative Way**
+
+```Bash
+❯ kubectl create deployment elasticsearch -n kube-system --image=k8s.gcr.io/fluentd-elasticsearch:1.20 --dry-run=client -o yaml > fluentd.yaml
+```
+
+1. change Kind, Deployment → DaemonSet
+2. remove unnecessary fields.
+

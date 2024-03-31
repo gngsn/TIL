@@ -31,10 +31,11 @@
 5. [Node Affinity](./node_affinity.md)
 6. [Node Affinity vs. Taints and Tolerations](./node_affinity_vs_taints_and_tolerations.md)
 7. [Resource Limits](./resource_requirements_and_limits.md)
-8. [daemon Sets](./daemonset.md)
-9. Multiple Schedulers
-10. Scheduler Events
-11. Configure Kubernetes Scheduler
+8. [Daemon Sets](./daemonset.md)
+9. [Static Pods](./staticpods.md)
+10. Multiple Schedulers
+11. Scheduler Events
+12. Configure Kubernetes Scheduler
 
 <br/>
 
