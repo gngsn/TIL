@@ -18,7 +18,7 @@ Pod은 현재 Pending 상태 유지
 
 kubectl Events를 보면 불충분한 CPU가 있는 걸 볼 수 있음
 
-<br/><img src="./img/resource_requirements_and_limits_img1.jpg" width="40%" /><br/>
+<br/><img src="./img/resource_requirements_and_limits_img1.png" width="80%" /><br/>
 
 **Example.**
 

@@ -4,6 +4,6 @@ metadata:
   name: nginx
 spec:
   containers:
-    - image: nginx
-      name: nginx
-  schedulerName: my-scheduler
+    - name: nginx
+      image: nginx
+  nodeName: kube-01
