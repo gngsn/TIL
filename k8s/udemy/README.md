@@ -40,10 +40,15 @@
 
 ## Section3. Logging Monitoring
 1. [Logging Monitoring](./logging_monitoring.md)
+2. Managing Application Logs
 
 <br/>
 
 ## Section4. Application Lifecycle Management
+
+1. Rolling Updates and Rollbacks
+2. Command and Argument
+
 
 _TODO_
 
