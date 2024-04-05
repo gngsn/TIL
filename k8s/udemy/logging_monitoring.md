@@ -60,7 +60,7 @@ Metric Server를 배포할 수 있음
 kubectl create -f deploy/1.8+/
 ```
 
-#### 실제 실습
+#### 실습
 
 [link](https://github.com/kubernetes-sigs/metrics-server)
 
@@ -89,4 +89,58 @@ apiservice.apiregistration.k8s.io/v1beta1.metrics.k8s.io created
 
 `kubectl top pod` 명령어를 통해 Pod의 성능 지표를 확인할 수도 있음
 
+---
 
+### ✍🏻 kodekloud 실습 기록
+
+**1. Metric Server 준비 / Customize**
+
+```Bash
+controlplane ~ ➜  git clone https://github.com/kodekloudhub/kubernetes-metrics-server.git
+Cloning into 'kubernetes-metrics-server'...
+remote: Enumerating objects: 31, done.
+remote: Counting objects: 100% (19/19), done.
+remote: Compressing objects: 100% (19/19), done.
+remote: Total 31 (delta 8), reused 0 (delta 0), pack-reused 12
+Receiving objects: 100% (31/31), 8.08 KiB | 8.08 MiB/s, done.
+Resolving deltas: 100% (10/10), done.
+```
+
+<br/>
+
+**2. Metric Server 배포**
+
+```
+controlplane ~ ➜  k create -f kubernetes-metrics-server/
+clusterrole.rbac.authorization.k8s.io/system:aggregated-metrics-reader created
+clusterrolebinding.rbac.authorization.k8s.io/metrics-server:system:auth-delegator created
+rolebinding.rbac.authorization.k8s.io/metrics-server-auth-reader created
+apiservice.apiregistration.k8s.io/v1beta1.metrics.k8s.io created
+serviceaccount/metrics-server created
+deployment.apps/metrics-server created
+service/metrics-server created
+clusterrole.rbac.authorization.k8s.io/system:metrics-server created
+clusterrolebinding.rbac.authorization.k8s.io/system:metrics-server created
+```
+
+<br/>
+
+**3. Node Resource 사용량 확인**
+
+```
+controlplane ~ ➜  k top node
+NAME           CPU(cores)   CPU%   MEMORY(bytes)   MEMORY%   
+controlplane   232m         0%     1082Mi          0%        
+node01         28m          0%     263Mi           0%
+```
+
+<br/>
+
+**4. Pods Resource 사용량 확인**
+
+```
+controlplane ~ ➜  k top pods
+NAME       CPU(cores)   MEMORY(bytes)   
+elephant   14m          32Mi            
+lion       1m           18Mi            
+rabbit     97m          252Mi
