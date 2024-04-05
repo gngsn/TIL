@@ -84,5 +84,3 @@ spec:
 kubectl logs -f event-simulator-pod event-simulator
 ```
 
----
-
