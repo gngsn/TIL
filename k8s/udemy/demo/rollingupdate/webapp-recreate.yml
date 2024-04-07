@@ -1,0 +1,21 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: webapp-recreate
+spec:
+  replicas: 4
+  selector:
+    matchLabels:
+      name: webapp
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        name: webapp
+    spec:
+      containers:
+        - name: nginx
+          image: nginx:1.14.3
+          ports:
+            - containerPort: 80
