@@ -84,6 +84,7 @@ Deployment 생성 시 디폴트 배포 전략
 
 ```Bash
 ❯ kubectl set image deployment/myapp-deployment nginx-container=nginx:1.9.1
+# kubectl set image ≪deployment-name≫ ≪container-name≫
 ```
 
 Application의 이미지를 업데이트를 함으로써 해당 변경을 적용
@@ -165,6 +166,10 @@ RollingUpdate 같은 경우엔, 기존 ReplicaSet을 조금씩 축소하고 새 
 ❯ kubectl rollout undo deployment/myapp-deployment
 ```
 
+---
 
+```
+k set image deploy frontend simpel-webapp=kodekloud/webapp-color:v2
+```
 
 

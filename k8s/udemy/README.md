@@ -47,7 +47,7 @@
 
 ## Section4. Application Lifecycle Management
 
-1. Rolling Updates and Rollbacks
+1. [Rolling Updates and Rollbacks](./rolling_updates_and_rollbacks.md)
 2. Command and Argument
 3. Configure Environment Variables in Applications
 4. Configuring ConfigMaps in Applications
