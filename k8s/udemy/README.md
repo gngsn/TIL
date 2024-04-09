@@ -48,11 +48,12 @@
 ## Section4. Application Lifecycle Management
 
 1. [Rolling Updates and Rollbacks](./rolling_updates_and_rollbacks.md)
-2. Command and Argument
-3. Configure Environment Variables in Applications
-4. Configuring ConfigMaps in Applications
-5. Configure Secrets in Applications
-6. Additional Resource
+2. [Application Command](./application_commands.md)
+3. Command and Argument
+4. Configure Environment Variables in Applications
+5. Configuring ConfigMaps in Applications
+6. Configure Secrets in Applications
+7. Additional Resource
 
 <br/>
 
