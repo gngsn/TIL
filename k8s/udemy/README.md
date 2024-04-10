@@ -49,11 +49,9 @@
 
 1. [Rolling Updates and Rollbacks](./rolling_updates_and_rollbacks.md)
 2. [Application Command](./application_commands.md)
-3. Command and Argument
-4. Configure Environment Variables in Applications
-5. Configuring ConfigMaps in Applications
-6. Configure Secrets in Applications
-7. Additional Resource
+3. [Command and Arguments](./command_and_arguments.md)
+4. [Configure Applications](./configure_applications.md)
+5. Additional Resource
 
 <br/>
 
