@@ -48,10 +48,9 @@
 ## Section4. Application Lifecycle Management
 
 1. [Rolling Updates and Rollbacks](./rolling_updates_and_rollbacks.md)
-2. [Application Command](./application_commands.md)
-3. [Command and Arguments](./command_and_arguments.md)
-4. [Configure Applications](./configure_applications.md)
-5. Additional Resource
+2. [Application Command](./command_and_arguments.md)
+3. [Configure Applications](./configure_applications.md)
+4. Additional Resource
 
 <br/>
 
