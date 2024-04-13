@@ -1,31 +1,39 @@
-## Configure Applications
+# Configure Applications
 
-### Environment Variables 
+## Environment Variables 
 
-이번 강의에서는 쿠버네티스의 환경 변수를 설정하는 법을 알아보도록 하죠
+환경 변수를 설정하려면 `env` 속성 사용
 
-지난 강의에서 도커 명령과 같은 이미지를 사용하는 포드 정의 파일을 받았죠
 
-환경 변수를 설정하려면 ENV 속성을 사용하세요
+```yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: ubuntu-sleeper-pod
+spec:
+  containers:
+    - name: ubuntu-sleeper
+	  image: ubuntu-sleeper
+	  ports:
+        - containerPort: 8080
+	  env:
+        - name: APP_COLOR
+        - value: pink
+```
 
-ENV는 배열입니다 ENV 속성 하의 모든 항목은 배열의 항목을 나타내는 대시부터 시작하죠
+`env`는 배열로, 각 `name`과 `value` 명시
 
-물건마다 이름과 가치가 있어요
+`name`은 환경 변수 이름, `value`는 해당 환경 변수 값
 
-이름은 환경 변수의 이름이에요 컨테이너와 함께 사용 가능하게 된 거죠 값은 그 값이에요
+```Bash
+docker run -e APP_COLOR=pink simple-webapp-color
+```
 
-방금 본 건 평상 키 값 연동 포맷을 이용해 환경 변수를 지정하는 직접적인 방법이었죠
-
-하지만 환경 변수를 설정하는 다른 방법도 있어요 구성 맵과 비밀 사용 같은 거요
-
-이 경우의 차이점은 값을 지정하는 대신 값을 from이라고 하고 구성 맵이나 비밀의 사양이라고 하죠
-
-구성 지도와 비밀 열쇠에 관해선 다음 강의에서 논의하죠
-
+위 처럼 직접 값을 입력할 수도 있지만, `ConfigMap`이나 `Secret`의 값을 가져올 수 있음
 
 ---
 
-### ConfigMaps
+## ConfigMaps
 
 포드 정의 파일이 많을 경우 쿼리 파일에 저장된 환경을 관리하기가 어려워지죠
 

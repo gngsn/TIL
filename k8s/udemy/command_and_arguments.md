@@ -315,3 +315,42 @@ Docker에서 사용하던 `ENTRYPOINT`를 사용하고 싶다면, `command` 속�
 
 
 ⚠️ `command`는 `CMD`가 아님을 주의
+
+
+#### args & command
+
+Args 나 Command 속성을 입력하는 형식은 두 가지
+
+```yaml
+...
+spec:
+  containers:
+    - name: ubuntu-sleeper
+      image: ubuntu-sleeper
+	  command: ["sleep", "10"]
+```
+
+단, 모든 명령어는 String 값으로 입력해야 함 
+
+```yaml
+...
+spec:
+  containers:
+  - name: ubuntu-sleeper
+    image: ubuntu-sleeper
+    command:
+    - "sleep"
+    - "10"
+```
+
+---
+
+**강제 업데이트 복습**
+
+```Bash
+kubectl replace --force -f /tmp/kubectl-edit-241231451342.yaml
+```
+
+```Bash
+kubectl run webapp-green --image=kodekloud/webapp-color -- --color green
+```
