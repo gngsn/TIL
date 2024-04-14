@@ -276,7 +276,14 @@ data:
 
 Pod에 환경변수를 입력하는 방법은 세 가지가 존재 
 
-**📌 1. Env: ConfigMap 사용**
+<table>
+<tr>
+<th>1. Env: ConfigMap 사용</th>
+<th>2. Single Env</th>
+<th>3. Volume</th>
+</tr>
+<tr>
+<td>
 
 ```yaml
 envFrom:
@@ -284,9 +291,8 @@ envFrom:
         name: app-config     
 ```
 
-<br>
-
-**📌 2. Single Env**
+</td>
+<td>
 
 단일 환경 변수로 입력
 
@@ -299,9 +305,8 @@ env:
         key: APP_COLOR     
 ```
 
-<br>
-
-**📌 3. Volume**
+</td>
+<td>
 
 전체 데이터를 파일로 볼륨에 입력
 
@@ -312,4 +317,330 @@ volumes:
       name: app-config
 ```
 
+</td>
+</tr>
+</table>
+
 <br>
+
+---
+
+## Secrets
+
+애플리케이션에서 직접 입력할 수 없는 Secret 값을 설정하는 방법?
+
+가령, Database Host, User, Password 등을 설정할 때 어떻게 설정해야 할까
+
+이때, Secret 사용 - 비밀번호나 Key 등 민감한 정보를 저장하는 데 횔용
+
+ConfigMap은 일반 텍스트 형식으로 구성 데이터를 저장하기 때문에 적절하지 않음
+
+인코딩된 형식으로 저장된다는 점만 빼면 ConfigMap 와 비슷
+
+```Bash
+DB_Host: RvEtdlSw=
+DB_User: THevDhS==
+DB_Password: aHrGgsdJ
+```
+
+ConfigMap 와 마찬가지로 Secret 구성은 두 단계로 구성
+
+<br>
+
+### STEP 1. Create Secret
+
+가령, 아래와 같은 설정 값을 지정하는 방법?
+
+```Bash
+DB_Host: mysql
+DB_User: root
+DB_Password: paswrd
+```
+
+<br>
+
+#### 📌 1. Imperative
+
+`kubectl create secret generic` 명령어를 통해 Secret 지정 가능
+
+<br>
+
+```Bash
+kubectl create secret generic \
+    <secret-name> --from-literal=<key>=<value>
+```
+
+**Example.**
+
+```Bash
+kubectl create secret generic \
+    app-secret --from-literal=DB_Host=mysql \
+               --from-literal=DB_User=root \
+               --from-literal=DB_Password=paswrd \
+```
+
+<br>
+
+혹은 `--from-file` 옵션으로 파일을 지정할 수 있음
+
+```Bash
+kubectl create secret generic \
+    <secret-name> --from-file=<path-to-file>
+```
+
+**Example.**
+
+```Bash
+kubectl create secret generic \
+    app-secret --from-file=app_secret.properties
+```
+
+<br>
+
+#### 📌 2. Declarative
+
+```Bash
+kubectl create -f ...
+```
+
+**Example.**
+
+<table>
+<tr>
+<th><code>secret-data.yaml</code></th>
+<th>Command</th>
+</tr>
+<tr><td>
+
+```yaml
+apiVersion: v1
+kind: Secret
+metadata:
+  name: app-secret
+data:
+    DB_Host: mysql
+    DB_User: root
+    DB_Password: paswrd
+```
+
+</td><td>
+
+```Bash
+kubectl create -f secret-data.yaml
+```
+
+</td></tr></table>
+
+Secret 은 민감한 데이터를 저장하기 위해 사용되어 암호화된 포맷으로 저장
+
+명령적 방식 Secret을 생성하려면 인코딩된 형식의 Secret 값을 지정해야 함
+
+
+```yaml
+apiVersion: v1
+kind: Secret
+metadata:
+  name: app-secret
+data:
+    DB_Host: bXlzcWw=
+    DB_User: cm9vdA==
+    DB_Password: cGFzd3Jk
+```
+
+이렇게 인코딩된 형식으로 데이터를 지정
+
+일반 텍스트에서 인코딩된 형식으로 데이터를 변환하려면 `echo -n '<<string>>' | base64` 입력
+
+
+```Bash
+❯ echo -n 'mysql' | base64
+bXlzcWw=
+❯ echo -n 'root' | base64
+cm9vdA==
+❯ echo -n 'paswrd' | base64
+cGFzd3Jk
+```
+
+<br>
+
+#### View Secrets
+
+secret을 확인을 위해서는 `kubectl get secrets` 명령어 사용
+
+```Bash
+❯ kubectl get secrets
+NAME                                         TYPE                 DATA   AGE
+app-secret                                   Opaque               3      4s
+```
+
+```Bash
+Name:         app-secret
+Namespace:    default
+Labels:       <none>
+Annotations:  <none>
+
+Type:  Opaque
+
+Data
+====
+DB_Host:      5 bytes
+DB_Password:  6 bytes
+DB_User:      4 bytes
+
+```
+
+값을 보고 싶다면, YAML 포맷으로 확인
+
+```yaml
+❯ kubectl get secrets app-secret -o yaml
+apiVersion: v1
+data:
+  DB_Host: bXlzcWw=
+  DB_Password: cGFzd3Jk
+  DB_User: cm9vdA==
+kind: Secret
+metadata:
+  name: app-secret
+  namespace: default
+...
+```
+
+<br>
+
+#### Decode Secret
+
+```Bash
+❯ echo -n 'bXlzcWw=' | base64 --decode
+mysql
+❯ echo -n 'cm9vdA==' | base64 --decode
+root
+❯ echo -n 'cGFzd3Jk' | base64 --decode
+paswrd
+```
+
+<br>
+
+### STEP 2. Inject into Pod
+
+간단한 웹앱 실행 Pod 정의 파일을 예시로 들자면,
+
+<table>
+<tr>
+<th><code>pod-definition.yaml</code></th>
+<th><code>secret-data.yaml</code></th>
+</tr>
+<tr><td>
+
+```yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: simple-webapp-color
+  labels:
+    name: simple-webapp-color
+spec:
+  containers:
+  - name: simple-webapp-color
+    image: simple-webapp-color
+    ports:
+    - containerPort: 8080
+    envFrom:
+    - secretRef:
+        name: app-secret
+```
+
+</td></tr>
+<tr><td>
+
+```yaml
+apiVersion: v1
+kind: Secret
+metadata:
+  name: app-secret
+data:
+  DB_Host: bXlzcWw=
+  DB_Password: cGFzd3Jk
+  DB_User: cm9vdA==
+```
+
+</td></tr>
+</table>
+
+위와 같이 생성한 Secret 객체를 입력할 수 있음
+
+
+<table>
+<tr>
+<th>1. Env: Secret 사용</th>
+<th>2. Single Env</th>
+<th>3. Volume</th>
+</tr>
+<tr>
+<td>
+
+```yaml
+envFrom:
+    - secretRef:
+        name: app-secret     
+```
+
+</td>
+<td>
+
+단일 Secret 로 입력
+
+```yaml
+env:
+  - name: DB_Password
+    valueFrom:
+      secretKeyRef:
+        name: app-secret     
+        key: DB_Password     
+```
+
+</td>
+<td>
+
+전체 데이터를 파일로 볼륨에 입력
+
+```yaml
+volumes:
+  - name: app-secret-volume
+    configMap: 
+      name: app-secret
+```
+
+</td>
+</tr>
+</table>
+
+Pod에 Secret을 Volume 형식으로 입력하는 방법은,
+Secret 각각의 속성은 파일로 생성됨
+
+```Bash
+ls /opt/app-secret-volumes
+DB_Host     DB_Password     DB_User
+```
+
+각각의 파일을 확인해보면, 인코딩 되지 않은 Secret이 그대로 저장되어 있음
+
+암호화되어 있지 않기 때문에, 누구든 기밀문서로 만든 파일을 볼 수 있고 Secret 을 얻을 수 있음 
+
+**❌ Secrets are **not Encrypted**. Only encoded**
+  - Do not check-in Secret objects to SCM along with code
+
+Secret을 앱에서 확인하거나 Git을 통해 업로드 하지 마라
+
+**❌ Secrets are not encrypted in ETCD.**
+  ✅Enable encryption at rest
+
+
+**❌ Anyone able to create pods/deployments in the same namespace can access the secrets**
+
+Pod를 만들거나 배포할 수 있는 사람은 누구나 동일한 Namespace 의 Secret에 접근 가능
+
+Role-based Access Control 를 구성해 액세스 제한을 고려할 필요가 있음 
+
+**✅Consider third-party secrets store providers AWS Provider, Azure Provider, GCP Provider, Vault Provider**
+
+서드파티 암호 공급자 고려; Secret이 Etcd가 아닌 외부 Secret Provider에 저장되고 공급자는 보안의 대부분을 처리
