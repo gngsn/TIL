@@ -77,3 +77,11 @@ Pod 정의 파일의 `spec` 섹션 아래에 `containers` 섹션은 배열
 
 위 경우, `log-agent`라는 새 컨테이너를 기존 포드에 추가
 
+
+<br>
+
+### Multi-container Pods Design Patterns
+
+1. Side Car Pattern
+2. Adapter Pattern
+3. Ambassador Pattern
