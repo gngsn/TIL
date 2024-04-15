@@ -17,8 +17,8 @@ metadata:
 spec:
   containers:
   - name: nginx
-	image: nginx
-	ports:
+    image: nginx
+    ports:
       - containerPort: 8080
   <b>nodeName: node02</b>
 </code></pre>

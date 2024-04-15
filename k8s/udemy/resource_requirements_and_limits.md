@@ -64,7 +64,7 @@ spec:
     resources:
       requests:
         memory: "4Gi"
-		cpu: 2
+        cpu: 2
 ```
 
 예를 들어, 컨테이너에 대한 리소스 요청으로 CPU 2개와 4 Gi 메모리로 설정할 수 있음
@@ -127,10 +127,10 @@ spec:
     resources:
       requests:
         memory: "4Gi"
-		cpu: 2
+        cpu: 2
       <b>limits:
         memory: "2Gi"
-		cpu: 2</b>
+        cpu: 2</b>
 </code></pre>
 
 <br/>

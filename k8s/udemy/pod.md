@@ -13,8 +13,8 @@ metadata:
     type: front-end
 spec:
   containers:
-		- name: nginx-container
-		image: nginx
+        - name: nginx-container
+        image: nginx
 ```
 
 Kubernetes 정의 파일은 최상위에 항상  API version, kind, metadata, spec 을 가지고 있습니다.

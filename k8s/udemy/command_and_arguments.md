@@ -269,7 +269,7 @@ metadata:
 spec:
   containers:
     - name: ubuntu-sleeper
-	  image: ubuntu-sleeper
+      image: ubuntu-sleeper
 ```
 
 Pod는 위에서 생성한 것 처럼 5초간 sleep 상태를 실행하고 종료될 것
@@ -292,8 +292,8 @@ metadata:
 spec:
   containers:
     - name: ubuntu-sleeper
-	  image: ubuntu-sleeper
-	  args: ["10"]
+      image: ubuntu-sleeper
+      args: ["10"]
 ```
 
 Pod 정의 파일의 args 옵션은, docker 파일의 cmd 지시문을 Override
@@ -327,7 +327,7 @@ spec:
   containers:
     - name: ubuntu-sleeper
       image: ubuntu-sleeper
-	  command: ["sleep", "10"]
+      command: ["sleep", "10"]
 ```
 
 단, 모든 명령어는 String 값으로 입력해야 함 

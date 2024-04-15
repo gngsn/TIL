@@ -13,10 +13,10 @@ metadata:
 spec:
   containers:
     - name: ubuntu-sleeper
-	  image: ubuntu-sleeper
-	  ports:
+      image: ubuntu-sleeper
+      ports:
         - containerPort: 8080
-	  env:
+      env:
         - name: APP_COLOR
         - value: pink
 ```
