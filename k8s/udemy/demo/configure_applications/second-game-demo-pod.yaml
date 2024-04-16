@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: configmap-demo-2
+spec:
+  containers:
+    - name: demo
+      image: nginx
+      command: ["sleep", "3600"]
+      env:
+        - name: UI_PROPERTIES_FILE_NAME
+          valueFrom:
+            configMapKeyRef:
+              name: game-demo
+              key: ui_properties_file_name
