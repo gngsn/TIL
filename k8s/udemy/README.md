@@ -51,6 +51,8 @@
 2. [Application Command](./command_and_arguments.md)
 3. [Configure Applications](./configure_applications.md)
 4. [Multi Container Pods](./multicontainer_pods.md)
+5. [Init Containers](./multicontainer_pods.md)
+6. [Self Healing Application](./multicontainer_pods.md)
 
 <br/>
 
