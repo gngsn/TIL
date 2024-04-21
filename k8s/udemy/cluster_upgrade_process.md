@@ -69,6 +69,8 @@ ETCDNS와 CoreDNS 같은 외부 컴포넌트 종속성을 가짐
 
 ## `kubeadm`
 
+[🔗 Upgrade Kubelet And Kubectl](https://v1-29.docs.kubernetes.io/docs/tasks/administer-cluster/kubeadm/kubeadm-upgrade/#upgrade-kubelet-and-kubectl)
+
 production 환경에 클러스터가 있고, 클러스터의 major 버전을 두 번 업그레이드 한다고 가정해보자
 
 이 클러스터는 master node(이하 마스터 노드) 와 worker node(이하 워커 노드)가 pod 를 통해 사용자에게 제공
@@ -215,6 +217,51 @@ Version:  v1.11     <s>v1.10</s>    v1.10    v1.10    <b>v1.11</b>
 
 ```Shell
 ❯ kubeadm upgrade plan
+[upgrade/config] Making sure the configuration is correct:
+[upgrade/config] Reading configuration from the cluster...
+[upgrade/config] FYI: You can look at this config file with 'kubectl -n kube-system get cm kubeadm-config -o yaml'
+[preflight] Running pre-flight checks.
+[upgrade] Running cluster health checks
+[upgrade] Fetching available versions to upgrade to
+[upgrade/versions] Cluster version: v1.28.0
+[upgrade/versions] kubeadm version: v1.28.0
+I0421 08:51:49.991911   14158 version.go:256] remote version is much newer: v1.30.0; falling back to: stable-1.28
+[upgrade/versions] Target version: v1.28.9
+[upgrade/versions] Latest version in the v1.28 series: v1.28.9
+
+Components that must be upgraded manually after you have upgraded the control plane with 'kubeadm upgrade apply':
+COMPONENT   CURRENT       TARGET
+kubelet     2 x v1.28.0   v1.28.9
+
+Upgrade to the latest version in the v1.28 series:
+
+COMPONENT                 CURRENT   TARGET
+kube-apiserver            v1.28.0   v1.28.9
+kube-controller-manager   v1.28.0   v1.28.9
+kube-scheduler            v1.28.0   v1.28.9
+kube-proxy                v1.28.0   v1.28.9
+CoreDNS                   v1.10.1   v1.10.1
+etcd                      3.5.9-0   3.5.9-0
+
+You can now apply the upgrade by executing the following command:
+
+        kubeadm upgrade apply v1.28.9
+
+Note: Before you can perform this upgrade, you have to update kubeadm to v1.28.9.
+
+_____________________________________________________________________
+
+
+The table below shows the current state of component configs as understood by this version of kubeadm.
+Configs that have a "yes" mark in the "MANUAL UPGRADE REQUIRED" column require manual config upgrade or
+resetting to kubeadm defaults before a successful upgrade can be performed. The version to manually
+upgrade to is denoted in the "PREFERRED VERSION" column.
+
+API GROUP                 CURRENT VERSION   PREFERRED VERSION   MANUAL UPGRADE REQUIRED
+kubeproxy.config.k8s.io   v1alpha1          v1alpha1            no
+kubelet.config.k8s.io     v1beta1           v1beta1             no
+_____________________________________________________________________
+
 ```
 
 `kubeadm upgrade plan` 명령을 실행하면 많은 정보를 얻을 수 있음

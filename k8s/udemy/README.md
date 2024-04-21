@@ -61,6 +61,7 @@
 1. [Operating System Upgrade](./operating_system_upgrade.md)
 2. [Kubernetes Software Version](./kubernetes_software_version.md)
 3. [Cluster Upgrade Process](./cluster_upgrade_process.md)
+4. [Backup and Restore Methods](./backup_and_restore_methods.md)
 
 
 <br/>
