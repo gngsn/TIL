@@ -59,6 +59,7 @@
 ## Section5. Cluster Maintenance
 
 1. [Operating System Upgrade](./operating_system_upgrade.md)
+2. [Kubernetes Software Version](./kubernetes_software_version.md)
 
 
 <br/>
