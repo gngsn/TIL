@@ -66,6 +66,8 @@ kind-control-plane   Ready    control-plane   55d   v1.29.2
 
 다운로드된 패키지는 추출되면 컨트롤 플레인의 모든 컴포넌트가 모두 같은 버전으로 포함되어 있음
 
+<br/><img src="./img/kubernetes_software_version_img1.png" width="60%" /><br/>
+
 **Components**: `kube-apiserver`, `controller-manager`, `kube-scheduler`, `kubelet`, `kube-proxy`, `kubectl`, 
 
 하지만, Etcd cluster 과 CoreDNS 는 다른 프로젝트로, 즉 고유 버전이 있다는 것을 알 필요가 있음
