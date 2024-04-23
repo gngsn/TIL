@@ -150,4 +150,144 @@ drain 과 uncordon과 이외에도, `conrdon` 명령어가 있음
 
 단순히 해당 노드에 새 포드가 스케쥴링되지 않도록 보장하는 것
 
+<br>
 
+---
+
+<br>
+
+### Hands-On 
+
+```Bash
+ k get nodes
+NAME           STATUS   ROLES           AGE   VERSION
+controlplane   Ready    control-plane   21m   v1.29.0
+node01         Ready    <none>          20m   v1.29.0
+```
+
+```Bash
+k drain --ignore-daemonsets node01
+node/node01 already cordoned
+Warning: ignoring DaemonSet-managed Pods: kube-flannel/kube-flannel-ds-mkqw6, kube-system/kube-proxy-gz974
+evicting pod default/blue-667bf6b9f9-wpr6l
+evicting pod default/blue-667bf6b9f9-kng5v
+pod/blue-667bf6b9f9-kng5v evicted
+pod/blue-667bf6b9f9-wpr6l evicted
+node/node01 drained
+```
+
+```Bash
+controlplane ~ ➜  k get node
+NAME           STATUS                     ROLES           AGE   VERSION
+controlplane   Ready                      control-plane   23m   v1.29.0
+node01         Ready,SchedulingDisabled   <none>          23m   v1.29.0
+```
+
+```Bash
+controlplane ~ ➜  k describe node node01
+Name:               node01
+Roles:              <none>
+Labels:             beta.kubernetes.io/arch=amd64
+                    beta.kubernetes.io/os=linux
+                    kubernetes.io/arch=amd64
+                    kubernetes.io/hostname=node01
+                    kubernetes.io/os=linux
+Annotations:        flannel.alpha.coreos.com/backend-data: {"VNI":1,"VtepMAC":"c6:81:a5:21:1d:a1"}
+                    flannel.alpha.coreos.com/backend-type: vxlan
+                    flannel.alpha.coreos.com/kube-subnet-manager: true
+                    flannel.alpha.coreos.com/public-ip: 172.25.0.37
+                    kubeadm.alpha.kubernetes.io/cri-socket: unix:///var/run/containerd/containerd.sock
+                    node.alpha.kubernetes.io/ttl: 0
+                    volumes.kubernetes.io/controller-managed-attach-detach: true
+CreationTimestamp:  Sun, 21 Apr 2024 04:49:36 +0000
+Taints:             node.kubernetes.io/unschedulable:NoSchedule
+Unschedulable:      true
+Lease:
+  HolderIdentity:  node01
+  AcquireTime:     <unset>
+  RenewTime:       Sun, 21 Apr 2024 05:13:54 +0000
+Conditions:
+  Type                 Status  LastHeartbeatTime                 LastTransitionTime                Reason                       Message
+  ----                 ------  -----------------                 ------------------                ------                       -------
+  NetworkUnavailable   False   Sun, 21 Apr 2024 04:49:41 +0000   Sun, 21 Apr 2024 04:49:41 +0000   FlannelIsUp                  Flannel is running on this node
+  MemoryPressure       False   Sun, 21 Apr 2024 05:10:31 +0000   Sun, 21 Apr 2024 04:49:36 +0000   KubeletHasSufficientMemory   kubelet has sufficient memory available
+  DiskPressure         False   Sun, 21 Apr 2024 05:10:31 +0000   Sun, 21 Apr 2024 04:49:36 +0000   KubeletHasNoDiskPressure     kubelet has no disk pressure
+  PIDPressure          False   Sun, 21 Apr 2024 05:10:31 +0000   Sun, 21 Apr 2024 04:49:36 +0000   KubeletHasSufficientPID      kubelet has sufficient PID available
+  Ready                True    Sun, 21 Apr 2024 05:10:31 +0000   Sun, 21 Apr 2024 04:49:39 +0000   KubeletReady                 kubelet is posting ready status
+Addresses:
+  InternalIP:  192.7.30.3
+  Hostname:    node01
+Capacity:
+  cpu:                36
+  ephemeral-storage:  1016057248Ki
+  hugepages-1Gi:      0
+  hugepages-2Mi:      0
+  memory:             214587056Ki
+  pods:               110
+Allocatable:
+  cpu:                36
+  ephemeral-storage:  936398358207
+  hugepages-1Gi:      0
+  hugepages-2Mi:      0
+  memory:             214484656Ki
+  pods:               110
+System Info:
+  Machine ID:                 49e48c9673ca44dd919fd32b36f0e237
+  System UUID:                82ad48cc-cf0c-c0bf-7b55-d95de2fe706e
+  Boot ID:                    a8c175c4-374f-4198-aab7-e61f2c78c920
+  Kernel Version:             5.4.0-1106-gcp
+  OS Image:                   Ubuntu 22.04.3 LTS
+  Operating System:           linux
+  Architecture:               amd64
+  Container Runtime Version:  containerd://1.6.26
+  Kubelet Version:            v1.29.0
+  Kube-Proxy Version:         v1.29.0
+PodCIDR:                      10.244.1.0/24
+PodCIDRs:                     10.244.1.0/24
+Non-terminated Pods:          (2 in total)
+  Namespace                   Name                     CPU Requests  CPU Limits  Memory Requests  Memory Limits  Age
+  ---------                   ----                     ------------  ----------  ---------------  -------------  ---
+  kube-flannel                kube-flannel-ds-mkqw6    100m (0%)     0 (0%)      50Mi (0%)        0 (0%)         24m
+  kube-system                 kube-proxy-gz974         0 (0%)        0 (0%)      0 (0%)           0 (0%)         24m
+Allocated resources:
+  (Total limits may be over 100 percent, i.e., overcommitted.)
+  Resource           Requests   Limits
+  --------           --------   ------
+  cpu                100m (0%)  0 (0%)
+  memory             50Mi (0%)  0 (0%)
+  ephemeral-storage  0 (0%)     0 (0%)
+  hugepages-1Gi      0 (0%)     0 (0%)
+  hugepages-2Mi      0 (0%)     0 (0%)
+Events:
+  Type     Reason                   Age                From             Message
+  ----     ------                   ----               ----             -------
+  Normal   Starting                 24m                kube-proxy       
+  Normal   Starting                 24m                kubelet          Starting kubelet.
+  Warning  InvalidDiskCapacity      24m                kubelet          invalid capacity 0 on image filesystem
+  Normal   NodeHasSufficientMemory  24m (x2 over 24m)  kubelet          Node node01 status is now: NodeHasSufficientMemory
+  Normal   NodeHasNoDiskPressure    24m (x2 over 24m)  kubelet          Node node01 status is now: NodeHasNoDiskPressure
+  Normal   NodeHasSufficientPID     24m (x2 over 24m)  kubelet          Node node01 status is now: NodeHasSufficientPID
+  Normal   NodeAllocatableEnforced  24m                kubelet          Updated Node Allocatable limit across pods
+  Normal   NodeReady                24m                kubelet          Node node01 status is now: NodeReady
+  Normal   RegisteredNode           24m                node-controller  Node node01 event: Registered Node node01 in Controller
+  Normal   NodeNotSchedulable       2m45s              kubelet          Node node01 status is now: NodeNotSchedulable
+```
+
+
+---
+
+ReplicaSet과 연결되지 않는 Pod가 존재할 때
+
+``` Bash
+controlplane ~ ➜  k get pods -o wide
+NAME                    READY   STATUS    RESTARTS   AGE     IP           NODE           NOMINATED NODE   READINESS GATES
+blue-667bf6b9f9-d77jq   1/1     Running   0          43m     10.244.0.4   controlplane   <none>           <none>
+blue-667bf6b9f9-df6ld   1/1     Running   0          33m     10.244.0.5   controlplane   <none>           <none>
+blue-667bf6b9f9-r64j4   1/1     Running   0          33m     10.244.0.6   controlplane   <none>           <none>
+hr-app                  1/1     Running   0          3m44s   10.244.1.4   node01         <none>           <none>
+
+controlplane ~ ➜  k get node
+NAME           STATUS   ROLES           AGE   VERSION
+controlplane   Ready    control-plane   58m   v1.29.0
+node01         Ready    <none>          57m   v1.29.0
+```
