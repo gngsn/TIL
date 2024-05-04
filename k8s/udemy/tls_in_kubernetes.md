@@ -40,12 +40,37 @@ ssh-rsa AAAAB223Fr34243Ds7aewEFSDsg7435... user1
 누구나 `authorized_keys` 파일을 확인할 수 있지만, private key가 없이는 SSH 접근 불가
 
 
+#### Public Key & Private Key
+
+| Certificate (Public Key)       | Private Key                        |
+|--------------------------------|------------------------------------|
+| Format: **\*.crt**, **\*.pem** | Format: **\*.key**, **\*-key.pem** |
+| server.crt                     | server.key                         |
+| server.pem                     | server-key.pem                     |
+| client.crt                     | client.key                         |
+| client.pem                     | client-key.pem                     |
+
+Public/Private Key에 대한 정해진 규칙은 없지만, 
+위와 같은 패턴을 가짐
+
 ---
 
 
+## TLS Certificates
+
+Certificate Authority (CA) 라는 인증 기관이 
+자체적으로 private과 public 세트 보관소가 존재해 서버 인증서에 서명할 때 사용할 수 있음 
+
+이를 root certificate(이하 루트 인증서) 라고 부름
 
 
+- 서버가 클라이언트에게 클라이언트 인증서를 이용해 자신을 검증해달라고 요청
 
+3가지 인증서 구성 필요
 
+<br><img src="./img/tls_in_kubernetes_img1.png" ><br>
 
+1. 서버: 서버 인증서
+2. CA 서버: 루트 인증서
+3. 클라이언트: 클라이언트 인증서
 
