@@ -71,11 +71,12 @@
 1. [Security Primitives](./security_primitives.md)
 2. [Authentication](./authentication.md)
 3. [TLS in Kubernetes](./tls_in_kubernetes.md)
-4. Authorization
-5. Security Contexts
-6. TLS Certifications for Cluster Components
-7. Images Securely
-8. Network Policies
+4. [TLS in Kubernetes: Certificate Creation](./tls_in_kubernetes_certificate_creation.md)
+5. Authorization 
+6. Security Contexts
+7. TLS Certifications for Cluster Components
+8. Images Securely
+9. Network Policies
 
 <br/>
 
