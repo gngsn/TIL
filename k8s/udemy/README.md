@@ -78,6 +78,13 @@
 8. KubeConfig
 9. Persistent Key/Value Store
 
+<details>
+<summary>References.</summary>
+
+[practice-test-view-certificate-details-2](https://uklabs.kodekloud.com/topic/practice-test-view-certificate-details-2/)
+
+</details>
+
 <br/>
 
 ## Section7. Storage

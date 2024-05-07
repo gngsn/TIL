@@ -157,3 +157,47 @@ docker logs <<container-id>>
 
 `docker ps` 명령으로 모든 컨테이너를 목록화하고 docker logs 로 로그 확인
 
+<br>
+
+---
+
+<br>
+
+### Hands-On
+
+
+```Bash
+controlplane ~ ➜  ll /etc/kubernetes/pki/ -R
+/etc/kubernetes/pki/:
+total 72
+drwxr-xr-x 3 root root 4096 May  7 12:57 ./
+drwxrwxr-x 1 root root 4096 May  7 12:57 ../
+-rw-r--r-- 1 root root 1289 May  7 12:57 apiserver.crt
+-rw-r--r-- 1 root root 1123 May  7 12:57 apiserver-etcd-client.crt
+-rw------- 1 root root 1675 May  7 12:57 apiserver-etcd-client.key
+-rw------- 1 root root 1675 May  7 12:57 apiserver.key
+-rw-r--r-- 1 root root 1176 May  7 12:57 apiserver-kubelet-client.crt
+-rw------- 1 root root 1675 May  7 12:57 apiserver-kubelet-client.key   # 
+-rw-r--r-- 1 root root 1107 May  7 12:57 ca.crt
+-rw------- 1 root root 1675 May  7 12:57 ca.key
+drwxr-xr-x 2 root root 4096 May  7 12:57 etcd/
+-rw-r--r-- 1 root root 1123 May  7 12:57 front-proxy-ca.crt
+-rw------- 1 root root 1679 May  7 12:57 front-proxy-ca.key
+-rw-r--r-- 1 root root 1119 May  7 12:57 front-proxy-client.crt
+-rw------- 1 root root 1679 May  7 12:57 front-proxy-client.key
+-rw------- 1 root root 1679 May  7 12:57 sa.key
+-rw------- 1 root root  451 May  7 12:57 sa.pub
+
+/etc/kubernetes/pki/etcd:
+total 40
+drwxr-xr-x 2 root root 4096 May  7 12:57 ./
+drwxr-xr-x 3 root root 4096 May  7 12:57 ../
+-rw-r--r-- 1 root root 1094 May  7 12:57 ca.crt
+-rw------- 1 root root 1675 May  7 12:57 ca.key
+-rw-r--r-- 1 root root 1123 May  7 12:57 healthcheck-client.crt
+-rw------- 1 root root 1675 May  7 12:57 healthcheck-client.key
+-rw-r--r-- 1 root root 1208 May  7 12:57 peer.crt
+-rw------- 1 root root 1675 May  7 12:57 peer.key
+-rw-r--r-- 1 root root 1208 May  7 12:57 server.crt
+-rw------- 1 root root 1679 May  7 12:57 server.key
+```
