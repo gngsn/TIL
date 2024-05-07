@@ -178,6 +178,25 @@ CertificateSigningRequest 객체는 다른 쿠버네티스 객체와 동일하�
 
 `.spec` 섹션 하위의 `.req.request` 에는 전송 받은 인증 요청 파일의 데이터를 Base64 명령을 이용해 인코딩해 기입
 
+```Bash
+$ cat jane.csr | base64 -w 0
+LS0tLS1CRUdJTiBDRVJUSUZJQ0FURSBSRVFVRVNULS0tLS0KTUlJQ1Z...lRJRklDQVRFIFJFUVVFU1QtLS0tLQo=
+```
+
+```Yaml
+apiVersion: certificates.k8s.io/v1
+kind: CertificateSigningRequest
+metadata:
+  name: jane
+spec:
+  groups:
+  - system:authenticated
+  request: LS0tLS1CRUdJTiBDRVJUSUZ...LS0tRU5EIENFUlRJRklDQVRFIFJFUVVFU1QtLS0tLQo=
+  signerName: kubernetes.io/kube-apiserver-client
+  usages:
+  - client auth
+```
+
 <br><img src="./img/certificates_api_img1.png" width="60%" /><br>
 
 인코딩된 텍스트를 `.req.request` 필드로 옮겨서 요청
@@ -186,15 +205,15 @@ CertificateSigningRequest 객체는 다른 쿠버네티스 객체와 동일하�
 
 ```Bash
 $ kubectl get csr
-NAME            AGE     REQUESTOR       CONDITION
-jane        10m     admin@example.com       Pending
+NAME        AGE   SIGNERNAME                                    REQUESTOR                  REQUESTEDDURATION   CONDITION
+akshay      21s   kubernetes.io/kube-apiserver-client           kubernetes-admin           <none>              Approved,Issued
 ```
 
 `kubectl certificate approve` 명령을 통해 새로운 요청을 식별하고 승인할 수도 있음
 
 ```Bash
 $ kubectl certificate approve jane
-jane approved!
+certificatesigningrequest.certificates.k8s.io/jane approved
 ```
 
 쿠버네티스는 CA 키 페어를 가지고 인증서에 서명한 후, 해당 인증서는 추출해서 사용자와 공유할 수 있음 
@@ -203,6 +222,38 @@ YAML 포맷으로 확인하고 싶다면 `kubectl get csr jane -o yaml` 명령�
 
 
 <br><img src="./img/certificates_api_img2.png" width="70%" /><br>
+
+```Bash
+$  kubectl get csr akshay -o yaml
+apiVersion: certificates.k8s.io/v1
+kind: CertificateSigningRequest
+metadata:
+  annotations:
+    kubectl.kubernetes.io/last-applied-configuration: |
+      ...
+  creationTimestamp: "2024-05-07T16:03:19Z"
+  name: akshay
+  resourceVersion: "1312"
+  uid: 9dc0b855-9c7a-45d7-b58f-5ce4a19e63a1
+spec:
+  groups:
+  - kubeadm:cluster-admins
+  - system:authenticated
+  request: LS0tLS...FJFUVVFU1QtLS0tLQo=
+  signerName: kubernetes.io/kube-apiserver-client
+  usages:
+  - client auth
+  username: kubernetes-admin
+status:
+  certificate: LS0tLS1CRUdJTiBD...zlpCi0tLS0tRU5EIENFUlRJRklDQVRFLS0tLS0K
+  conditions:
+  - lastTransitionTime: "2024-05-07T16:04:45Z"
+    lastUpdateTime: "2024-05-07T16:04:45Z"
+    message: This CSR was approved by kubectl certificate approve.
+    reason: KubectlApprove
+    status: "True"
+    type: Approved
+```
 
 디코드 하려면 `base64 --decode` 명령어로 확인 가능
 
@@ -225,5 +276,51 @@ _→ 인증이라는 특정 업무를 수행하는 책임자들_
 인증서에 서명하려면, CA 서버의 루트 인증서와 개인 키가 필요하기 때문에,
 controller-manager manifest 구성 파일에는 두 가지 옵션 존재
 
-<br><img src="./img/certificates_api_img3.png" width="70%" /><br>
+<br>
 
+```Bash
+$ cat /etc/kubernetes/manifests/kube-controller-manager.yaml 
+apiVersion: v1
+kind: Pod
+metadata:
+  creationTimestamp: null
+  labels:
+    component: kube-controller-manager
+    tier: control-plane
+  name: kube-controller-manager
+  namespace: kube-system
+spec:
+  containers:
+  - command:
+    - kube-controller-manager
+    - --allocate-node-cidrs=true
+    - --authentication-kubeconfig=/etc/kubernetes/controller-manager.conf
+    - --authorization-kubeconfig=/etc/kubernetes/controller-manager.conf
+    - --bind-address=127.0.0.1
+    - --client-ca-file=/etc/kubernetes/pki/ca.crt
+    - --cluster-cidr=10.244.0.0/16
+    - --cluster-name=kubernetes
+    - **--cluster-signing-cert-file=/etc/kubernetes/pki/ca.crt**
+    - **--cluster-signing-key-file=/etc/kubernetes/pki/ca.key**
+    - --controllers=*,bootstrapsigner,tokencleaner
+    - --kubeconfig=/etc/kubernetes/controller-manager.conf
+    - --leader-elect=true
+    - --requestheader-client-ca-file=/etc/kubernetes/pki/front-proxy-ca.crt
+    - --root-ca-file=/etc/kubernetes/pki/ca.crt
+    - --service-account-private-key-file=/etc/kubernetes/pki/sa.key
+    - --service-cluster-ip-range=10.96.0.0/12
+    - --use-service-account-credentials=true
+    image: registry.k8s.io/kube-controller-manager:v1.29.0
+```
+
+---
+
+CSR 거절 
+
+```Bash
+$ kubectl certificate deny agent-smith
+certificatesigningrequest.certificates.k8s.io/agent-smith denied
+
+$ kubectl delete csr agent-smith
+certificatesigningrequest.certificates.k8s.io "agent-smith" deleted
+```

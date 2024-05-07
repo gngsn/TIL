@@ -73,10 +73,9 @@
 3. [TLS in Kubernetes](./tls_in_kubernetes.md)
 4. [TLS in Kubernetes: Certificate Creation](./tls_in_kubernetes_certificate_creation.md)
 5. [View Certificate Details](./view_certificate_details.md)
-6. Certificates API
-7. Solution Certificates API
-8. KubeConfig
-9. Persistent Key/Value Store
+6. [Certificates API](certificates_api.md)
+7. KubeConfig
+8. Persistent Key/Value Store
 
 <details>
 <summary>References.</summary>
