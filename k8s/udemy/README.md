@@ -70,6 +70,7 @@
 
 1. [Security Primitives](./security_primitives.md)
 2. [Authentication](./authentication.md)
+3. [TLS Basic](./tls_basic.md)
 3. [TLS in Kubernetes](./tls_in_kubernetes.md)
 4. [TLS in Kubernetes: Certificate Creation](./tls_in_kubernetes_certificate_creation.md)
 5. [View Certificate Details](./view_certificate_details.md)
