@@ -167,4 +167,4 @@ kube-apiserver는 kebelet server에도 통신을 하기 때문에 동일하게
 
 가령, 아래 이미지처럼 etcd 클러스터 만을 위한 CA를 따로 지정할 수 있음
 
-<br><img src="./img/tls_in_kubernetes_img4.png" width="70%" ><br>
+<br><img src="./img/tls_in_kubernetes_img5.png" width="70%" ><br>
