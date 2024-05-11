@@ -71,12 +71,19 @@
 1. [Security Primitives](./security_primitives.md)
 2. [Authentication](./authentication.md)
 3. [TLS Basic](./tls_basic.md)
-3. [TLS in Kubernetes](./tls_in_kubernetes.md)
-4. [TLS in Kubernetes: Certificate Creation](./tls_in_kubernetes_certificate_creation.md)
-5. [View Certificate Details](./view_certificate_details.md)
-6. [Certificates API](certificates_api.md)
-7. KubeConfig
-8. Persistent Key/Value Store
+4. [TLS in Kubernetes](./tls_in_kubernetes.md)
+5. [TLS in Kubernetes: Certificate Creation](./tls_in_kubernetes_certificate_creation.md)
+6. [View Certificate Details](./view_certificate_details.md)
+7. [Certificates API](./certificates_api.md)
+8. [KubeConfig](./kube_config.md) 
+9. Persistent Key/Value Store
+10. API Groups
+11. Authorization
+12. Role Based Access Controls
+13. Cluster Roles and Role Bindings
+14. Service Accounts
+15. Image Security
+16. Security Contexts
 
 <details>
 <summary>References.</summary>
