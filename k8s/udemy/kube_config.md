@@ -279,7 +279,10 @@ preferences: {}
 
 ```Bash
 ❯ kubectl config use-context prod-user@production
+# or 'use', which is an alias for 'use-context'
+❯ kubectl config use prod-user@production
 ```
+
 
 위 명령어를 입력하면 실제 파일에 데이터가 수정됨
 
@@ -411,4 +414,16 @@ clusters:
 ❯ echo "LS0tLS1CRUdJT...LS0tCg==" | base63 --decode
 ----------BIGIN CERTIFICATE ---------
 k1JSUM1ekNDQWMr....SUZJQ0FURS0tLS0tCg==
+```
+
+<br>
+
+---
+
+### Hands-On
+
+$HOME/.kube/config 파일을 수정하거나, `kubectl config set` 명령어를 사용할 수도 있음
+
+```Bash
+kubectl config set users.dev-user.client-certificate /etc/kubernetes/pki/users/dev-user/dev-user.crt
 ```

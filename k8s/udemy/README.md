@@ -76,8 +76,7 @@
 6. [View Certificate Details](./view_certificate_details.md)
 7. [Certificates API](./certificates_api.md)
 8. [KubeConfig](./kube_config.md) 
-9. Persistent Key/Value Store
-10. API Groups
+9. [API Groups](./api_groups.md)
 11. Authorization
 12. Role Based Access Controls
 13. Cluster Roles and Role Bindings
