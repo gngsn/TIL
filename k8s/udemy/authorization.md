@@ -112,3 +112,22 @@ kubelet이 Kube API 에 요청 시 보내는 인증서에는
 
 모듈이 요청을 거부할 때마다 체인의 다음 단계로 넘어가고,
 모듈이 요청을 승인하는 순간 더는 확인하지 않고 사용자가 승인을 받음
+
+
+적용된 mode 를 확인하려면 `kube-apiserver`를 확인하면 됨
+
+```yaml
+❯ kubectl describe pod kube-apiserver-controlplane -n kube-system
+Name:                 kube-apiserver-controlplane
+Namespace:            kube-system
+...
+Containers:
+  kube-apiserver:
+    Image:         registry.k8s.io/kube-apiserver:v1.29.0
+    Command:
+      kube-apiserver
+      ...
+      --allow-privileged=true
+      --authorization-mode=Node,RBAC
+      ...
+```
