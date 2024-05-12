@@ -78,8 +78,6 @@ Lambda@Edge의 기능은 좀 더 많습니다
 
 ### CloudFront 함수와 Lambda@Edge의 비교
 
-<<table>>
-
 - 가장 눈에 띄는 차이점은 런타임 지원
   - CloudFront는 JavaScript만 Lambda@Edge는 Node.js와 Python을 지원
 
