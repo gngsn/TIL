@@ -132,6 +132,12 @@ rules:
 ❯ kubectl create -f cluster-admin-role.yaml
 ```
 
+or 
+
+```
+❯ kubectl create clusterrole cluster-administrator --resource=nodes --verb=get,create,delete,list
+```
+
 </td>
 </tr>
 </table>
@@ -178,6 +184,12 @@ roleRef:
 </td>
 </tr>
 </table>
+
+혹은 
+
+```
+❯ kubectl create clusterrolebinding cluster-admin-role-binding --user=cluster-admin --clusterrole=cluster-administrator
+```
 
 사실, 클러스터 역할과 바인딩은 클러스터 범위 리소스에 사용된다고 했지만, 네임스페이스드 리소스를 위한 클러스터 역할도 만들 수 있음
 
