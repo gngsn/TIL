@@ -77,12 +77,12 @@
 7. [Certificates API](./certificates_api.md)
 8. [KubeConfig](./kube_config.md) 
 9. [API Groups](./api_groups.md)
-11. Authorization
-12. Role Based Access Controls
-13. Cluster Roles and Role Bindings
-14. Service Accounts
-15. Image Security
-16. Security Contexts
+10. [Authorization](./authorization.md)
+11. Role Based Access Controls
+12. Cluster Roles and Role Bindings
+13. Service Accounts
+14. Image Security
+15. Security Contexts
 
 <details>
 <summary>References.</summary>
