@@ -81,7 +81,7 @@
 11. [Role Based Access Controls](./role_based_access_controls.md)
 12. [Cluster Roles and Role Bindings](./cluster_roles_and_role_bindings.md)
 13. [Service Accounts](./service_accounts.md)
-14. Image Security
+14. [Image Security](./image_security.md)
 15. Security Contexts
 
 <details>
