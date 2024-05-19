@@ -68,3 +68,5 @@ spec:
 Linux의 capabilities 를 추가하고 싶다면, `capabilities` 필드에 리스트 형태로 추가할 수 있음
 
 단, Capabilities 는 오직 Container 레벨에서만 지원되며 Pod 레벨에서는 지원되지 않음
+
+[🔗 Linux Capabilities](https://man7.org/linux/man-pages/man7/capabilities.7.html)
