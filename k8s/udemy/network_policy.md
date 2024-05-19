@@ -65,13 +65,16 @@ Pod와 서비스를 호스팅하는 노드 집합의 클러스터가 있을 때,
 
 가령, 아래 가상 프라이빗 네트워크는 클러스터 내 모든 노드에 걸쳐 연결되어 있음
 
+<br><img src="./img/network_policy_img1.png" width="60%" /><br>
+
 ```
-+----------------+   +----------------+    +----------------+   
++----------------+   +----------------+    +----------------+ 
 | 🟠: 10.244.1.3 | ↔ | 🟠: 10.244.2.3 | ↔ | 🟠: 10.244.3.3 |
 | 🟣: 10.244.1.4 | ↔ | 🟣: 10.244.2.4 | ↔ | 🟣: 10.244.3.4 |   
 | 🟩: 10.244.1.5 | ↔ | 🟩: 10.244.2.5 | ↔ | 🟩: 10.244.3.5 |   
 +----------------+   +----------------+    +----------------+   
-   Node 1 - Web         Node 2 - API          Node 3 - DB         
+   Node 1 - Web         Node 2 - API          Node 3 - DB
+   192.168.1.11         193.168.1.12          193.168.1.13 
 ```
 
 위 네트워크에서는 기본적으로 서로를 Pod 이름이나 특정 목적으로 구성된 서비스, 혹은 IP로 호출 가능
@@ -201,3 +204,186 @@ spec:
 
 네트워크 솔루션 중 하나인 Flannel은 네트워크 정책을 지원하지 않는데, 
 이 때 지원되지 않는 네트워크 정책을 적용해도 아무런 오류를 보여주진 않음 
+
+<br>
+
+---
+
+## Developing Networking Policies
+
+Network Policy 설정: NetworkPolicy Object 생성
+
+<br>
+
+### 1. Policy Type 지정
+
+NetworkPolicy 에는 2가지 종류의 타입이 존재: Ingress / Egress
+
+둘 중 하나를 설정할 수도, 둘 다 설정할 수도 있음
+
+가령, API 서버의 통신을 받는 DB 서버의 경우, 3306 포트를 열어 들어오는 트래픽을 허용하는 Ingress 규칙을 정의할 수 있음
+
+이 때, API 서버 Pod로의 응답을 위한 별도의 규칙은 따로 필요하지 않음
+
+Ingress 트래픽을 허용하면 트래픽에 대한 응답이나 회신이 자동으로 허용됨
+
+그래서 항상 DB포드의 관점에서 바라보면 됨
+
+<br><pre><code lang="yaml">apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: test-network-policy
+  namespace: default
+spec:
+  podSelector:
+    matchLabels:
+      role: db
+  <b>policyTypes:
+  - Ingress</b>
+
+</code></pre><br>
+
+<br>
+
+### 2. 지정한 Policy Type 명세
+
+#### ✔️ `podSelector`
+
+`podSelector`를 설정해서 특정 Pod에 해당 네트워크 정책을 적용할 수 있음
+
+<br><pre><code lang="yaml">apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: test-network-policy
+  namespace: default
+spec:
+  podSelector:
+    matchLabels:
+      role: db
+  policyTypes:
+  - Ingress
+  <b>ingress:
+  - from:
+    - podSelector:
+        matchLabels:
+          name: api-pod
+    ports:
+    - protocol: TCP
+      port: 3306</b>
+</code></pre><br>
+
+모든 Namespace의 Pod 들 중에서 label이 매칭되는 Pod에 적용됨
+
+<br>
+
+#### ✔️ `namespaceSelector`
+
+만약, `dev`, `test`, `prod`의 네임스페이스로 구분된 환경에 동일한 Label을 가진 Pod가 존재하고 있을 때, 
+각 횐경 별로 구분하고 싶다면 `namespcaeSelector` 를 지정할 수 있음
+
+<br><pre><code lang="yaml">...
+  ingress:
+  - from:
+    - podSelector:
+        matchLabels:
+          name: api-pod
+      <b>namespaceSelector:
+        matchLabels:
+          name: prod</b>
+    ports:
+    - protocol: TCP
+      port: 3306
+</code></pre><br>
+
+단, 해당 namespace 에 해당 Label 을 먼저 지정해야만 함
+
+만약 아래와 같이 `namespaceSelector` 만 정의되어 있다면, 
+
+<br><pre><code lang="yaml">...
+  <b>ingress:
+  - from:
+      namespaceSelector:
+        matchLabels:
+          name: prod</b>
+    ports:
+    - protocol: TCP
+      port: 3306
+</code></pre><br>
+
+해당 namespace 에 존재하는 Pod에 대해서만 해당 NetworkPolicy가 적용됨
+
+<br>
+
+#### ✔️ `ipBlock`
+
+만약 쿠버네티스 클러스터 외부의 백업 서버에 DB Pod 연결을 허용하고 싶다면?
+
+<br><img src="./img/network_policy_img2.png" width="60%" /><br>
+
+이 때에는, 백업 서버의 IP를 직접 명시할 수 있음
+
+<br><pre><code lang="yaml">...
+  ingress:
+  - from:
+    - podSelector:
+      matchLabels:
+      name: api-pod
+      namespaceSelector:
+        matchLabels:
+          name: prod
+      <b>ipBlock:
+        cidr: 192.168.5.10/32</b>
+    ports:
+    - protocol: TCP
+      port: 3306
+</code></pre><br>
+
+<br>
+
+위의 Yaml 정의 문서에는 총 두 가지의 규칙이 정의되었다고 볼 수 있음
+
+- `podSelector` AND `namespaceSelector`
+- `ipBlock`
+
+위 둘은 OR 연산자처럼 동작함
+
+두 번째 규칙 같은 경우에는 해당 범위 내의 IP 는 모두 받아 들이지만,
+첫 번째 규칙 같은 경우에는 `podSelector` 와 `namespaceSelector` 규칙을 모두 만족하는 대상만 허용
+
+위 모든 내용은 Egress 에 대해서 동일하게 적용할 수 있음 
+
+<br>
+
+### Egress
+
+만약 반대로 외부 Backend Server 로 부터 데이터를 받고 싶다고 할 때,
+
+<br><img src="./img/network_policy_img3.png" width="60%" /><br>
+
+`egress` 필드를 추가할 수 있음
+
+<br><pre><code lang="yaml">spec:
+  podSelector:
+    matchLabels:
+      role: db
+  policyTypes:
+  - Ingress
+  - Egress
+  ingress:
+  - from:
+    - podSelector:
+        matchLabels:
+          name: api-pod
+    ports:
+    - protocol: TCP
+      port: 3306
+  <b>egress:
+  - to:
+    - ipBlock:
+        cidr: 192.168.5.10/32
+    ports:
+    - protocol: TCP
+      port: 80</b>
+</code></pre><br>
+
+
