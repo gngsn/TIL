@@ -96,12 +96,12 @@
 
 ## Section7. Storage
 
-2. [Storage in Docker](./storage_in_docker.md) 
-3. [Volume Driver Plugins in Docker](./volume_driver_plugins_in_docker.md) 
-4. Container Storage Interface (CSI)
-5. Volumes
-7. Persistent Volumes
-8. Persistent Volume Claims
+1. [Storage in Docker](./storage_in_docker.md) 
+2. [Volume Driver Plugins in Docker](./volume_driver_plugins_in_docker.md) 
+3. [Container Storage Interface (CSI)](./container_storage_interface.md)
+4. Volumes
+5. Persistent Volumes
+6. Persistent Volume Claims
 9. Using PVCs in Pods
 10. Application Configuration & Additional Topics
 11. Storage Class
