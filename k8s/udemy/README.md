@@ -99,7 +99,7 @@
 1. [Storage in Docker](./storage_in_docker.md) 
 2. [Volume Driver Plugins in Docker](./volume_driver_plugins_in_docker.md) 
 3. [Container Storage Interface (CSI)](./container_storage_interface.md)
-4. Volumes
+4. [Volumes](./volumes.md)
 5. Persistent Volumes
 6. Persistent Volume Claims
 9. Using PVCs in Pods

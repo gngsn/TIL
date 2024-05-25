@@ -11,7 +11,7 @@ apiVersion: v1
 kind: Pod
 metadata:
   name: core-k8s-mysql
-  spec:
+spec:
   containers:
     - name: my-sqlclient
       image: myregistry.com/mysql-custom-client:v1.0
