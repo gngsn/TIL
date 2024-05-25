@@ -96,12 +96,10 @@
 
 ## Section7. Storage
 
-1. Storage - Section Introduction
-2. Introduction to Docker Storage 
-3. Storage in Docker
-4. Volume Driver Plugins in Docker
-5. Container Storage Interface (CSI)
-6. Volumes
+2. [Storage in Docker](./storage_in_docker.md) 
+3. Volume Driver Plugins in Docker 
+4. Container Storage Interface (CSI)
+5. Volumes
 7. Persistent Volumes
 8. Persistent Volume Claims
 9. Using PVCs in Pods
