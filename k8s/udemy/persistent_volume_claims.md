@@ -1,5 +1,23 @@
 # Persistent Volume Claims
 
+<pre><i>A PersistentVolume (PV) is a piece of storage in the cluster that has been provisioned by an administrator or dynamically provisioned using Storage Classes. It is a resource in the cluster just like a node is a cluster resource. PVs are volume plugins like Volumes, but have a lifecycle independent of any individual Pod that uses the PV. This API object captures the details of the implementation of the storage, be that NFS, iSCSI, or a cloud-provider-specific storage system.
+A PersistentVolumeClaim (PVC) is a request for storage by a user. It is similar to a Pod. Pods consume node resources and PVCs consume PV resources. Pods can request specific levels of resources (CPU and Memory). Claims can request specific size and access modes (e.g., they can be mounted ReadWriteOnce, ReadOnlyMany, ReadWriteMany, or ReadWriteOncePod, see AccessModes).
+</i>
+
+PV(Persistent Volume)는 클러스터 내의 리소스로, 관리자가 프로비저닝했거나 스토리지 클래스를 사용하여 동적으로 프로비저닝한 클러스터 내의 스토리지.
+
+PV는 Volumes와 같은 볼륨 플러그인이지만 PV를 사용하는 개별 Pod와 독립적인 라이프사이클을 가지고 있음. 
+이 API 개체는 NFS, iSCSI 또는 클라우드 제공자 전용 스토리지 시스템 등 스토리지 구현에 대한 세부 정보를 캡처함.
+PVC(Persistent Volume Claim)는 사용자에 의한 저장 요청. 
+클레임은 특정 크기 및 액세스 모드를 요청할 수 있는데, 가령, <code>ReadWriteOnce</code>, <code>ReadOnlyMany</code>, <code>ReadWriteMany</code> 또는 <code>ReadWriteOncePod</code>를 마운트할 수 있음
+
+<code>PV</code> 와 <code>PVC</code>는 각각 <code>Node 리소스</code>와 <code>Pod</code> 의 관계와 비슷함
+- PV: 노드가 클러스터 리소스인 것과 동일하게 클러스터 내 리소스
+- PVC: Pod와 유사한데, Pod가 노드 리소스를 소비한다면, PVC는 PV 자원을 소비함
+    - Pod는 특정 레벨의 자원(CPU 및 메모리)을 요청할 수 있음
+    - PVC는 특정 크기 및 액세스 모드를 요청할 수 있음
+</pre>
+
 Persistent Volume 과 Persistent Volume Claim은 쿠버네테스 네임스페이스 상에 존재하는 두 개의 다른 개체임
 
 관리자는 persistent volume 세트를 만들고, 사용자는 해당 저장소를 사용하기 위해 persistent volume claims을 생성
