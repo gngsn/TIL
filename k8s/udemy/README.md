@@ -101,9 +101,9 @@
 3. [Container Storage Interface (CSI)](./container_storage_interface.md)
 4. [Volumes](./volumes.md)
 5. [Persistent Volumes](./persistent_volumes.md)
-6. Persistent Volume Claims
-9. Using PVCs in Pods
-10. Application Configuration & Additional Topics
+6. [Persistent Volume Claims](./persistent_volume_claims.md)
+7. Using PVCs in Pods
+8. Application Configuration & Additional Topics
 11. Storage Class
 
 <br/>
