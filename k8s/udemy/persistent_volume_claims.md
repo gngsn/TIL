@@ -63,6 +63,8 @@ Claim과 Volume 은 일대일 관계이기 때문에, 다른 클레임은 볼륨
 
 ---
 
+아래와 같이 PersistentVolumeClaim 정의 파일을 작성할 수 있음
+
 ```yaml
 apiVersion: v1
 kind: PersistentVolumeClaim
@@ -108,3 +110,25 @@ PVC를 삭제하려면 kubectl delete 명령어를 사용할 수 있음
 - `Recycle`: Deprecated. 볼륨에 대해 기본 스크럽(`rm -rf /thevolume/*`)을 수행하고 새 클레임에 대해 다시 사용할 수 있도록 합니다.
 
 > The `Recycle` reclaim policy is deprecated. Instead, the recommended approach is to use dynamic provisioning.
+
+
+혹은 아래와 같이 Pod / ReplicaSets / Deployments 에 정의할 수 있음
+
+<pre><code lang="yaml">apiVersion: v1
+kind: Pod
+metadata:
+  name: mypod
+spec:
+  containers:
+    - name: myfrontend
+      image: nginx
+      volumeMounts:
+        - mountPath: "/var/www/html"
+          name: mypd
+  <b>volumes:
+    - name: mypd
+      persistentVolumeClaim:
+        claimName: myclaim</b>
+</code></pre>
+
+<br>
