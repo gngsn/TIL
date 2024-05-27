@@ -65,7 +65,7 @@ provisioner: kubernetes.io/gce-pd
 </td>
 </tr></table>
 
-이제 PV 는 필요가 없음. StorageClass 에 의해 자동 생성됨
+이제 PV 를 생성할 필요가 없음. StorageClass 에 의해 자동 생성됨
 
 <br><img src="./img/storage_class_img2.png" width="80%" /><br>
 

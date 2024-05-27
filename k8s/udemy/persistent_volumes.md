@@ -32,9 +32,12 @@ spec:
 <br>
 
 **`accessModes`**
-- `ReadOnceMany`
-- `ReadWriteOnce`
-- `ReadWriteMany`
+
+- ReadWriteOnce (RWO) : 볼륨은 읽기/쓰기 모드에서 단일 작업자 노드로 탑재 가능, 하나의 워커 노드에 마운트되면, 다른 노드는 마운트할 수 없음
+- ReadOnlyMany (ROX) : 볼륨은 읽기 전용 모드로 여러 작업자 노드에 동시에 탑재 가능
+- ReadWriteMany (RWX) : 볼륨은 동시에 여러 작업자 노드에 읽기/쓰기 모드로 탑재 가능
+- ReadWriteOncePod (RWOP): 하나의 pod만 읽기/쓰기 모드로 탑재 가능, 1.22+ 쿠버네티스 버전부터 지원
+
 
 Volume을 생성하기 위해서, `kubectl create` 명령어를 사용할 수 있음
 
