@@ -116,8 +116,7 @@
 5. [CNI](./cni.md)
 6. [Cluster Networking](./cluster_networking.md)
 
-
-
+[Recording Practice](./recording_practice.md)
 
 
 
