@@ -110,8 +110,8 @@
 
 **Linux Networking Basics**
 1. [Switching Routing](./switching_routing.md)
-2. DNS
-3. CoreDNS
+2. [DNS](./dns.md)
+3. [Network Namespaces](./network_namespaces.md)
 
 
 
