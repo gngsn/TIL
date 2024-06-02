@@ -37,3 +37,35 @@ Control Plane의 다양한 컴포넌트 들에 의해 사용될 아래 포트들
 
 <br/><img src="./img/cluster_networking_img4.png" width="50%" /><br/>
 
+---
+
+### for CKA Exam
+
+Kubernetes 클러스터에 Network Addon을 배치하는 것에 대한 중요한 팁
+
+클러스터에 네트워크 플러그인을 설치하는 것도 포함
+
+위브넷을 예로 들었지만, 여기에 설명된 모든 플러그인을 사용할 수 있다는 것을 명심
+
+- https://kubernetes.io/docs/concepts/cluster-administration/addons/
+- https://kubernetes.io/docs/concepts/cluster-administration/networking/#how-to-implement-the-kubernetes-networking-model
+
+CKA 시험에서 네트워크 Addon을 배포해야 하는 문제에 대해서,
+특별한 지시가 없는 한 위 링크에서 설명한 솔루션을 사용할 수 있음
+
+그러나 현재 문서에는 서드파티 네트워크 Addon을 배포하는 데 사용될 정확한 명령어에 대한 직접적인 언급이 포함되어 있지 않음
+
+위의 링크는 third-party/vendor 사이트 또는 GitHub 저장소로 리디렉션되며, 이는 시험에서 사용될 수 없음
+
+(Kubernetes documentation vendor-neutral에 있는 콘텐츠를 유지하기 위함)
+
+참고: 공식 시험에서는 필수 CNI 배치 세부 정보가 모두 제공됨
+
+
+
+
+
+
+
+
+
