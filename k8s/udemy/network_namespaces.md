@@ -289,7 +289,7 @@ ARP와 Routing Table 도 동일하게 작동
 서로 접근 가능하다는 사실을 테스트
 
 ```
-❯ ping netns exec <b>red</b> ping 192.168.15.2
+❯ ping netns exec red ping 192.168.15.2
 PING 192.168.15.2(192.168.15.2) 56 data bytes
 64 bytes from 192.168.15.2: icmp_seq=1 ttl=56 time=0.056 ms
 ```
@@ -297,13 +297,13 @@ PING 192.168.15.2(192.168.15.2) 56 data bytes
 또한, red와 blue에서 각각 arp 를 확인해보면 서로의 MAC Address를 등록하고 있음
 
 ```
-❯ ping netns exec <b>red</b> arp
+❯ ping netns exec red arp
 Address         HWtype  HWaddress           Flags Mask      Iface
 192.168.15.2    ether   ba:b0:6d:68:09:e9   C               veth-red
 ```
 
 ```
-❯ ping netns exec <b>blue</b> arp
+❯ ping netns exec blue arp
 Address         HWtype  HWaddress           Flags Mask      Iface
 192.168.15.2    ether   ba:b0:6d:68:09:e9   C               veth-red
 ```
