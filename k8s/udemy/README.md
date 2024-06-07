@@ -116,6 +116,7 @@
 5. [CNI](./cni.md)
 6. [Cluster Networking](./cluster_networking.md)
 7. [Pod Networking](./pod_networking.md)
+8. [CNI in Kubernetes](./cni_in_kubernetes.md)
 
 [Recording Practice](./recording_practice.md)
 

@@ -1,28 +1,33 @@
 # Pod Networking
 
-기본 네트워크 구성
-- 마스터와 작업자 노드 간 네트워크 설정 및 방화벽, 네트워크 보안 그룹을 설정 완료.
-- Kubernetes 제어 비행기 구성 요소(QAPI 서버, Etcd 서버, Kubelet 등) 설정 완료.
+Kubernetes 내에 있는 Master 노드와 Worker 노드들은 서로 네트워킹할 수 있게 설정되어 있음
 
-Pod 네트워킹 소개
-- Kubernetes 클러스터에 많은 Pod와 서비스가 생기며 이들 간의 네트워킹이 중요.
-- 현재 Kubernetes에는 내장된 네트워킹 솔루션이 없으며 사용자가 직접 구현해야 함. 
+그치만, 노드 사이의 네트워크 통신을 원활하게 한다고 해서 모든 준비가 되는 건 아님 → Pod 사이의 네트워킹 설정이 필요
 
-Kubernetes는 Pod 네트워킹 요건을 제시
-- 모든 Pod는 다른 Pod에 접근할 수 있는 고유한 IP 주소를 가짐.
-- IP 주소 범위나 서브넷에 상관없이 자동으로 IP를 할당하고 노드 내/간 Pod 연결을 설정해야 함.
+쿠버네티스 내에는 수 많은 Pod 를 가질 수 있고, 이 Po 들이 통신할 수 있도록 해야함 
 
-네트워킹 솔루션 개념
-- 네트워크 네임스페이스, CNI(Container Network Interface) 등을 이용해 네트워킹 솔루션을 구현.
-- 예를 들어, 세 노드 클러스터에서 각 노드는 외부 네트워크에 192.168.x.x IP 주소를 할당받고, 각 노드에 브리지 네트워크를 만들어 Pod 간의 연결을 설정.
-- 각 브리지 네트워크에 고유한 서브넷을 할당(예: 10.240.1.0/24, 10.240.2.0/24 등).
-- Pod가 생성될 때마다 스크립트를 이용해 네트워크에 연결하고 IP 주소를 할당하며, 기본 게이트웨이 설정.
+쿠버네티스는 이를 위한 해결을 Built-in 서비스로 해결하지 않고, 사용자가 직접 구현해서 해결하도록 함
+
+하지만, Kubernetes는 Pod 네트워킹에 대한 요구 사항을 명확하게 제시함
+
+<br><img src="./img/pod_networking_img1.png" width="80%" ><br>
+
+쿠버네티스는 모든 Pod가 유니크 한 IP 주소를 갖고 동일 노드 내에 다른 Pod 와 통신할 때 해당 IP를 사용하도록 하며,
+모든 Pod는 해당 IP를 사용해서 다른 노드에 있는 모든 Pod에 접근할 수 있어야 함
+
+> - Every POD should have an IP Address.
+> - Every POD should be able to communicate with every other POD in the same node.
+> - Every POD should be able to communicate with every other POD on other nodes without NAT.
 
 
-노드 간 통신 설정
-- 다른 노드의 Pod와 통신하기 위해 각 노드의 라우팅 테이블에 경로를 추가.
-- 라우터를 이용해 모든 네트워크로 가는 경로를 관리하는 것이 효율적.
+어떤 IP 대역을 갖고 있는지, 어떤 Subnet을 속하는지 중요하지 않음
 
-자동화 및 CNI 역할
-- 수동으로 네트워크 설정을 하는 대신, CNI를 이용해 자동화.
-- CNI를 통해 Pod 생성 시 자동으로 스크립트를 실행하여 네트워크에 연결 및 설정.
+IP 주소를 자동으로 할당하고 노드의 포드와 다른 노드의 포드 간에 연결을 설정하는 솔루션을 구현할 수 있다면, 기본 규칙을 따로 구성할 필요 없음
+
+- [Flannel](https://github.com/flannel-io/flannel)
+- [Cilium](https://cilium.io/)
+- [vmware NSX](https://www.vmware.com/products/nsx.html)
+- [Calico](https://docs.tigera.io/calico/latest/about/)
+
+
+트를 실행하여 네트워크에 연결 및 설정.
