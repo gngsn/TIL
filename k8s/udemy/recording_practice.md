@@ -60,3 +60,53 @@ default via 172.25.0.1 dev eth1
 ➜  netstat -npl | grep -i scheduler
 tcp        0      0 127.0.0.1:10259         0.0.0.0:*               LISTEN      3734/kube-scheduler 
 ```
+
+---
+
+## CNI
+
+1. Container runtime endpoint 알아보는 법
+
+<pre><code>➜  ps -aux | grep kubelet | grep --color container-runtime-endpoint
+root        4313  0.0  0.0 4148720 86204 ?       Ssl  16:30   0:07 /usr/bin/kubelet --bootstrap-kubeconfig=/etc/kubernetes/bootstrap-kubelet.conf --kubeconfig=/etc/kubernetes/kubelet.conf --config=/var/lib/kubelet/config.yaml <b>--container-runtime-endpoint=unix:///var/run/containerd/containerd.sock</b> --pod-infra-container-image=registry.k8s.io/pause:3.9
+</code></pre>
+
+Inspect the kubelet service and identify the  value is set for Kubernetes
+
+What is the CNI plugin configured to be used on this kubernetes cluster?
+
+```
+# The CNI binaries are located under /opt/cni/bin by default
+controlplane /etc/cni/net.d ➜  cd /opt/cni/bin/
+
+controlplane /opt/cni/bin ➜  ls
+bandwidth  dhcp   firewall  host-device  ipvlan    macvlan  ptp  static  tuning  vrf
+bridge     dummy  flannel   host-local   loopback  portmap  sbr  tap     vlan
+
+# `/etc/cni/net.d/` is default file to identify the name of the plugin.
+controlplane /opt/cni/bin ➜  cd /etc/cni/net.d/
+
+controlplane /etc/cni/net.d ➜  ll
+10-flannel.conflist
+
+controlplane /etc/cni/net.d ➜  cat 10-flannel.conflist 
+{
+  "name": "cbr0",
+  "cniVersion": "0.3.1",
+  "plugins": [
+    {
+      "type": "flannel",
+      "delegate": {
+        "hairpinMode": true,
+        "isDefaultGateway": true
+      }
+    },
+    {
+      "type": "portmap",
+      "capabilities": {
+        "portMappings": true
+      }
+    }
+  ]
+}
+```

@@ -225,11 +225,11 @@ Container가 생성될 때 Container Runtime 은 옵션으로 CNI 설정이 포�
 
 그리곤 bin 디렉토리에 설정된 CNI 구성 스크립트 파일을 찾아 실행
 
-| Function | Command | Configuration File | Description |
-|---|---|---|---|
-| Path of the binary file of the CNI network plug-in | `--cni-bin-dir` | `"cni-bin-dir": "",` |  The default value is `/opt/cni/bin`. |
-| Path of the CNI network configuration file | `--cni-conf-dir` | `"cni-conf-dir": "",` | The system traverses all files with the extension .conf, .conflist, or .json in the directory. The default value is `/etc/cni/net.d`. |
-| Network mode | `--network-plugin` | `"network-plugin": "",` | Specifies a network plug-in. The value is a null character by default, indicating that no network configuration is available and the created sandbox has only the loop NIC. The CNI and null characters are supported. Other invalid values will cause iSulad startup failure. |
+| Function                                           | Command              | Configuration File       | Description                                                                                                                                                                                                                                                                    |
+|----------------------------------------------------|----------------------|--------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| Path of the binary file of the CNI network plug-in | `--cni-bin-dir`      | `"cni-bin-dir": "",`     | The default value is `/opt/cni/bin`.                                                                                                                                                                                                                                           |
+| Path of the CNI network configuration file         | `--cni-conf-dir`     | `"cni-conf-dir": "",`    | The system traverses all files with the extension .conf, .conflist, or .json in the directory. The default value is `/etc/cni/net.d`.                                                                                                                                          |
+| Network mode                                       | `--network-plugin`   | `"network-plugin": "",`  | Specifies a network plug-in. The value is a null character by default, indicating that no network configuration is available and the created sandbox has only the loop NIC. The CNI and null characters are supported. Other invalid values will cause iSulad startup failure. |
 
 
 **Container Runtime**

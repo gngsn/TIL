@@ -56,7 +56,7 @@ Weave는 각 Agent에 설정된 적절한 route를 가지는 Pod 를 보장하�
 
 ---
 
-Deploy Weave 
+## Deploy Weave 
 
 Weave 와 Weave Peer 들은 클러스터의 각 노드에 서비스나 데몬으로 배포됨
 
@@ -120,6 +120,112 @@ INFO: 2019/03/03 03:41:09.284907 Discovered remote MAC 8a:dd:b5:14:8f:a3 at 8a:d
 INFO: 2019/03/03 03:41:09.331952 Discovered remote MAC 8a:31:f6:b1:38:3f at 8a:31:f6:b1:38:3f(node03)
 INFO: 2019/03/03 03:41:09.355976 Discovered remote MAC 8a:a5:9c:d2:86:1f at 8a:31:f6:b1:38:3f(node03)
 ```
+
+
+---
+
+### Practice - Weave Plugin: set `IPALLOC_RANGE` 
+
+`kube-proxy`에 설정된 IP Cidr 확인 후 Weave 설정 파일에 입력
+
+<br>
+
+#### 1.  `kube-proxy` 설정 파일 찾기
+
+`kube-proxy` Pod 스펙에 `config` 옵션 확인해서 `kube-proxy` 설정 파일 확인
+
+<pre><code lang="bash">controlplane ~ ➜  kubectl get pods -n kube-system
+NAME                                   READY   STATUS    RESTARTS   AGE
+...
+<b>kube-proxy-4q966</b>                       1/1     Running   0          84m
+
+controlplane ~ ➜  kubectl describe pods kube-proxy-4q966 -n kube-system
+Name:                 kube-proxy-4q966
+Namespace:            kube-system
+...
+Containers:
+  kube-proxy:
+    ...
+    Command:
+      <b>--config=/var/lib/kube-proxy/config.conf</b>
+    ...
+    Mounts:
+      ...
+      <b>/var/lib/kube-proxy from kube-proxy (rw)</b>
+Volumes:
+  kube-proxy:
+    Type:      ConfigMap (a volume populated by a ConfigMap)
+    Name:      <b>kube-proxy</b>
+...
+</code></pre>
+
+설정 파일이 `kube-proxy` ConfigMap 에 Volume 으로 Mount 되어있는 것을 확인
+
+<br>
+
+#### 2. `kube-proxy` ConfigMap 확인
+
+`kube-proxy` ConfigMap 에서 Cluster CIDR 정의 내용 찾기
+
+<pre><code lang="bash">controlplane ~ ➜  kubectl describe cm kube-proxy -n kube-system
+Name:         kube-proxy
+Namespace:    kube-system
+...
+
+Data
+====
+config.conf:
+----
+apiVersion: kubeproxy.config.k8s.io/v1alpha1
+...
+<b>clusterCIDR: 10.244.0.0/16</b>
+...
+</code></pre>
+
+<br>
+
+#### 3. Weave Spec Config 파일에 CIDR 입력
+
+<pre><code lang="bash">ontrolplane ~ ➜  wget https://github.com/weaveworks/weave/releases/download/v2.8.1/weave-daemonset-k8s.yaml
+--2024-06-08 17:13:21--  https://github.com/weaveworks/weave/releases/download/v2.8.1/weave-daemonset-k8s.yaml
+Resolving github.com (github.com)... 140.82.113.4
+...
+Length: 6300 (6.2K) [application/octet-stream]
+Saving to: ‘weave-daemonset-k8s.yaml’
+
+weave-daemonset-k8s.yaml       100%[====================================================>]   6.15K  --.-KB/s    in 0s      
+
+2024-06-08 17:13:22 (65.3 MB/s) - ‘weave-daemonset-k8s.yaml’ saved [6300/6300]
+
+controlplane ~ ➜  vi weave-daemonset-k8s.yaml
+apiVersion: v1
+kind: List
+items:
+  ...
+  - apiVersion: apps/v1
+    kind: DaemonSet
+    metadata:
+      name: weave-net
+      labels:
+        name: weave-net
+      namespace: kube-system
+    spec:
+      template:
+        spec:
+          containers:
+            - name: weave
+              command:
+                - /home/weave/launch.sh
+              env:
+                - <b>name: IPALLOC_RANGE</b>   ← 추가
+                  <b>value: 10.244.0.0/16</b>
+      ...
+
+controlplane ~ ➜ 
+</code></pre>
+
+
+
 
 
 ---

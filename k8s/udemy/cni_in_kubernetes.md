@@ -11,8 +11,7 @@ CNI 플러그인은 클러스터의 각 노드의 kubelet service 내에 설정�
 
 kubelet 설정 파일을 확인해보면 아래에서 설정 값들을 확인할 수 있음 
 
-<pre><code lang="bash">
-# kubelet.service
+<pre><code lang="bash"># kubelet.service
 ExecStart=/usr/local/bin/kubelet \\
 --config=/var/lib/kubelet/kubelet-config.yaml \\
 --container-runtime=remote \\
@@ -28,8 +27,7 @@ ExecStart=/usr/local/bin/kubelet \\
 
 동일한 Network Plugin 설정 정보를 kubelet 실행 정보에서 확인할 수 있음
 
-<pre><code lang="bash">
-$ ps -aux | grep kubelet
+<pre><code lang="bash">$ ps -aux | grep kubelet
 root 2095 1.8 2.4 960676 98788 ? Ssl 02:32 0:36 /usr/bin/kubelet --bootstrapkubeconfig=/etc/kubernetes/bootstrap-kubelet.conf --kubeconfig=/etc/kubernetes/kubelet.conf --
 config=/var/lib/kubelet/config.yaml --cgroup-driver=cgroupfs <b>--cni-bin-dir=/opt/cni/bin --cni-conf-dir=/etc/cni/net.d --network-plugin=cni</b>
 </code></pre>
