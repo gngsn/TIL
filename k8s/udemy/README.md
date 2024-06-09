@@ -119,6 +119,7 @@
 8. [CNI in Kubernetes](./cni_in_kubernetes.md)
 9. [CNI Weave](./cni_weave.md)
 10. [IP Address Management](./ip_address_management.md)
+11. [Service Networking](./service_networking.md)
 
 [Recording Practice](./recording_practice.md)
 
