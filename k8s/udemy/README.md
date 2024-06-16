@@ -122,6 +122,7 @@
 11. [Service Networking](./service_networking.md)
 12. [DNS in Kubernetes](./dns_in_kubernetes.md)
 13. [CoreDNS in Kubernetes](./coredns_in_kubernetes.md)
+14. [Ingress](./ingress.md)
 
 [Recording Practice](./recording_practice.md)
 
