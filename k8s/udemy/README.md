@@ -120,7 +120,8 @@
 9. [CNI Weave](./cni_weave.md)
 10. [IP Address Management](./ip_address_management.md)
 11. [Service Networking](./service_networking.md)
-12. [DNS in kubernetes](./dns_in_kubernetes.md)
+12. [DNS in Kubernetes](./dns_in_kubernetes.md)
+13. [CoreDNS in Kubernetes](./coredns_in_kubernetes.md)
 
 [Recording Practice](./recording_practice.md)
 
