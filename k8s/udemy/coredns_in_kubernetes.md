@@ -120,6 +120,39 @@ Pod가 `www.google.com` 로 요청하려고 시도한다고 가정하면, CoreDN
 
 ```Bash
 ❯ kubectl get configmap -n kube-system
+apiVersion: v1
+data:
+  Corefile: |
+    .:53 {
+        errors
+        health {
+           lameduck 5s
+        }
+        ready
+        kubernetes cluster.local in-addr.arpa ip6.arpa {
+           pods insecure
+           fallthrough in-addr.arpa ip6.arpa
+           ttl 30
+        }
+        prometheus :9153
+        forward . /etc/resolv.conf {
+           max_concurrent 1000
+        }
+        cache 30
+        loop
+        reload
+        loadbalance
+    }
+kind: ConfigMap
+metadata:
+  annotations:
+    kubectl.kubernetes.io/last-applied-configuration: |
+      {"apiVersion":"v1","data":{"Corefile":".:53 {\n    errors\n    health {\n       lameduck 5s\n    }\n    ready\n    kubernetes cluster.local in-addr.arpa ip6.arpa {\n       pods insecure\n       fallthrough in-addr.arpa ip6.arpa\n       ttl 30\n    }\n    prometheus :9153\n    forward . /etc/resolv.conf {\n       max_concurrent 1000\n    }\n    cache 30\n    loop\n    reload\n    loadbalance\n}\n"},"kind":"ConfigMap","metadata":{"annotations":{},"name":"coredns","namespace":"kube-system"}}
+  creationTimestamp: "2024-06-16T10:12:39Z"
+  name: coredns
+  namespace: kube-system
+  resourceVersion: "297"
+  uid: 0d3ae133-591e-4003-a3af-5985cf56546e
 ```
 
 그래서 설정을 수정하고 싶다면, ConfigMap 객체를 수정할 수 있음
@@ -166,10 +199,11 @@ kube-dns  ClusterIP   10.96.0.10  <none>        53/UDP,53/TCP
 
 Pod가 새로 생성되면, Kubelet 은 `/etc/resolv.conf` 파일에 CoreDNS 를 DNS Server 로서 자동으로 지정함
 
-```Bash
-❯ cat /etc/resolv.conf
-nameserver      10.96.0.10
-```
+<pre><code lang="bash">❯ cat /etc/resolv.conf
+search default.svc.cluster.local svc.cluster.local cluster.local
+<b>nameserver 10.96.0.10</b>
+options ndots:5
+</code></pre>
 
 이렇게 DNS 서버가 명시되면 이후부터는 CoreDNS 가 가진 Record 모음에 접근할 수 있다.
 
@@ -189,8 +223,8 @@ web-service.default.svc.cluster.local has address 10.97.206.196
 `/etc/resolv.conf` 파일에는 `search` entry 또한 설정되어 있기 때문에 각 설정에 명시된 이름 하위로 검색함
 
 <pre><code lang="bash">❯ cat /etc/resolv.conf
-nameserver      10.96.0.10
 <b>search default.svc.cluster.local svc.cluster.local cluster.local</b>
+nameserver      10.96.0.10
 </code></pre>
 
 하지만, 오직 Service 만이 해당 Entry를 갖고 있으며 Pod는 갖고 있지 않음
