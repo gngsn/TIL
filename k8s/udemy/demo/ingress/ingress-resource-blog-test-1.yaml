@@ -1,0 +1,22 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: ingress-blog-path
+spec:
+  rules:
+    - http:
+        paths:
+          - path: /portfolio
+            pathType: Prefix
+            backend:
+              service:
+                name: portfolio-page
+                port:
+                  number: 80
+          - path: /contact
+            pathType: Prefix
+            backend:
+              service:
+                name: contact-page
+                port:
+                  number: 80
