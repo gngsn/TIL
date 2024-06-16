@@ -311,35 +311,19 @@ spec:
               number: 80
 ```
 
+---
+
+k8s version 1.20+ 부터 Ingress 변경
+
+**Format** - `kubectl create ingress <ingress-name> --rule="host/path=service:port"`
+
+**Example** -` kubectl create ingress ingress-test --rule="wear.my-online-store.com/wear*=wear-service:80"`
 
 
-호스트 필드를 명시하지
-않으면 단순히 시작으로 간주하거나
-그 특정 규칙을 통해 수신 트래픽을
-수락합니다 호스트 이름과 일치하지 않고요
-이 경우, 우린 각 규칙에 대해 단일 백 엔드 경로를
-갖고 있죠, 괜찮아요
-맞습니다 이 도메인에서 나오는 모든 트래픽은
-url 경로에 상관없이 적절한 백 엔드로 전송됩니다
-여전히 다양한 경로 명세서가 각각에 있습니다
-다른 url 경로를 처리하기 위해서요
-아까 예제에서 본 것처럼요
-둘을 비교해보죠
-Url로 나누는 규칙은 단 하나인데
-경로를 두 개로 나눴어요
-호스트 이름으로 트래픽을
-분할하기 위해 규칙마다 경로 사양을 하나씩 사용합니다
-강의를 마칩니다
-이제 연습 테스트 구역으로 가서
-인그레스 연습을 해 보죠
-이 섹션엔 두 종류의 랩이 있어요
-첫 번째는 로그레스 컨트롤러와 리소스, 응용
-프로그램이 이미 배포된 경우죠 환경을 보고
-걸어 다니며 데이터 수집과 질문에 답하는
-겁니다
-마지막에 필요에 따라
-억제 리소스를 생성하거나 수정합니다
-두 번째 모의 테스트에서
-조금 더 도전적이죠 거기서는 처음부터
-배포를 할 겁니다 , 인크레스 컨트롤러와
-리소스를요
+✔️ References
+
+- https://kubernetes.io/docs/reference/generated/kubectl/kubectl-commands#-em-ingress-em-
+
+- https://kubernetes.io/docs/concepts/services-networking/ingress
+
+- https://kubernetes.io/docs/concepts/services-networking/ingress/#path-types
