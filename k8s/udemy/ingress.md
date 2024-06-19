@@ -365,11 +365,10 @@ And as such the requests would fail and throw a 404 not found error.
 
 To fix that we want to "ReWrite" the URL when the request is passed on to the watch or wear applications. We don't want to pass in the same path that user typed in. So we specify the rewrite-target option. This rewrites the URL by replacing whatever is under rules->http->paths->path which happens to be /pay in this case with the value in rewrite-target. This works just like a search and replace function.
 
-For example: replace(path, rewrite-target)
-In our case: replace("/path","/")
+- For example: replace(path, rewrite-target)
+- In our case: replace("/path","/")
 
-
-
+```
 apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
@@ -407,3 +406,15 @@ rules:
       serviceName: http-svc
       servicePort: 80
       path: /something(/|$)(.*)
+```
+
+
+---
+
+### Kubelet Command - Ingress 생성
+
+아래처럼 간단하게 Ingress 를 생성할 수도 있음 
+
+```bash
+❯ kubectl create ingress simple --rule="foo.com/bar=svc1:8080,tls=my-cert"
+```

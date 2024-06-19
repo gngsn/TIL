@@ -126,7 +126,7 @@
 
 [Recording Practice](./recording_practice.md)
 
-## Section9, Design and Install a Kubernetes Cluster
+## Section9. Design and Install a Kubernetes Cluster
 
 1. [Design a Kubernetes Cluster](./design_a_kubernetes_cluster.md)
 2. Choosing Kubernetes Infrastructure
