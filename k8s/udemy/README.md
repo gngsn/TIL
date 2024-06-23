@@ -130,4 +130,4 @@
 
 1. [Design a Kubernetes Cluster](./design_a_kubernetes_cluster.md)
 2. Choosing Kubernetes Infrastructure
-3. Configure High Availability
+3. [Configure High Availability](./configure_high_availability.md)
