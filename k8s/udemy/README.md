@@ -131,3 +131,4 @@
 1. [Design a Kubernetes Cluster](./design_a_kubernetes_cluster.md)
 2. [Choosing Kubernetes Infrastructure](./choosing_kubernetes_infrastructure.md)
 3. [Configure High Availability](./configure_high_availability.md)
+4. [ETCD in HA](./etcd_in_ha.md)
