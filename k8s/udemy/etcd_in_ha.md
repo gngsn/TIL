@@ -304,3 +304,13 @@ HA을 위한 클러스터에 노드는 홀수로 구성해야 함
 
 <br/><img src="./img/etcd_in_ha_img3.png" width="60%" /><br/>
 
+---
+
+### Kubernetes the Hard Way
+
+Kubernetes 를 직접 설치해보면 각각의 서로 다른 컴포넌트들이 어떻게 구성되어 있는지 이해하기 좋음 
+
+**| 참고 |**
+
+- Youtube: https://www.youtube.com/watch?v=uUupRagM7m0&list=PL2We04F3Y_41jYdadX55fdJplDvgNGENo
+- Git 튜토리얼: https://github.com/mmumshad/kubernetes-the-hard-way
