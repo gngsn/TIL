@@ -36,19 +36,53 @@ Minikube 이나 Kubadm 같은 솔루션 사용할 수 있음
 
 ## Production purpose
 
-### Turnkey Solutions
-
+<table>
+<tr>
+<th></th>
+<th>Turnkey Solutions</th>
+<th>Hosted Solutions</th>
+</tr>
+<tr>
+<td>Introduction</td>
+<td>
 요구되는 VM 프로비전할 때나 호스트 혹은 관리 솔루션
 이 위에 쿠버네티스 클러스터를 설정하기 위한 툴이나 스크립트를 사용
+</td>
+<td>
+Kubernetes as a service 와 같은 개념으로, VM은 제공자에 의해 관리됨
+가령, AWS의 kOps 도구를 이용해 쿠버네티스 클러스터를 배포
+</td>
+</tr>
+<tr>
+<td>Role</td>
+<td>
 
-VM을 관리할 책임을 가짐 - VM을 관리하고 패치하고 업그레이드하는 일을 할 수 있음
+- You Provision VMs
+- You Configure VMs
+- You Use Scripts to Deploy Cluster
+- You Maintain VMs yourself
+- Eg: Kubernetes on AWS using KOPS
 
 VM을 프로비전하고, VM을 구성하고, 스크립트로 Cluster를 배포하고, VM를 직접 유지 보수함
 
-가령, Kubernetes on AWS using KOPS 가 예시임
+(가령, Kubernetes on AWS using kOps 등)
+</td>
+<td>
+
+- Kubernetes-As-A-Service
+- Provider provisions VMs
+- Provider installs Kubernetes
+- Provider maintains VMs
+- Eg: Google Container Engine (GKE)
+
+</td>
+</tr>
+<tr>
+<td>Role</td>
+<td>
 
 - **OpenShift**
-  - Red Hat 의 온프레미스 쿠버네티스 플랫폼 
+  - Red Hat 의 온프레미스 쿠버네티스 플랫폼
   - 오픈 소스 컨테이너 앱 플랫폼으로 쿠버네티스에 기반하여 만들어짐
 - **Cloud Foundry Container Runtime**
   - 오픈 소스 프로젝트로 고가용성 쿠버네티스 클러스터를 배포 및 관리하는 걸 도움
@@ -57,28 +91,15 @@ VM을 프로비전하고, VM을 구성하고, 스크립트로 Cluster를 배포�
 - **Vagrant**
   - 유용한 스크립트들을 제공해 서로 다른 클라우드 서비스 공급자에 쿠버네티스 클러스터를 배포
 
-위 솔루션은 사설 쿠버네티스 클러스터의 배포 및 관리를 쉽게 만들어줌
+</td>
+<td>
 
-<br>
-
-**Hosted Solutions (Managed Solutions)**
-
-- Kubernetes-As-A-Service
-- Provider provisions VMs
-- Provider installs Kubernetes
-- Provider maintains VMs
-- Eg: Google Container Engine (GKE)
-
-Kubernetes as a service 와 같은 개념으로,
-
-가령, AWS의 kOps 도구를 이용해 쿠버네티스 클러스터를 배포
-
-VM은 제공자에 의해 관리됨
-
-- Google Container Engine (GKE)
-- OpenShift Online
+- **Google Container Engine (GKE)**
+- **OpenShift Online**
   - Red Hat의 제품으로 온라인에서 완전히 작동하는 쿠버네티스 클러스터에 접속할 수 있음
-- Azure Kubernetes Service
-- Amazon Elastic Container Service for Kubernetes (EKS)
+- **Azure Kubernetes Service**
+- **Amazon Elastic Container Service for Kubernetes (EKS)**
 
-이외에도 더 많은 솔루션이 존재
+</td>
+</tr>
+</table>
