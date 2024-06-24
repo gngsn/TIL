@@ -54,7 +54,9 @@ On-Premise 환경에서 kubeadm 툴은 굉장히 유용함
 혹은 아래의 클라우드 서비스를 사용할 수 있음
 
 **✔️ Google Kubernetes Engine (GKE) for GCP**
+
 **✔️ Kubernetes Operations (KOps) for AWS**
+
 **✔️ Azure Kubernetes Service (AKS) for Azure**
 
 <br>
@@ -88,14 +90,19 @@ On-Premise 환경에서 kubeadm 툴은 굉장히 유용함
 쿠버네티스 클러스터에서 형성되는 노드들은 물리적일 수도 있고 가상일 수도 있음
 
 **✔️ virtual or Physical Machines**
+
 **✔️ Minimum of 4 Node Cluster (Size based on workload)**
+
 **✔️ Master vs Worker Nodes**
+
 **✔️ Linux X86_64 Architecture**
+
 **✔️ Master nodes can host workloads**
+
 **✔️ Best practice is to not host workloads on Master nodes**
 
 마스터 노드는 컴포넌트를 제어하기 위한 부품이고, 워커 노드는 워크로드를 호스팅하기 위한 것임
-\
+
 하지만, 이는 엄격한 규칙은 아니라 마스터 노드로 워크로드를 호스팅할 수 있음
 
 Best Practice는, 특히 프로덕션 환경에서, 마스터 노드는 컴포넌트 제어 만을 담당하는 것이 좋음 
