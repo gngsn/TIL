@@ -132,3 +132,15 @@
 2. [Choosing Kubernetes Infrastructure](./choosing_kubernetes_infrastructure.md)
 3. [Configure High Availability](./configure_high_availability.md)
 4. [ETCD in HA](./etcd_in_ha.md)
+
+
+## Section 10. Install "Kubernetes the kubeadm way"
+
+1. [Introduction to Deployment with Kubeadm](./introduction_to_deployment_with_kubeadm.md)
+2. Resources
+3. Deploy with Kubeadm - Provision VMs with Vagrant
+4. Demo - Deployment with Kubeadm
+
+
+## Section 11: End to End Tests on a Kubernetes Cluster
+
