@@ -222,9 +222,62 @@ ubuntu@controlplane:~$ systemctl status containerd
              └─5148 /usr/bin/containerd
 ```
 
-
 동일한 작업을 `node01`, `node02` 에서도 진행
 
+<br>
 
+### C group driver
 
+리눅스 시스템에는 Control Group 이라는 것이 있음
 
+Control Group 은 실행 중인 여러 프로세스에 자원 할당을 제한하는 데 사용함
+
+Pod와 Container 리소스 관리하고 CPU/memory 의 requests 혹은 limits 과 같은 리소스를 설정함
+
+Control Group을 인터페이스하기 위해, `Kubelet`과 `Container Runtime`은 cgroup 드라이버를 사용할 필요가 있음
+
+`Kubelet`과 `Container Runtime`은 반드시 동일한 cgroup driver를 사용해야 하고, 동일하게 구성되어야 함 
+
+두 가지 드라이버가 있음: 
+
+- `cgroupfs`
+- `systemd`
+
+일반적으로 `cgroupfs`가 기본값으로 설정됨
+
+현재 호스트에서 사용하는 cgroup driver 를 먼저 확인해볼 필요가 있음
+
+확인하는 방법은 `ps -p 1` 명령어로 확인 가능
+
+```Bash
+ubuntu@controlplane:~$ ps -p 1
+    PID TTY          TIME CMD
+      1 ?        00:00:01 systemd 
+```
+
+아래 containerd 가 systemd cgroup driver 를 사용하기 위해서 모든 노드 ⎯ controlplane과 node01, node02 ⎯ 에 아래 설정이 필요
+
+```Bash
+ubuntu@controlplane:~$ sudo vi /etc/containerd/config.toml 
+[plugins."io.containerd.grpc.v1.cri".containerd.runtimes.runc]
+  [plugins."io.containerd.grpc.v1.cri".containerd.runtimes.runc.options]
+    SystemdCgroup = true
+ubuntu@controlplane:~$ sudo systemctl restart containerd
+```
+
+---
+
+## Installing kubeadm, kubelet and kubectl
+
+[Creating a cluster with kubeadm](https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/create-cluster-kubeadm/)
+
+### Initializing your control-plane node
+
+```Bash
+ubuntu@controlplane:~$ sudo kubeadm init --pod-network-cidr=10.244.0.0/16 --apiserver-advertise-address=192.168.56.2
+[init] Using Kubernetes version: v1.30.2
+[preflight] Running pre-flight checks
+[preflight] Pulling images required for setting up a Kubernetes cluster
+[preflight] This might take a minute or two, depending on the speed of your internet connection
+...
+```
