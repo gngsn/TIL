@@ -145,7 +145,7 @@ nc: connect to 127.0.0.1 port 10257 (tcp) failed: Connection refuse
 
 <br>
 
-### Prerequisites
+### 📌 Prerequisites
 
 #### Network configuration
 
@@ -165,7 +165,7 @@ net.ipv4.ip_forward = 1
 
 <br>
 
-### Container-d
+### 📌 Container-d
 
 [🔗 kubernetes.io - containerd](https://kubernetes.io/docs/setup/production-environment/container-runtimes/#containerd)
 [🔗 docker - install engine](https://docs.docker.com/engine/install/ubuntu/)
@@ -267,17 +267,154 @@ ubuntu@controlplane:~$ sudo systemctl restart containerd
 
 ---
 
-## Installing kubeadm, kubelet and kubectl
+### 📌 Installing kubeadm, kubelet and kubectl
 
 [Creating a cluster with kubeadm](https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/create-cluster-kubeadm/)
 
-### Initializing your control-plane node
+위 문서 과정을 거쳐 `kubelet`, `kubeadm`, `kubectl` 설치
+
+#### 1.  api-get 업데이트
 
 ```Bash
-ubuntu@controlplane:~$ sudo kubeadm init --pod-network-cidr=10.244.0.0/16 --apiserver-advertise-address=192.168.56.2
-[init] Using Kubernetes version: v1.30.2
-[preflight] Running pre-flight checks
-[preflight] Pulling images required for setting up a Kubernetes cluster
-[preflight] This might take a minute or two, depending on the speed of your internet connection
+ubuntu@controlplane:~$ sudo apt-get update
 ...
+0 upgraded, 0 newly installed, 0 to remove and 4 not upgraded.
 ```
+
+<br>
+
+#### 2. Kubernetes 패키지 리포지토리의 공개 서명 키 다운로드
+
+apt 명령어 사용 시, Kubernetes 패키지 저장소를 신뢰하고 해당 저장소에서 패키지를 설치할 수 있도록 하는 데 사용
+
+모든 리포지토리에 동일한 서명 키가 사용되므로 URL의 버전을 무시할 수 있음
+
+```Bash
+# If the directory `/etc/apt/keyrings` does not exist, it should be created before the curl command, read the note below.
+# sudo mkdir -p -m 755 /etc/apt/keyrings
+ubuntu@controlplane:~$ curl -fsSL https://pkgs.k8s.io/core:/stable:/v1.30/deb/Release.key | sudo gpg --dearmor -o /etc/apt/keyrings/kubernetes-apt-keyring.gpg
+```
+
+✔️ `curl -fsSL https://pkgs.k8s.io/core:/stable:/v1.30/deb/Release.key`: Kubernetes 패키지 저장소의 GPG 키가 위치한 URL, GPG 공개 키 다운로드
+
+✔️ `sudo gpg --dearmor -o /etc/apt/keyrings/kubernetes-apt-keyring.gpg`: 변환된 GPG 키를 `/etc/apt/keyrings/kubernetes-apt-keyring.gpg` 파일에 저장
+
+
+- `curl`: URL에서 데이터를 가져오는 명령어
+  - `-f`: 실패 시 curl 명령 조용히 종료
+  - `-s`: 진행률과 오류 메시지를 숨김
+  - `-S`: 오류가 발생하면 메시지를 출력
+  - `-L`: 리디렉션을 따라감
+
+- `gpg`: GNU Privacy Guard, 파일을 암호화하고 서명하는 데 사용하는 도구
+  - `--dearmor`: ASCII로 인코딩된 GPG 키를 바이너리 형식으로 변환
+  - `-o <file>`: 변환된 GPG 키를 지정된 경로에 출력 (저장)
+
+<br>
+
+#### 3. Kubernetes apt 리포지토리 추가
+
+아래 리포지토리에는 Kubernetes `1.30` 버전의 패키지에만 존재하기 때문에, minor 버전의 경우 원하는 minor 버전과 일치하도록 URL의 버전을 다르게 명시
+
+```
+ubuntu@controlplane:~$ echo 'deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] https://pkgs.k8s.io/core:/stable:/v1.30/deb/ /' | sudo tee /etc/apt/sources.list.d/kubernetes.list
+deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] https://pkgs.k8s.io/core:/stable:/v1.30/deb/ /
+```
+
+- `deb`: Ubuntu/Debian 패키지 설치 명령어
+
+- `tee`: 출력 결과를 파일과 화면에 동시에 출력할 수 있도록 해주는 명령어
+
+<br>
+
+#### 4. `kubelet`, `kubeadm`, `kubectl` 설치
+
+```
+ubuntu@controlplane:~$ sudo apt-get update
+ubuntu@controlplane:~$ sudo apt-get install -y kubelet kubeadm kubectl
+ubuntu@controlplane:~$ sudo apt-mark hold kubelet kubeadm kubectl
+ubuntu@controlplane:~$ sudo systemctl enable --now kubelet
+```
+
+<br/>
+
+### Initializing `kubeadm`
+
+#### STEP1. `kubeadm init` 으로 초기화 
+
+초기화 전, Control Plane (조금 더 정확히는 `kubeapi-server`) 가 실행될 `ip addr` 로 IP 정보 먼저 확인 
+
+<pre><code lang="bash">
+ubuntu@controlplane:~$ ip addr
+1: lo: <LOOPBACK,UP,LOWER_UP> mtu 65536 qdisc noqueue state UNKNOWN group default qlen 1000
+    link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
+    inet 127.0.0.1/8 scope host lo
+       valid_lft forever preferred_lft forever
+    inet6 ::1/128 scope host
+       valid_lft forever preferred_lft forever
+2: enp0s1: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc fq_codel state UP group default qlen 1000
+    link/ether 52:54:00:72:c4:2b brd ff:ff:ff:ff:ff:ff
+    inet <b>192.168.65.2/24</b> metric 100 brd 192.168.65.255 scope global dynamic enp0s1
+       valid_lft 73704sec preferred_lft 73704sec
+    inet6 fdb4:8252:e9ce:b35f:5054:ff:fe72:c42b/64 scope global dynamic mngtmpaddr noprefixroute
+       valid_lft 2591975sec preferred_lft 604775sec
+    inet6 fe80::5054:ff:fe72:c42b/64 scope link
+       valid_lft forever preferred_lft forever
+3: enp0s2: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc fq_codel state UP group default qlen 1000
+    link/ether 52:54:00:3f:28:2c brd ff:ff:ff:ff:ff:ff
+    inet 192.168.0.43/24 metric 200 brd 192.168.0.255 scope global dynamic enp0s2
+       valid_lft 5994sec preferred_lft 5994sec
+    inet6 fe80::5054:ff:fe3f:282c/64 scope link
+       valid_lft forever preferred_lft forever
+</code></pre>
+
+이후 `kubeadm init` 명령어 입력
+
+```Bash
+ubuntu@controlplane:~$ sudo kubeadm init --pod-network-cidr=10.244.0.0/16 --apiserver-advertise-address=192.168.65.2
+[init] Using Kubernetes version: v1.30.2
+...
+[addons] Applied essential addon: kube-proxy
+
+Your Kubernetes control-plane has initialized successfully!
+
+To start using your cluster, you need to run the following as a regular user:
+
+  mkdir -p $HOME/.kube
+  sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
+  sudo chown $(id -u):$(id -g) $HOME/.kube/config
+
+Alternatively, if you are the root user, you can run:
+
+  export KUBECONFIG=/etc/kubernetes/admin.conf
+
+You should now deploy a pod network to the cluster.
+Run "kubectl apply -f [podnetwork].yaml" with one of the options listed at:
+  https://kubernetes.io/docs/concepts/cluster-administration/addons/
+
+Then you can join any number of worker nodes by running the following on each as root:
+
+kubeadm join 192.168.65.2:6443 --token zre3m8.bvz...afj \
+	--discovery-token-ca-cert-hash sha256:0de9...e81b8
+```
+
+이 때, 두 가지 옵션 추가
+
+✔️ `--pod-network-cidr`: IP prefix for all pods in the Kubernetes cluster
+
+✔️ `--apiserver-advertise-address`: to set the advertise address for this particular control-plane node's API server
+
+
+```Bash
+ubuntu@controlplane:~$ kubectl get pods -A
+NAMESPACE     NAME                                   READY   STATUS    RESTARTS       AGE
+kube-system   coredns-7db6d8ff4d-hwbdf               0/1     Pending   0              67s
+kube-system   coredns-7db6d8ff4d-z9wg5               0/1     Pending   0              67s
+kube-system   etcd-controlplane                      1/1     Running   1 (116s ago)   35s
+kube-system   kube-apiserver-controlplane            1/1     Running   1 (86s ago)    84s
+kube-system   kube-controller-manager-controlplane   1/1     Running   1 (116s ago)   31s
+kube-system   kube-proxy-4zmtp                       1/1     Running   1 (54s ago)    67s
+kube-system   kube-scheduler-controlplane            1/1     Running   2 (40s ago)    40s
+```
+Weave Net provides networking and network policy, will carry on working on both sides of a network partition, and does not require an external database.
+
