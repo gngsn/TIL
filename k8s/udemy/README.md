@@ -136,10 +136,7 @@
 
 ## Section 10. Install "Kubernetes the kubeadm way"
 
-1. [Introduction to Deployment with Kubeadm](./introduction_to_deployment_with_kubeadm.md)
-2. Resources
-3. Deploy with Kubeadm - Provision VMs with Vagrant
-4. Demo - Deployment with Kubeadm
+1. [Deploy with Kubeadm](./introduction_to_deployment_with_kubeadm.md)
 
 
 ## Section 11: End to End Tests on a Kubernetes Cluster
