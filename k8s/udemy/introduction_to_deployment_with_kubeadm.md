@@ -416,5 +416,51 @@ kube-system   kube-controller-manager-controlplane   1/1     Running   1 (116s a
 kube-system   kube-proxy-4zmtp                       1/1     Running   1 (54s ago)    67s
 kube-system   kube-scheduler-controlplane            1/1     Running   2 (40s ago)    40s
 ```
-Weave Net provides networking and network policy, will carry on working on both sides of a network partition, and does not require an external database.
 
+### 📌 Network: Weave Net
+
+**Weave Net**
+: provides networking and network policy, will carry on working on both sides of a network partition, and does not require an external database.
+
+[🔗 github - Using Weave Net on Kubernetes](https://github.com/rajch/weave#using-weave-on-kubernetes)
+
+```Bash
+ubuntu@controlplane:~$ kubectl apply -f https://reweave.azurewebsites.net/k8s/v1.29/net.yaml
+serviceaccount/weave-net created
+clusterrole.rbac.authorization.k8s.io/weave-net created
+clusterrolebinding.rbac.authorization.k8s.io/weave-net created
+role.rbac.authorization.k8s.io/weave-net created
+rolebinding.rbac.authorization.k8s.io/weave-net created
+daemonset.apps/weave-net created
+```
+
+[🔗 kube-addon](https://rajch.github.io/weave/kubernetes/kube-addon)
+
+<pre><code lang="bash">
+ubuntu@controlplane:~$ kubectl edit ds weave-net -n kube-system
+... 
+name: weave-net
+...
+spec:
+    ...
+    spec:
+      containers:
+      - command:
+        - /home/weave/launch.sh
+        env:
+        <b>- name: IPALLOC_RANGE
+          value: 10.244.0.0/16</b>
+        - name: INIT_CONTAINER
+          value: "true"
+          ...
+</code></pre>
+
+
+이후 Worker Node 에 위에서 출력된
+
+```Bash
+kubeadm join 192.168.65.2:6443 --token zre3m8.bvz...afj \
+	--discovery-token-ca-cert-hash sha256:0de9...e81b8
+```
+
+설정 후 kubeadm 에 join 하기 
