@@ -50,7 +50,7 @@ ReplicaSet, Deployment, Service를 통해 배치될 수 없고,
 
 ### Designated Directory
 
-지정된 폴더는 무엇이고 어떻게 구성할까요?
+지정된 폴더는 무엇이고 어떻게 구성할까?
 
 1. Specifying Configuration Option to `kubelet.service` file 
 
