@@ -136,8 +136,10 @@
 
 ## Section 10. Install "Kubernetes the kubeadm way"
 
-1. [Deploy with Kubeadm](./deployment_with_kubeadm)
+1. [Deploy with Kubeadm](./deployment_with_kubeadm.md)
 
 
-## Section 11: End to End Tests on a Kubernetes Cluster
+## Section 11: Troubleshooting
+
+1. [Application Failure](application_failure.md)
 
