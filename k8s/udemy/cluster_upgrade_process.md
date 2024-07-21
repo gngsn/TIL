@@ -379,3 +379,79 @@ node-2  Ready   <none>  1d  v1.11.3
 하지만 이는 단지 Schedule 가능하다는 표시를 한 거지, Pod가 이 노드로 바로 돌아온다는 걸 의미하진 않음
 
 이렇게 모든 노드를 업그레이드 함
+
+
+---
+
+## Demo
+
+```Bash
+controlplane ~ ➜ kubectl get node
+controlplane ~ ➜ cat /etc/*release*
+```
+
+[🔗 pkgs.k8s.io: Introducing Kubernetes Community-Owned Package Repositories](https://kubernetes.io/blog/2023/08/15/pkgs-k8s-io-introduction/) 에 적힌 아래 명령어 수정 및 실행 
+
+```
+# 1. `apt` 가 Google 호스트 저장소 대신 새 저장소를 가리키도록 `apt` 저장소 정의를 변경 
+# 아래 명령의 Kubernetes 마이너 버전을 현재 사용 중인 마이너 버전으로 바꿈
+❯ echo "deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] https://pkgs.k8s.io/core:/stable:/v1.30/deb/ /" | sudo tee /etc/apt/sources.list.d/kubernetes.list
+
+# 2. Kubernetes 패키지 리포지토리의 공개 서명 키 다운로드
+# 모든 리포지토리에 동일한 서명 키가 사용되므로 URL의 버전을 무시할 수 있음
+# Update: In releases older than Debian 12 and Ubuntu 22.04, the folder /etc/apt/keyrings does not exist by default, and it should be created before the curl command. 
+❯ curl -fsSL https://pkgs.k8s.io/core:/stable:/v1.30/deb/Release.key | sudo gpg --dearmor -o /etc/apt/keyrings/kubernetes-apt-keyring.gpg
+
+# 3. `apt` 패키지 업데이트
+❯ sudo apt-get update
+```
+
+[🔗 Upgrading kubeadm clusters](https://kubernetes.io/docs/tasks/administer-cluster/kubeadm/kubeadm-upgrade/) 에 적힌 아래 명령어 수정 및 실행
+
+
+```Bash
+# Find the latest 1.30 version in the list.
+# It should look like 1.30.x-*, where x is the latest patch.
+❯ sudo apt update
+❯ sudo apt-cache madison kubeadm
+
+## Upgrading control plane nodes
+# replace x in 1.30.x-* with the latest patch version
+❯ sudo apt-mark unhold kubeadm && \
+    sudo apt-get update && sudo apt-get install -y kubeadm='1.30.x-*' && \
+    sudo apt-mark hold kubeadm
+
+❯ kubeadm version
+❯ sudo kubeadm upgrade plan
+
+❯ sudo kubeadm upgrade apply v1.30.x
+
+# Same as the first control plane node but use:
+# ❯ sudo kubeadm upgrade node
+# instead of:
+❯ sudo kubeadm upgrade apply  1.30.x
+
+# version 확인
+❯ kubectl get node
+```
+
+### Drain the node
+
+```Bash
+❯ kubectl drain controlplane --ignore-daemonsets
+❯ sudo apt-mark unhold kubelet kubectl && \
+    sudo apt-get update && sudo apt-get install -y kubelet='1.30.x-*' kubectl='1.30.x-*' && \
+    sudo apt-mark hold kubelet kubectl
+❯ sudo systemctl daemon-reload
+❯ sudo systemctl restart kubelet
+
+# version 확인
+❯ kubectl get node
+```
+
+```
+❯ kubectl uncordon controlplane
+```
+
+
+
