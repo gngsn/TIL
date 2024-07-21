@@ -180,3 +180,521 @@ NAME     STATUS   ROLES    AGE   VERSION
 master   Ready    master   5m    v1.11.3
 node01   Ready    <none>   5m    v1.11.3
 ```
+
+---
+
+## Practice
+
+### Question 1.
+
+Get the list of nodes in JSON format and store it in a file at `/opt/outputs/nodes.json`
+
+#### Answer.
+
+```Bash
+controlplane ~ ➜  k get nodes -o json > /opt/outputs/nodes.json
+{
+    "apiVersion": "v1",
+    "items": [
+        {
+            "apiVersion": "v1",
+            "kind": "Node",
+            "metadata": {
+            ...
+            }
+        }
+    ]
+}
+```
+
+<br>
+
+### Question 2.
+
+Get the details of the node node01 in json format and store it in the file `/opt/outputs/node01.json`
+
+#### Answer.
+
+```Bash
+controlplane ~ ➜  k get nodes -o json > /opt/outputs/nodes.json
+{
+    "apiVersion": "v1",
+    "kind": "Node",
+    "metadata": {
+        "annotations": {
+            "flannel.alpha.coreos.com/backend-data": "{\"VNI\":1,\"VtepMAC\":\"b2:e0:b0:6d:27:53\"}",
+            ...
+        }
+    }
+}
+```
+
+<br>
+
+### Question 3.
+
+Use JSON PATH query to fetch node names and store them in `/opt/outputs/node_names.txt`.
+
+<small>Remember the file should only have node names.</small>
+
+#### Answer.
+
+```Bash
+controlplane ~ ➜  k get node -o=jsonpath='{.items[*].metadata.name}' > /opt/outputs/node_names.txt
+controlplane node01
+```
+
+<br>
+
+### Question 4.
+
+Use JSON PATH query to retrieve the `osImage`s of all the nodes and store it in a file `/opt/outputs/nodes_os.txt`.
+
+<small>The `osImage`s are under the `nodeInfo` section under `status` of each node.</small>
+
+#### Answer.
+
+<pre><code lang="bash">controlplane ~ ✖ k get node -o json
+{
+    "apiVersion": "v1",
+    "items": [
+        {
+            "apiVersion": "v1",
+            "kind": "Node",
+            "metadata": {
+                "name": "controlplane",
+                ...
+            },
+            "spec": {
+                ...
+            },
+            "status": {
+                ...
+                "nodeInfo": {
+                    "architecture": "amd64",
+                    "bootID": "04244f48-6655-41d9-8a84-2ae042385286",
+                    "containerRuntimeVersion": "containerd://1.6.26",
+                    "kernelVersion": "5.4.0-1106-gcp",
+                    "kubeProxyVersion": "v1.30.0",
+                    "kubeletVersion": "v1.30.0",
+                    "machineID": "19d93cf879df4a7dbff7fb9eabd1279f",
+                    "operatingSystem": "linux",
+                    <b>"osImage": "Ubuntu 22.04.4 LTS",</b>
+                    "systemUUID": "aac6731f-b99d-f878-0d80-8d7ce835acab"
+                }
+            }
+        },
+        {
+            "apiVersion": "v1",
+            "kind": "Node",
+            "metadata": {
+                "name": "node01",
+                ...
+            },
+            "spec": {
+                ...
+            },
+            "status": {
+                ...
+                "nodeInfo": {
+                    "architecture": "amd64",
+                    "bootID": "72a6c803-18e2-4db2-9109-fe56180d567a",
+                    "containerRuntimeVersion": "containerd://1.6.26",
+                    "kernelVersion": "5.4.0-1106-gcp",
+                    "kubeProxyVersion": "v1.30.0",
+                    "kubeletVersion": "v1.30.0",
+                    "machineID": "7069a4aa6b534f58bf55a7749d795fd3",
+                    "operatingSystem": "linux",
+                    <b>"osImage": "Ubuntu 22.04.4 LTS",</b>
+                    "systemUUID": "82ad48cc-cf0c-c0bf-7b55-386f5983f9a3"
+                }
+            }
+        }
+    ]
+}
+
+controlplane ~ ➜  k get node -o=jsonpath='{.items[*].status.nodeInfo.osImage}' > /opt/outputs/nodes_os.txt
+Ubuntu 22.04.4 LTS Ubuntu 22.04.4 LTS
+</code></pre>
+
+<br>
+
+### Question 5.
+
+A `kube-config` file is present at `/root/my-kube-config`. Get the user names from it and store it in a file `/opt/outputs/users.txt`.
+
+<small>Use the command `kubectl config view --kubeconfig=/root/my-kube-config` to view the custom kube-config.</small>
+
+#### Answer.
+
+```Bash
+controlplane ~ ➜  kubectl config view --kubeconfig=/root/my-kube-config -o json
+{
+    "kind": "Config",
+    "apiVersion": "v1",
+    "preferences": {},
+    "clusters": [
+        {
+            "name": "development",
+            "cluster": {
+                "server": "KUBE_ADDRESS",
+                "certificate-authority": "/etc/kubernetes/pki/ca.crt"
+            }
+        },
+        {
+            "name": "kubernetes-on-aws",
+            "cluster": {
+                "server": "KUBE_ADDRESS",
+                "certificate-authority": "/etc/kubernetes/pki/ca.crt"
+            }
+        },
+        {
+            "name": "production",
+            "cluster": {
+                "server": "KUBE_ADDRESS",
+                "certificate-authority": "/etc/kubernetes/pki/ca.crt"
+            }
+        },
+        {
+            "name": "test-cluster-1",
+            "cluster": {
+                "server": "KUBE_ADDRESS",
+                "certificate-authority": "/etc/kubernetes/pki/ca.crt"
+            }
+        }
+    ],
+    "users": [
+        {
+            "name": "aws-user",
+            "user": {
+                "client-certificate": "/etc/kubernetes/pki/users/aws-user/aws-user.crt",
+                "client-key": "/etc/kubernetes/pki/users/aws-user/aws-user.key"
+            }
+        },
+        {
+            "name": "dev-user",
+            "user": {
+                "client-certificate": "/etc/kubernetes/pki/users/dev-user/developer-user.crt",
+                "client-key": "/etc/kubernetes/pki/users/dev-user/dev-user.key"
+            }
+        },
+        {
+            "name": "test-user",
+            "user": {
+                "client-certificate": "/etc/kubernetes/pki/users/test-user/test-user.crt",
+                "client-key": "/etc/kubernetes/pki/users/test-user/test-user.key"
+            }
+        }
+    ],
+    "contexts": [
+        {
+            "name": "aws-user@kubernetes-on-aws",
+            "context": {
+                "cluster": "kubernetes-on-aws",
+                "user": "aws-user"
+            }
+        },
+        {
+            "name": "research",
+            "context": {
+                "cluster": "test-cluster-1",
+                "user": "dev-user"
+            }
+        },
+        {
+            "name": "test-user@development",
+            "context": {
+                "cluster": "development",
+                "user": "test-user"
+            }
+        },
+        {
+            "name": "test-user@production",
+            "context": {
+                "cluster": "production",
+                "user": "test-user"
+            }
+        }
+    ],
+    "current-context": "test-user@development"
+}
+
+controlplane ~ ➜  kubectl config view --kubeconfig=/root/my-kube-config -o=jsonpath='{.users[*].name}' > /opt/outputs/users.txt
+aws-user dev-user test-user
+```
+
+<br>
+
+### Question 6.
+
+A set of Persistent Volumes are available. Sort them based on their capacity and store the result in the file `/opt/outputs/storage-capacity-sorted.txt`.
+
+#### Answer.
+
+```Bash
+ontrolplane ~ ➜  k get pv -o json
+{
+    "apiVersion": "v1",
+    "items": [
+        {
+            "apiVersion": "v1",
+            "kind": "PersistentVolume",
+            "metadata": {
+                "creationTimestamp": "2024-07-21T07:25:30Z",
+                "finalizers": [
+                    "kubernetes.io/pv-protection"
+                ],
+                "name": "pv-log-1",
+                "resourceVersion": "2072",
+                "uid": "0278ae3a-8bc4-4598-bed5-ca75929755f1"
+            },
+            "spec": {
+                "accessModes": [
+                    "ReadWriteMany"
+                ],
+                "capacity": {
+                    "storage": "100Mi"
+                },
+                "hostPath": {
+                    "path": "/pv/log",
+                    "type": ""
+                },
+                "persistentVolumeReclaimPolicy": "Retain",
+                "volumeMode": "Filesystem"
+            },
+            "status": {
+                "lastPhaseTransitionTime": "2024-07-21T07:25:30Z",
+                "phase": "Available"
+            }
+        },
+        {
+            "apiVersion": "v1",
+            "kind": "PersistentVolume",
+            "metadata": {
+                "creationTimestamp": "2024-07-21T07:25:30Z",
+                "finalizers": [
+                    "kubernetes.io/pv-protection"
+                ],
+                "name": "pv-log-2",
+                "resourceVersion": "2074",
+                "uid": "00f2f546-7dd4-44b5-82c5-50781daebbe0"
+            },
+            "spec": {
+                "accessModes": [
+                    "ReadWriteMany"
+                ],
+                "capacity": {
+                    "storage": "200Mi"
+                },
+                "hostPath": {
+                    "path": "/pv/log",
+                    "type": ""
+                },
+                "persistentVolumeReclaimPolicy": "Retain",
+                "volumeMode": "Filesystem"
+            },
+            "status": {
+                "lastPhaseTransitionTime": "2024-07-21T07:25:30Z",
+                "phase": "Available"
+            }
+        },
+        {
+            "apiVersion": "v1",
+            "kind": "PersistentVolume",
+            "metadata": {
+                "creationTimestamp": "2024-07-21T07:25:30Z",
+                "finalizers": [
+                    "kubernetes.io/pv-protection"
+                ],
+                "name": "pv-log-3",
+                "resourceVersion": "2076",
+                "uid": "9e8c119c-9759-45d3-a382-3ad07dbba9aa"
+            },
+            "spec": {
+                "accessModes": [
+                    "ReadWriteMany"
+                ],
+                "capacity": {
+                    "storage": "300Mi"
+                },
+                "hostPath": {
+                    "path": "/pv/log",
+                    "type": ""
+                },
+                "persistentVolumeReclaimPolicy": "Retain",
+                "volumeMode": "Filesystem"
+            },
+            "status": {
+                "lastPhaseTransitionTime": "2024-07-21T07:25:30Z",
+                "phase": "Available"
+            }
+        },
+        {
+            "apiVersion": "v1",
+            "kind": "PersistentVolume",
+            "metadata": {
+                "creationTimestamp": "2024-07-21T07:25:30Z",
+                "finalizers": [
+                    "kubernetes.io/pv-protection"
+                ],
+                "name": "pv-log-4",
+                "resourceVersion": "2078",
+                "uid": "52cc21c4-b90f-446c-b83c-4cfc7be4046e"
+            },
+            "spec": {
+                "accessModes": [
+                    "ReadWriteMany"
+                ],
+                "capacity": {
+                    "storage": "40Mi"
+                },
+                "hostPath": {
+                    "path": "/pv/log",
+                    "type": ""
+                },
+                "persistentVolumeReclaimPolicy": "Retain",
+                "volumeMode": "Filesystem"
+            },
+            "status": {
+                "lastPhaseTransitionTime": "2024-07-21T07:25:30Z",
+                "phase": "Available"
+            }
+        }
+    ],
+    "kind": "List",
+    "metadata": {
+        "resourceVersion": ""
+    }
+}
+
+controlplane ~ ➜  k get pv --sort-by=.spec.capacity.storage > /opt/outputs/storage-capacity-sorted.txt
+NAME       CAPACITY   ACCESS MODES   RECLAIM POLICY   STATUS      CLAIM   STORAGECLASS   VOLUMEATTRIBUTESCLASS   REASON   AGE
+pv-log-4   40Mi       RWX            Retain           Available                          <unset>                          14m
+pv-log-1   100Mi      RWX            Retain           Available                          <unset>                          14m
+pv-log-2   200Mi      RWX            Retain           Available                          <unset>                          14m
+pv-log-3   300Mi      RWX            Retain           Available                          <unset>                          14m
+```
+
+<br>
+
+### Question 7. 
+
+That was good, but we don't need all the extra details. Retrieve just the first 2 columns of output and store it in `/opt/outputs/pv-and-capacity-sorted.txt`.
+
+<small>The columns should be named NAME and CAPACITY. Use the custom-columns option and remember, it should still be sorted as in the previous question.</small>
+
+#### Answer.
+
+```Bash
+❯ kubectl get pv -o=jsonpath='{range .items[*]}{.metadata.name}{"\t"}{.spec.capacity.storage}{"\n"}{end}' -o=custom-columns=NAME:.metadata.name,CAPACITY:.spec.capacity.storage --sort-by=.spec.capacity.storage
+NAME       CAPACITY
+pv-log-4   40Mi
+pv-log-1   100Mi
+pv-log-2   200Mi
+pv-log-3   300Mi
+```
+
+<br>
+
+### Question 8. 
+
+Use a JSON PATH query to identify the context configured for the `aws-user` in the `my-kube-config` context file and store the result in `/opt/outputs/aws-context-name`.
+
+#### Answer.
+
+```Bash
+controlplane ~ ➜  k config view --kubeconfig=my-kube-config -o json
+{
+    "kind": "Config",
+    "apiVersion": "v1",
+    "preferences": {},
+    "clusters": [
+        {
+            "name": "development",
+            "cluster": {
+                "server": "KUBE_ADDRESS",
+                "certificate-authority": "/etc/kubernetes/pki/ca.crt"
+            }
+        },
+        {
+            "name": "kubernetes-on-aws",
+            "cluster": {
+                "server": "KUBE_ADDRESS",
+                "certificate-authority": "/etc/kubernetes/pki/ca.crt"
+            }
+        },
+        {
+            "name": "production",
+            "cluster": {
+                "server": "KUBE_ADDRESS",
+                "certificate-authority": "/etc/kubernetes/pki/ca.crt"
+            }
+        },
+        {
+            "name": "test-cluster-1",
+            "cluster": {
+                "server": "KUBE_ADDRESS",
+                "certificate-authority": "/etc/kubernetes/pki/ca.crt"
+            }
+        }
+    ],
+    "users": [
+        {
+            "name": "aws-user",
+            "user": {
+                "client-certificate": "/etc/kubernetes/pki/users/aws-user/aws-user.crt",
+                "client-key": "/etc/kubernetes/pki/users/aws-user/aws-user.key"
+            }
+        },
+        {
+            "name": "dev-user",
+            "user": {
+                "client-certificate": "/etc/kubernetes/pki/users/dev-user/developer-user.crt",
+                "client-key": "/etc/kubernetes/pki/users/dev-user/dev-user.key"
+            }
+        },
+        {
+            "name": "test-user",
+            "user": {
+                "client-certificate": "/etc/kubernetes/pki/users/test-user/test-user.crt",
+                "client-key": "/etc/kubernetes/pki/users/test-user/test-user.key"
+            }
+        }
+    ],
+    "contexts": [
+        {
+            "name": "aws-user@kubernetes-on-aws",
+            "context": {
+                "cluster": "kubernetes-on-aws",
+                "user": "aws-user"
+            }
+        },
+        {
+            "name": "research",
+            "context": {
+                "cluster": "test-cluster-1",
+                "user": "dev-user"
+            }
+        },
+        {
+            "name": "test-user@development",
+            "context": {
+                "cluster": "development",
+                "user": "test-user"
+            }
+        },
+        {
+            "name": "test-user@production",
+            "context": {
+                "cluster": "production",
+                "user": "test-user"
+            }
+        }
+    ],
+    "current-context": "test-user@development"
+}
+
+ontrolplane ~ ➜  k config view --kubeconfig=my-kube-config -o=jsonpath='{.contexts[?(@.context.user=="aws-user")].name}' > /opt/outputs/aws-context-name
+aws-user@kubernetes-on-aws
+```
+
