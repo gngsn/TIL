@@ -1,0 +1,38 @@
+## Question 03.
+
+A kubeconfig file called `admin.kubeconfig` has been created in `/root/CKA`.
+There is something wrong with the configuration. Troubleshoot and fix it.
+
+<br>
+
+### Answer
+
+```Bash
+controlplane ~ ➜  cat /root/CKA/admin.kubeconfig
+apiVersion: v1
+clusters:
+- cluster:
+    certificate-authority-data: LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSURCVENDQWUyZ0F3SUJBZ0lJY29ZTDRMSXBSdHd3RFFZSktvWklodmNOQVFFTEJRQXdGVEVUTUJFR0ExVUUKQXhNS2EzVmlaWEp1WlhSbGN6QWVGdzB5TkRBM01qRXlNREExTlRaYUZ3MHpOREEzTVRreU1ERXdOVFphTUJVeApFekFSQmdOVkJBTVRDbXQxWW1WeWJtVjBaWE13Z2dFaU1BMEdDU3FHU0liM0RRRUJBUVVBQTRJQkR3QXdnZ0VLCkFvSUJBUURhQ2J2amVvZzRHM1duWUtsQk5pYU1yTkk3ZlF4dW1INjRPZWZaaVZvWjMyZ3ZncytpU0hCYU9UOGYKK3N6ZEd3VmhsMDBwR3ZJK003aW9LTzRoN1Y5QXprZ0dHVnZkdDJMamw0MTE2cXRpREU4MHdpUzJjQnMrSUtPbgowamJQUVppOGVuZlFYNEVEeEd5MzF4aG5hUktTaWZ6TW13bFpFcjJ6U0VmM2xvdVI1eEs2NXZxWUt1YTZkR3kwCm9HSDRzbk4wY1ZjdlpXRXJlM1lLbU5rK0NSVlM5ekNqNFlFUkp1UlpCMUloKzJaeG42TWNoMitNdkwvbWZGRG0KcmVkMTdCM2FmWTF6dFZtOHlwUHR0WHkvVDJQTTFoZmlwLy9Ed1gwZlU0V1IvM2p1SXc4a1pOdlZjeHF0MmxLVwpFYjJjZ2xDOEJQQjlJaGRQMjQ5RUpVblluZXo5QWdNQkFBR2pXVEJYTUE0R0ExVWREd0VCL3dRRUF3SUNwREFQCkJnTlZIUk1CQWY4RUJUQURBUUgvTUIwR0ExVWREZ1FXQkJTS1Q2MkNPRHZxK0JhNi9FdkJHQkZTWUlIVTlEQVYKQmdOVkhSRUVEakFNZ2dwcmRXSmxjbTVsZEdWek1BMEdDU3FHU0liM0RRRUJDd1VBQTRJQkFRQ3JuTEM4ZVNLagpCbjZNYVFWeG1QenRQbitLVmJpVW04WG1YdWt6b1kwVC8zc3V2MkxyRkU5LzN3VklMYk4xREZtR2lnYUFnelZsCldJcHIrTERpOXRrUkFOYkh4QndSUFhyQkVVL2RmNXRkRUkrYlFNV3pFVEZ0VWNUanIwMU1XcXRWNjVscXpMZHoKQ2QxOGY3YTk0cmRVdDRNMkhhUzl5NUtycTFJMllraGZKemJydnh2ZHZaZzg3SWtQUHpwdzYyVy9pYzhFWDFJaQpnU3FTa2dqRkxCM0lzYVBpL2ZUeC9KbkxyNjN1M05UT3VjcWRiUUJsNGhDK1Z1YUtTQjFzZ080czREK0ZiWnkwCjQwVzdleFJpelRCa0lkN2o1UG1ZOGUwTHhmVG1MWXppZER2dnRNOGhVQnJRU2FhWU52ZXNqRHgrNllwRTh0RTAKaG5iYzlQZi9xNzFICi0tLS0tRU5EIENFUlRJRklDQVRFLS0tLS0K
+    server: https://controlplane:4380
+  name: kubernetes
+contexts:
+- context:
+    cluster: kubernetes
+    user: kubernetes-admin
+  name: kubernetes-admin@kubernetes
+current-context: kubernetes-admin@kubernetes
+kind: Config
+preferences: {}
+users:
+- name: kubernetes-admin
+  user:
+    client-certificate-data: LS0tLS1CRUdJ...
+```
+
+```
+controlplane ~ ➜  kubectl cluster-info --kubeconfig /root/CKA/admin.kubeconfig
+```
+
+server: `https://controlplane:4380`
+→ server: `https://controlplane:6443`
+
