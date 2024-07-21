@@ -126,6 +126,8 @@
 
 [Recording Practice](./recording_practice.md)
 
+<br/>
+
 ## Section9. Design and Install a Kubernetes Cluster
 
 1. [Design a Kubernetes Cluster](./design_a_kubernetes_cluster.md)
@@ -133,13 +135,23 @@
 3. [Configure High Availability](./configure_high_availability.md)
 4. [ETCD in HA](./etcd_in_ha.md)
 
+<br/>
 
 ## Section 10. Install "Kubernetes the kubeadm way"
 
 1. [Deploy with Kubeadm](./deployment_with_kubeadm.md)
 
+<br/>
 
 ## Section 11: Troubleshooting
 
 1. [Application Failure](application_failure.md)
+2. [Control Plane Failure](control_plane_failure.md)
+3. [Worker Node Failure](worker_node_failure.md)
+
+<br/>
+
+## Section 12: Other Topic
+
+1. [Json Path](json_path.md)
 
