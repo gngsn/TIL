@@ -54,6 +54,9 @@ kubeadm version: &version.Info{Major:"1", Minor:"29", GitVersion:"v1.29.0", GitC
 ❯ sudo apt-get update
 ```
 
+or `/etc/apt/sources.list.d/kubernetes.list` 파일 수정
+
+<br>
 
 ```Bash
 # Find the latest 1.30 version in the list.
