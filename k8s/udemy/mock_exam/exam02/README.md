@@ -55,22 +55,25 @@ Specs on the below.
 
 
 ```Bash
-apiVersion: v1
+controlplane ~ ➜  k run redis-storage --image=redis:alpine --dry-run=client -o yaml > redis-storage.yaml 
+controlplane ~ ➜  vi redis-storage.yaml
+```
+
+<pre><code lang="yaml">apiVersion: v1
 kind: Pod
 metadata:
 name: redis-storage
 spec:
-containers:
-- image: redis:alpine
-  name: redis-storage-container
-  volumeMounts:
+  containers:
+  - image: redis:alpine
+    name: redis-storage-container
+    volumeMounts:
     - mountPath: /data/redis
       name: redis-volume
-      volumes:
-- name: redis-volume
-  emptyDir:
-    sizeLimit: 500Mi
-```
+  <b>volumes:               # ← 추가
+    - name: redis-volume
+      emptyDir: {}</b>
+</code></pre>
 
 
 <br><br>
@@ -89,23 +92,39 @@ The container should sleep for 4800 seconds.
 
 ### Answer
 
+**Security Context** 관련 문제
+
+→ Kubernetes 공식 문서에 `Security Capabilities` 검색
+
+[Security Context: Set capabilities for a Container](https://kubernetes.io/docs/tasks/configure-pod-container/security-context/#set-capabilities-for-a-container) 내용 확인
+
 ```Bash
+controlplane ~ ➜  k run super-user-pod --image=busybox:1.28 --dry-run=client -o yaml --command -- sleep 4800 > super-user-pod.yaml 
 controlplane ~ ➜  vi super-user-pod.yaml
-apiVersion: v1
+```
+
+<pre><code lang="yaml">apiVersion: v1
 kind: Pod
 metadata:
+  creationTimestamp: null
+  labels:
+    run: super-user-pod
   name: super-user-pod
 spec:
   containers:
-  - name: busybox
-    image: busybox:1.28
-    securityContext:
-      capabilities:
-        add: ["SYS_TIME"]
-    command:
+  - command:
     - sleep
     - "4800"
-```
+    image: busybox:1.28
+    name: super-user-pod
+    resources: {}
+    <b>securityContext:           # ← 추가
+      capabilities:
+        add: ["SYS_TIME"]</b>
+  dnsPolicy: ClusterFirst
+  restartPolicy: Always
+status: {}
+</code></pre>
 
 ---
 
@@ -156,10 +175,9 @@ metadata:
 
 <br>
 
-**2. PVC 작성 후 Pod 정의 스펙에 명시**
+**2. PVC 작성**
 
-```Bash
-controlplane ~ ➜  cat my-pvc.yaml
+<pre><code lang="yaml">controlplane ~ ➜  vi my-pvc.yaml
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
@@ -170,8 +188,18 @@ spec:
   resources:
     requests:
       storage: 10Mi
-      
-controlplane ~ ➜  cat /root/CKA/use-pv.yaml 
+</code></pre>
+
+```Bash
+controlplane ~ ➜  k apply -f my-pvc.yaml
+persistentvolumeclaim/my-pvc created
+```
+
+<br><br>
+
+**3. Pod 정의 스펙에 명시**
+
+<pre><code lang="yaml">controlplane ~ ➜  vi /root/CKA/use-pv.yaml 
 apiVersion: v1
 kind: Pod
 metadata:
@@ -183,24 +211,54 @@ spec:
   containers:
   - image: nginx
     name: use-pv
-    resources: {}
+    resources: {}<b>
     volumeMounts:
       - mountPath: "/data"
-        name: my-pvc-volume
+        name: my-pvc-volume</b>
   dnsPolicy: ClusterFirst
   restartPolicy: Always
-  volumes:
+  <b>volumes:
   - name: my-pvc-volume
     persistentVolumeClaim:
-      claimName: my-pvc
+      claimName: my-pvc</b>
 status: {}
-```
+</code></pre>
 
+생성된 객체 확인 
+
+<pre><code lang="yaml">controlplane ~ ➜  k apply -f /root/CKA/use-pv.yaml 
+controlplane ~ ➜  k get pods
+NAME             READY   STATUS    RESTARTS   AGE
+use-pv           1/1     Running   0          5m35s
+...
+</code></pre>
+
+생성된 Pod 정보 확인
+
+<pre><code lang="yaml">controlplane ~ ➜  k describe pod use-pv 
+Name:             use-pv
+...
+Containers:
+  use-pv:
+    Container ID:   containerd://6ae4315a1264d84a0e8b5b488adc9369c199f481ccfa7f7ad03a8a2c177cb74d
+    ...
+    <b>Mounts:
+      /data from my-pvc-volume (rw)</b>     # ← /data 에 mount 되었고 my-pvc-volume 사용
+      /var/run/secrets/kubernetes.io/serviceaccount from kube-api-access-cjlpd (ro)
+  ...
+<b>Volumes:                                 # ← PersistentVolumeClaim 객체 my-pvc-volume 사용 중
+  my-pvc-volume:
+    Type:       PersistentVolumeClaim (a reference to a PersistentVolumeClaim in the same namespace)
+    ClaimName:  my-pvc</b>
+    ReadOnly:   false
+  ...
+</code></pre>
+
+<br><br>
 
 ---
 
-#### Q5. Create a new deployment called `nginx-deploy`, with image `nginx:1.16` and `1` replica. Next upgrade the deployment to version `1.17` using rolling update.
-
+### Q5. Create a new deployment called `nginx-deploy`, with image `nginx:1.16` and `1` replica. Next upgrade the deployment to version `1.17` using rolling update.
 
 - **Deployment** : `nginx-deploy`. Image: `nginx:1.16`
 - **Image**: `nginx:1.16`
@@ -210,5 +268,181 @@ status: {}
 <br>
 
 #### Answer
+
+`nginx:1.16` 버전의 Pod 생성
+
+```Bash
+controlplane ~ ➜  kubectl create deployment nginx-deploy --image=nginx:1.16 --replicas=1
+deployment.apps/nginx-deploy created
+
+controlplane ~ ➜  k get deploy -o wide
+NAME           READY   UP-TO-DATE   AVAILABLE   AGE   CONTAINERS   IMAGES       SELECTOR
+nginx-deploy   1/1     1            1           19s   nginx        nginx:1.16   app=nginx-deploy
+```
+
+`nginx:1.17` 버전으로 image setting
+
+```Bash
+controlplane ~ ➜  kubectl set image deployment/nginx-deploy nginx=nginx:1.17
+deployment.apps/nginx-deploy image updated
+
+controlplane ~ ➜  k get pods -o wide -w
+NAME                            READY   STATUS              RESTARTS   AGE    IP             NODE     NOMINATED NODE   READINESS GATES
+nginx-deploy-58f87d49-5ml4b     0/1     ContainerCreating   0          3s     <none>         node01   <none>           <none>
+nginx-deploy-858fb84d4b-v4926   1/1     Running             0          20s    10.244.192.2   node01   <none>           <none>
+use-pv                          1/1     Running             0          7m7s   10.244.192.1   node01   <none>           <none>
+nginx-deploy-58f87d49-5ml4b     1/1     Running             0          3s     10.244.192.3   node01   <none>           <none>
+nginx-deploy-858fb84d4b-v4926   1/1     Terminating         0          20s    10.244.192.2   node01   <none>           <none>
+nginx-deploy-858fb84d4b-v4926   0/1     Terminating         0          21s    <none>         node01   <none>           <none>
+nginx-deploy-858fb84d4b-v4926   0/1     Terminating         0          21s    10.244.192.2   node01   <none>           <none>
+nginx-deploy-858fb84d4b-v4926   0/1     Terminating         0          21s    10.244.192.2   node01   <none>           <none>
+nginx-deploy-858fb84d4b-v4926   0/1     Terminating         0          21s    10.244.192.2   node01   <none>           <none>
+
+
+controlplane ~ ✖ k get pods -o wide -w
+NAME                          READY   STATUS    RESTARTS   AGE   IP             NODE     NOMINATED NODE   READINESS GATES
+nginx-deploy-58f87d49-9vdgl   1/1     Running   0          60s   10.244.192.5   node01   <none>           <none>
+redis-storage                 1/1     Running   0          24m   10.244.192.1   node01   <none>           <none>
+super-user-pod                1/1     Running   0          20m   10.244.192.2   node01   <none>           <none>
+use-pv                        1/1     Running   0          10m   10.244.192.3   node01   <none>           <none>
+
+controlplane ~ ✖ k get deploy -o wide
+NAME           READY   UP-TO-DATE   AVAILABLE   AGE   CONTAINERS   IMAGES       SELECTOR
+nginx-deploy   1/1     1            1           79s   nginx        nginx:1.17   app=nginx-deploy
+```
+
+<br><br>
+
+---
+
+### Q6. Create a new user called `john`. Grant him access to the cluster. John should have permission to `create`, `list`, `get`, `update` and `delete` pods in the `development` namespace . The private key exists in the location: `/root/CKA/john.key` and csr at `/root/CKA/john.csr`.
+
+**Important Note**: As of kubernetes `1.19`, the CertificateSigningRequest object expects a `signerName`.
+
+Please refer the documentation to see an example. The documentation tab is available at the top right of terminal.
+
+<br>
+
+### Answer
+
+> **_TOC_**
+> 1. CertificateSigningRequest 생성
+> 2. Role 생성
+> 3. RoleBinding 생성
+> 4. auth can-i 확인
+
+#### 1. CertificateSigningRequest 생성
+
+[🔗 Create a CertificateSigningRequest](https://kubernetes.io/docs/reference/access-authn-authz/certificate-signing-requests/#create-certificatessigningrequest) 참고 해서 CSR 생성
+
+**1.1. john csr 파일 `request` 에 추가할 base64 인코딩한 데이터 추출** 
+
+```Bash
+controlplane ~ ➜  cat /root/CKA/john.csr | base64 | tr -d "\n"
+LS0tLS1CRUdJTiBDRVJUSUZJQ0FURSBSRVFVRVNULS0tLS0KTUlJQ1ZEQ0NBVHdDQVFBd0R6RU5NQXNHQTFVRUF3d0VhbTlvYmpDQ0FTSXdEUVlKS29aSWh2Y05BUUVCQlFBRApnZ0VQQURDQ0FRb0NnZ0VCQUwyS2w0ZjlvSHVVSXhBU1JweC8vWERmSW95MDFMeitFQXRvbDJBVHdOeERCZEt3CkhxZ3BYUVhCdkQ2S2JtWGluUkZGVXpjNXdrRUlqSnp6UUIvbWV6cjhGTjVaMGtnblhFbXlBeHdteGNFNWJYM3YKVVFoWEZLcFdkenoreEY2MFRiaGl4ekhydVowaE9XejIzWFQrUExiaTVEc1k3ZVpZR2VXUEc2MmU1KzJkWDk4bApPMVBRdUdvaUgzRFo4VTBCTENzTWhVRTU3TUJUMEp1Q29EbEhKYjgzY1lUQnEwSnJpWmlPenN6VHVjOEVYZlFCCkJIVERQNm9JMkFYNVhsMW5vVWxJZ0FIa2FrTXpyMzJxTCs3UDVGSTlBdUMwa2VzMDFXM1VpWjVLOVdaYVdVclkKTjVsQXpSNk1NUlZGOVNQOUpUU1k4WGNlLzN5LzM3dUExdDRKR29FQ0F3RUFBYUFBTUEwR0NTcUdTSWIzRFFFQgpDd1VBQTRJQkFRQVlnVGFCZFp0eDZySzNkZEYrUEpIeVBEa1IyZktkT01jR3YwSzJBS3hBd05GTUJoM0pMOXNSCmcxQ0JqOWhUT0xMMDkyV3hFSzdKQ0lra2taSTltdklLeW5yYzd3ZDVUeUhWTVQwTXI4dTBSV1JjWDl5MFBkbU4KdnNtcVJYNFBZOVNYY2QrdFRRR1NOSjJWSkx4aWFMaWhEcEQ5NmFRaVN0S0ZJZ2lMNFhDWVYzdk14YXBhOVYwUwpCVG1GS2ZvRUlsd3IwMmJ1NlVyTE9wVjdON29PdHlhcXc5K2o1a08zbFpLcVpXWTBFOTJrSTV0aDFhRmRaTzZ6ClpmcXYzd1lZbkI5azNLZFNRRVpVWFpNSTRtc0VLTFpQYlJGd0MyNHJMaW5GTXN4TVR4Zzl4alZlM09SSHVBZ0EKUGpYaUFxQlh3YkxxTk85UVViTGRkblpoSDBWK0Vick4KLS0tLS1FTkQgQ0VSVElGSUNBVEUgUkVRVUVTVC0tLS0tCg==
+```
+
+**1.2. `CertificateSigningRequest` 객체 생성**
+
+```Bash
+controlplane ~ ➜  cat <<EOF | kubectl apply -f -
+apiVersion: certificates.k8s.io/v1
+kind: CertificateSigningRequest
+metadata:
+  name: john-developer
+spec:
+  request: LS0tLS1CRUdJTiBDRVJUSUZJQ0FURSBSRVFVRVNULS0tLS0KTUlJQ1ZEQ0NBVHdDQVFBd0R6RU5NQXNHQTFVRUF3d0VhbTlvYmpDQ0FTSXdEUVlKS29aSWh2Y05BUUVCQlFBRApnZ0VQQURDQ0FRb0NnZ0VCQUwyS2w0ZjlvSHVVSXhBU1JweC8vWERmSW95MDFMeitFQXRvbDJBVHdOeERCZEt3CkhxZ3BYUVhCdkQ2S2JtWGluUkZGVXpjNXdrRUlqSnp6UUIvbWV6cjhGTjVaMGtnblhFbXlBeHdteGNFNWJYM3YKVVFoWEZLcFdkenoreEY2MFRiaGl4ekhydVowaE9XejIzWFQrUExiaTVEc1k3ZVpZR2VXUEc2MmU1KzJkWDk4bApPMVBRdUdvaUgzRFo4VTBCTENzTWhVRTU3TUJUMEp1Q29EbEhKYjgzY1lUQnEwSnJpWmlPenN6VHVjOEVYZlFCCkJIVERQNm9JMkFYNVhsMW5vVWxJZ0FIa2FrTXpyMzJxTCs3UDVGSTlBdUMwa2VzMDFXM1VpWjVLOVdaYVdVclkKTjVsQXpSNk1NUlZGOVNQOUpUU1k4WGNlLzN5LzM3dUExdDRKR29FQ0F3RUFBYUFBTUEwR0NTcUdTSWIzRFFFQgpDd1VBQTRJQkFRQVlnVGFCZFp0eDZySzNkZEYrUEpIeVBEa1IyZktkT01jR3YwSzJBS3hBd05GTUJoM0pMOXNSCmcxQ0JqOWhUT0xMMDkyV3hFSzdKQ0lra2taSTltdklLeW5yYzd3ZDVUeUhWTVQwTXI4dTBSV1JjWDl5MFBkbU4KdnNtcVJYNFBZOVNYY2QrdFRRR1NOSjJWSkx4aWFMaWhEcEQ5NmFRaVN0S0ZJZ2lMNFhDWVYzdk14YXBhOVYwUwpCVG1GS2ZvRUlsd3IwMmJ1NlVyTE9wVjdON29PdHlhcXc5K2o1a08zbFpLcVpXWTBFOTJrSTV0aDFhRmRaTzZ6ClpmcXYzd1lZbkI5azNLZFNRRVpVWFpNSTRtc0VLTFpQYlJGd0MyNHJMaW5GTXN4TVR4Zzl4alZlM09SSHVBZ0EKUGpYaUFxQlh3YkxxTk85UVViTGRkblpoSDBWK0Vick4KLS0tLS1FTkQgQ0VSVElGSUNBVEUgUkVRVUVTVC0tLS0tCg==
+  signerName: kubernetes.io/kube-apiserver-client
+  expirationSeconds: 86400  # one day
+  usages:
+  - client auth
+EOF
+```
+
+생성된 CSR 확인 
+
+```Bash
+controlplane ~ ➜  kubectl get csr
+NAME             AGE   SIGNERNAME                                    REQUESTOR                  REQUESTEDDURATION   CONDITION
+john-developer   6s    kubernetes.io/kube-apiserver-client           kubernetes-admin           24h                 Pending
+...
+```
+
+<br>
+
+#### 2. Role 생성
+
+```
+controlplane ~ ➜  kubectl create role developer --resource=pods --verb=create,list,get,update,delete -n development
+role.rbac.authorization.k8s.io/developer created
+
+controlplane ~ ➜  k get roles -n development
+NAME        CREATED AT
+developer   2024-07-28T07:02:33Z
+
+controlplane ~ ➜  k describe role developer -n development
+Name:         developer
+Labels:       <none>
+Annotations:  <none>
+PolicyRule:
+  Resources  Non-Resource URLs  Resource Names  Verbs
+  ---------  -----------------  --------------  -----
+  pods       []                 []              [create list get update delete]        # ← 추가된 권한 확인
+```
+
+#### 3. RoleBinding 생성
+
+```
+controlplane ~ ➜  kubectl create rolebinding developer-role-binding --role=developer --user=john -n development
+rolebinding.rbac.authorization.k8s.io/developer-role-binding created
+
+controlplane ~ ➜  k get rolebinding -n development
+NAME                     ROLE             AGE
+developer-role-binding   Role/developer   18s
+
+controlplane ~ ✖ k describe rolebinding.rbac.authorization.k8s.io developer -n development        # ← rolebinding 이랑 동일
+Name:         developer-role-binding
+Labels:       <none>
+Annotations:  <none>
+Role:
+  Kind:  Role
+  Name:  developer
+Subjects:
+  Kind  Name  Namespace
+  ----  ----  ---------
+  User  john
+```
+
+
+#### 4. auth can-i 확인
+
+```Bash
+controlplane ~ ➜  kubectl auth can-i update pods --as=john -n development
+yes
+
+controlplane ~ ➜  kubectl auth can-i create pods --as=john -n development
+yes
+```
+
+<br><br>
+
+---
+
+### Q7. Create a nginx pod called `nginx-resolver` using image nginx, expose it internally with a service called `nginx-resolver-service`. Test that you are able to look up the service and pod names from within the cluster. Use the `image: busybox:1.28` for dns lookup. Record results in `/root/CKA/nginx.svc` and `/root/CKA/nginx.pod`
+
+
+---
+### Q8. Create a static pod on `node01` called `nginx-critical` with image `nginx` and make sure that it is `recreated/restarted` automatically in case of a failure.
+
+
+Use `/etc/kubernetes/manifests` as the Static Pod path for example.
+
+
+
+
+
+
+
+
 
 
