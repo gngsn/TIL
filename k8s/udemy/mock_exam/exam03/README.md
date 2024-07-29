@@ -2,7 +2,7 @@
 
 <br>
 
-#### Answer
+#### Solution
 
 1. create serviceaccount
 
@@ -14,29 +14,21 @@ serviceaccount/pvviewer created
 2. create role
 
 ```Bash
-controlplane ~ ➜ kubectl create role pvviewer-role --verb=list --resource=persistentvolumes
-role.rbac.authorization.k8s.io/pvviewer-role created
+controlplane ~ ➜  kubectl create clusterrole pvviewer-role --resource=persistentvolumes --verb=list
+clusterrole.rbac.authorization.k8s.io/pvviewer-role created
 ```
-
-kubectl create clusterrole pvviewer-role --resource=persistentvolumes --verb=list
-
-
 
 3. create role-binding
 
 ```Bash
-controlplane ~ ➜  kubectl create clusterrolebinding pvviewer-role-binding --clusterrole=pvviewer-role --user=pvviewer
+controlplane ~ ➜  kubectl create clusterrolebinding pvviewer-role-binding --clusterrole=pvviewer-role --serviceaccount=default:pvviewer
 clusterrolebinding.rbac.authorization.k8s.io/pvviewer-role-binding created
 ```
-
-kubectl create clusterrolebinding pvviewer-role-binding --clusterrole=pvviewer-role --serviceaccount=default:pvviewer
-
-
 
 4. create pod & configure serviceAccount by specifying `serviceAccountName`
 
 ```Bash
-controlplane ~ ➜  k run pvviewer --image=redis   -o yaml --dry-run=client > pvviewer.yaml
+controlplane ~ ➜  k run pvviewer --image=redis -o yaml --dry-run=client > pvviewer.yaml
 
 controlplane ~ ➜  vi pvviewer.yaml 
 apiVersion: v1
@@ -55,23 +47,12 @@ spec:
   dnsPolicy: ClusterFirst
   restartPolicy: Always
 status: {}
+```
 
+```Bash
 controlplane ~ ➜  k apply -f pvviewer.yaml 
 pod/pvviewer created
 ```
-
-apiVersion: v1
-kind: Pod
-metadata:
-labels:
-run: pvviewer
-name: pvviewer
-spec:
-containers:
-- image: redis
-  name: pvviewer
-# Add service account name
-serviceAccountName: pvviewer
 
 check permission
 
@@ -88,20 +69,20 @@ yes
 
 #### Q2. List the `InternalIP` of all nodes of the cluster. Save the result to a file `/root/CKA/node_ips`.
 
-Answer should be in the format: `InternalIP of controlplane<space>InternalIP of node01` (in a single line)
+Solution should be in the format: `InternalIP of controlplane<space>InternalIP of node01` (in a single line)
 
 <br>
 
-#### Answer
+#### Solution
 
 [🔗 JSONPath Support](https://kubernetes.io/docs/reference/kubectl/jsonpath/) 참고
 
 ```Bash
-controlplane ~ ➜  k get nodes -o=jsonpath='{range .items[*]}{ .status.addresses[?(@.type=="InternalIP")].address } {"of"} { .metadata.name } { end }'
-192.12.122.12 of controlplane 192.12.122.3 of node01 
-controlplane ~ ➜  k get nodes -o=jsonpath='{range .items[*]}{ .status.addresses[?(@.type=="InternalIP")].address } {"of"} { .metadata.name } { end }' > /root/CKA/node_ips
+controlplane ~ ➜  kubectl get nodes -o jsonpath='{.items[*].status.addresses[?(@.type=="InternalIP")].address}' 
+192.12.122.12 192.12.122.3
+
+controlplane ~ ➜  kubectl get nodes -o jsonpath='{.items[*].status.addresses[?(@.type=="InternalIP")].address}' > /root/CKA/node_ips
 ```
-kubectl get nodes -o jsonpath='{.items[*].status.addresses[?(@.type=="InternalIP")].address}'
 
 <br><br>
 
@@ -120,58 +101,9 @@ Container 2:
 
 <br>
 
-#### Answer
+#### Solution
 
 ```Bash
-controlplane ~ ➜  k run alpha --image=nginx --env="name=alpha"
-pod/alpha created
-
-controlplane ~ ➜  k run beta --image=busybox --env="name=beta" --command -- sleep 4800
-pod/beta created
-```
-
-```Bash
-controlplane ~ ➜  k get pods alpha -o yaml
-apiVersion: v1
-kind: Pod
-metadata:
-  labels:
-    run: alpha
-  name: alpha
-  namespace: default
-  ...
-spec:
-  containers:
-  - env:
-    - name: name
-      value: alpha
-    image: nginx
-    imagePullPolicy: Always
-    name: alpha
-  ...
-
-controlplane ~ ➜  k get pods beta -o yaml
-apiVersion: v1
-kind: Pod
-metadata:
-  labels:
-    run: beta
-  name: beta
-  namespace: default
-  ...
-spec:
-  containers:
-  - command:
-    - sleep
-    - "4800"
-    env:
-    - name: name
-      value: beta
-    image: busybox
-    name: beta
-  ...
-```
-
 apiVersion: v1
 kind: Pod
 metadata:
@@ -189,7 +121,30 @@ containers:
   env:
   - name: name
     value: beta
-  - 
+```
+
+Check
+
+```Bash
+controlplane ~ ✖ k describe pods multi-pod 
+Name:             multi-pod
+Namespace:        default
+...
+Containers:
+  alpha:
+    Image:          nginx
+    Environment:
+      name:  alpha
+    ...
+  beta:
+    Image:         busybox
+    Command:
+      sleep
+      4800
+    Environment:
+      name:  beta
+  ...
+```
 
 <br><br>
 
@@ -202,7 +157,7 @@ containers:
 
 <br>
 
-#### Answer
+#### Solution
 
 [🔗Configure a Security Context for a Pod or Container](https://kubernetes.io/docs/tasks/configure-pod-container/security-context/#set-the-security-context-for-a-pod) 참고
 
@@ -245,8 +200,7 @@ Important: Don't delete any current objects deployed.
 
 <br>
 
-#### Answer
-
+#### Solution
 
 [Network Policies](https://kubernetes.io/docs/concepts/services-networking/network-policies/)
 
@@ -272,7 +226,23 @@ controlplane ~ ➜  k apply -f ingress-to-nptest.yaml
 networkpolicy.networking.k8s.io/allow-all-ingress created
 ```
 
-?? How to check ?
+Check
+
+```Bash
+controlplane ~ ➜  k describe networkpolicy ingress-to-nptest
+Name:         ingress-to-nptest
+Namespace:    default
+Created on:   2024-07-28 10:03:17 +0000 UTC
+Labels:       <none>
+Annotations:  <none>
+Spec:
+  PodSelector:     run=np-test-1
+  Allowing ingress traffic:
+    To Port: 80/TCP
+    From: <any> (traffic not restricted by source)
+  Not affecting egress traffic
+  Policy Types: Ingress
+```
 
 <br><br>
 
@@ -286,7 +256,7 @@ key: `env_type`, value: `production`, operator: `Equal` and effect: `NoSchedule`
 
 <br>
 
-#### Answer
+#### Solution
 
 ```Bash
 controlplane ~ ➜  kubectl taint nodes node01 env_type=production:NoSchedule
@@ -333,3 +303,125 @@ dev-redis      1/1     Running   0          2m7s   10.244.0.4     controlplane  
 prod-redis     1/1     Running   0          6s     10.244.192.6   node01         <none>           <none>
 ...
 ```
+
+<br><br>
+
+---
+
+#### Q7. Create a pod called `hr-pod` in `hr` namespace belonging to the `production` environment and `frontend` tier.
+image: `redis:alpine`
+
+Use appropriate labels and create all the required objects if it does not exist in the system already
+
+<br>
+
+#### Solution
+
+```Bash
+controlplane ~ ➜ k create ns hr
+namespace/hr created
+```
+
+```Bash
+controlplane ~ ➜  kubectl run hr-pod -n hr  --image=redis:alpine --labels="environment=production,tier=frontend"
+pod/hr-pod created
+```
+
+```Bash
+controlplane ~ ➜  k describe pods hr-pod -n hr
+Name:             hr-pod
+Namespace:        hr
+Priority:         0
+Service Account:  default
+Node:             controlplane/192.12.122.12
+Start Time:       Sun, 28 Jul 2024 09:22:06 +0000
+Labels:           environment=production
+                  tier=frontend
+...
+```
+
+<br><br>
+
+---
+
+#### Q8. A `kubeconfig` file called `super.kubeconfig` has been created under `/root/CKA`. There is something wrong with the configuration. Troubleshoot and fix it.
+
+#### Solution
+
+
+```Bash
+controlplane ~ ➜  cat /root/CKA/super.kubeconfig 
+apiVersion: v1
+clusters:
+- cluster:
+    certificate-authority-data: LS0tLS1CR...S0K
+    # 9999 → 6443
+    server: https://controlplane:9999 
+  name: kubernetes
+contexts:
+- context:
+    cluster: kubernetes
+    user: kubernetes-admin
+  name: kubernetes-admin@kubernetes
+current-context: kubernetes-admin@kubernetes
+kind: Config
+preferences: {}
+users:
+- name: kubernetes-admin
+  user:
+    client-certificate-data: LS0tLS1CRU...DdHV
+```
+
+Check
+
+```
+controlplane ~ ➜  kubectl cluster-info --kubeconfig=/root/CKA/super.kubeconfig
+Kubernetes control plane is running at https://controlplane:6443
+CoreDNS is running at https://controlplane:6443/api/v1/namespaces/kube-system/services/kube-dns:dns/proxy
+
+To further debug and diagnose cluster problems, use 'kubectl cluster-info dump'.
+
+```
+
+
+
+#### Q9. Use the command kubectl scale to increase the replica count to `3`. 
+
+```Bash
+controlplane ~ ➜  kubectl scale --replicas=3 deploy/nginx-deploy
+deployment.apps/nginx-deploy scaled
+
+controlplane ~ ✖ k get pods -w
+NAME                            READY   STATUS    RESTARTS   AGE
+nginx-deploy-68b454659d-6mfdz   1/1     Running   0          77s
+np-test-1                       1/1     Running   0          89s
+
+controlplane ~ ➜  k get pods -A
+NAMESPACE     NAME                                   READY   STATUS             RESTARTS      AGE
+kube-system   kube-contro1ler-manager-controlplane   0/1     ImagePullBackOff   0             117s
+...
+
+controlplane ~ ➜  k describe pod kube-contro1ler-manager-controlplane -n kube-system
+Name:                 kube-contro1ler-manager-controlplane
+Namespace:            kube-system
+...
+Events:
+  Type     Reason   Age                 From     Message
+  ----     ------   ----                ----     -------
+  Warning  Failed   50s (x6 over 2m7s)  kubelet  Error: ImagePullBackOff
+  Normal   Pulling  39s (x4 over 2m7s)  kubelet  Pulling image "registry.k8s.io/kube-contro1ler-manager:v1.30.0"
+  Warning  Failed   39s (x4 over 2m7s)  kubelet  Failed to pull image "registry.k8s.io/kube-contro1ler-manager:v1.30.0": rpc error: code = NotFound desc = failed to pull and unpack image "registry.k8s.io/kube-contro1ler-manager:v1.30.0": failed to resolve reference "registry.k8s.io/kube-contro1ler-manager:v1.30.0": registry.k8s.io/kube-contro1ler-manager:v1.30.0: not found
+  Warning  Failed   39s (x4 over 2m7s)  kubelet  Error: ErrImagePull
+  Normal   BackOff  28s (x7 over 2m7s)  kubelet  Back-off pulling image "registry.k8s.io/kube-contro1ler-manager:v1.30.0"
+
+controlplane ~ ➜  vi /etc/kubernetes/manifests/kube-controller-manager.yaml 
+
+
+controlplane ~ ➜  k get deploy
+NAME           READY   UP-TO-DATE   AVAILABLE   AGE
+nginx-deploy   3/3     3            3           5m57s
+```
+
+
+- vim replace all command
+: `:%s/1l/ll/g`
