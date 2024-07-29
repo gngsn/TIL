@@ -145,13 +145,20 @@
 
 ## Section 11: Troubleshooting
 
-1. [Application Failure](application_failure.md)
-2. [Control Plane Failure](control_plane_failure.md)
-3. [Worker Node Failure](worker_node_failure.md)
+1. [Application Failure](./application_failure.md)
+2. [Control Plane Failure](./control_plane_failure.md)
+3. [Worker Node Failure](./worker_node_failure.md)
 
 <br/>
 
 ## Section 12: Other Topic
 
-1. [Json Path](json_path.md)
+1. [Json Path](./json_path.md)
+
+<br/>
+
+## Section 13: Course Conclusion
+
+1. [Course Conclusion](./course_conclusion.md)
+
 
