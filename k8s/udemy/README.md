@@ -157,7 +157,15 @@
 
 <br/>
 
-## Section 13: Course Conclusion
+## Section 13: Mock Exam
+
+1. [Lightning](./mock_exam/lightning)
+2. [Exam 02](./mock_exam/exam02)
+3. [Exam 03](./mock_exam/exam03)
+
+<br/>
+
+## Section 14: Course Conclusion
 
 1. [Course Conclusion](./course_conclusion.md)
 
