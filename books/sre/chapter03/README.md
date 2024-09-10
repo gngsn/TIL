@@ -1,4 +1,4 @@
-# CHAPTER 03. Embracing RiskEmbracing Risk
+# CHAPTER 03. Embracing Risk
 
 <i>위험 요소 수용하기</i>
 
