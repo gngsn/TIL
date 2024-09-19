@@ -43,3 +43,77 @@ VPC 생성 후, 그 이하에 여러 개의 Subnet을 생성할 수 있음
 → 여기서 3개의 다른 AZ로 EC2 인스턴스를 만들려면 적어도 3개의 Subnet이 필요
 
 정리하자면, **Subnet은 AZ로 매핑되고 VPC는 AWS 리전으로 매핑됨**
+
+
+VPC 를 생성한 다음 Subnet 을 통해 어느 서브넷이 될지
+—-
+서브넷은 AZ 로 매핑되고, VPC는 AWS Region 으로 매핑
+
+AWS RDS는 데이터베이스 서비스로, 서비스 범위는 AZ 레벨
+용도에 맞게 서브넷을 신중하게 (연결할 EC2 인스턴스외의 위치를 잘 고려해) 디자인해야 한다는 의미
+
+AWS ELB 같은 경우에는 여러 AZ에 걸쳐있을 수 있는 VPC 레벨임
+즉, VPC 내로 들어오는 트래픽을 여러 AZ로 분산시킬 수 있다는 의미
+
+AWS S3 는 Region 레벨로, 절대 VPC 레벨에 넣으면 안됨
+S3는 AWS에서 완전 관리되는 서비스이고, AWS가 S3의 네트워크를 관리하기 때문
+
+Route 53 은 Global 레벨로, 특정 AWS Region에 속하지 않음 Route 53, Billing, IAM 등도 동일
+
+위 모든 레벨의 최상위 레벨은 AWS Account 로 여러 AWS 리전에 접근할 수 있음
+
+리전마다 하나 이상의 VPC를 생성할 수 있고,
+Multiple Available Zone 을 원한다면 해당 VPC 내 서브넷을 생성해서 사용할 수 있음
+
+
+---
+
+### VPC Building Blocks
+aka. Core Components
+
+
+#### 1.  CIDR
+VPC는 생성 시마다 가장 먼저 IPv4 나 IPv6 주소 범위를 할당해야 함
+
+해당 IP 주소는 CIDR 형식으로 할당 되며
+Classless Domain Routing 이라고도 함
+
+#### 2. Subnets
+
+IP 범위 할당 이후, Subnet을 생성
+서브넷을 생성할 때에는 특정 Availability Zone 에 할당해야 함
+서브넷에도 IP 범위를 할당해야 하는데 VPC 범위 내에서 CIDR 범위를 할당
+
+#### 3. Route Table
+
+AWS VPC 가 생성될 때마다 자동으로 메인 경로 테이블을 생성하는데, 모든 서브넷으로 향할 수 있게끔 만듦
+
+많은 경우, 모든 서브넷은 고유의 라우팅 메커니즘이 있어야 함
+가령, 어떤 서브넷은 인터넷으로 통하게끔 퍼블릭으로 열려있어야 하고 어떤 서브넷은 DB 연결만을 하고 있어 외부에서 접근하면 안되게 만들어야 함
+
+이를 위해 서브넷 레벨에서의 라우트를 사용할 수 있음
+
+#### 4. Internet Gateway
+VPC 를 생성하고 나서 그 내부 리소스에 접근할 수 없는데, 인터넷을 통한 연결 가능 설정을 위해서 Internet Gateway가 필요
+
+
+
+VPC 내부에 설치할 수 있는 Firewall 두 가지: Security Groups, Network ACL
+
+#### 5. Security Groups
+
+보안 그룹은 EC2 인스턴스 레벨에서 작동하며, 즉 EC2 인스턴스로 드나드는 모든 트래픽을 제어 하는 역할
+
+EC2 인스턴스 레벨
+
+#### 6. Network ACL
+
+네트워크 액세스 제어 목록은 서브넷 레벨에서 작동
+
+
+
+#### 7. DNS, Domain Name Server
+aka. AWS DNS Server (Route53 Resolver)
+
+AWS 가 EC2 인스턴스에서 DNS 쿼리를 어떻게 해결하는지 알아보는 것은 중요 - VPC 의 핵심 요소이자 기본 구성 요소 (시험에서도 중요함)
+
