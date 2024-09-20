@@ -44,9 +44,8 @@ VPC 생성 후, 그 이하에 여러 개의 Subnet을 생성할 수 있음
 
 정리하자면, **Subnet은 AZ로 매핑되고 VPC는 AWS 리전으로 매핑됨**
 
-
 VPC 를 생성한 다음 Subnet 을 통해 어느 서브넷이 될지
-—-
+
 서브넷은 AZ 로 매핑되고, VPC는 AWS Region 으로 매핑
 
 AWS RDS는 데이터베이스 서비스로, 서비스 범위는 AZ 레벨
@@ -71,6 +70,7 @@ Multiple Available Zone 을 원한다면 해당 VPC 내 서브넷을 생성해�
 ### VPC Building Blocks
 aka. Core Components
 
+<img src="./img/vpc_building_blocks.png" width="60%">
 
 #### 1.  CIDR
 VPC는 생성 시마다 가장 먼저 IPv4 나 IPv6 주소 범위를 할당해야 함
@@ -96,8 +96,6 @@ AWS VPC 가 생성될 때마다 자동으로 메인 경로 테이블을 생성�
 #### 4. Internet Gateway
 VPC 를 생성하고 나서 그 내부 리소스에 접근할 수 없는데, 인터넷을 통한 연결 가능 설정을 위해서 Internet Gateway가 필요
 
-
-
 VPC 내부에 설치할 수 있는 Firewall 두 가지: Security Groups, Network ACL
 
 #### 5. Security Groups
@@ -110,10 +108,42 @@ EC2 인스턴스 레벨
 
 네트워크 액세스 제어 목록은 서브넷 레벨에서 작동
 
-
-
 #### 7. DNS, Domain Name Server
 aka. AWS DNS Server (Route53 Resolver)
 
 AWS 가 EC2 인스턴스에서 DNS 쿼리를 어떻게 해결하는지 알아보는 것은 중요 - VPC 의 핵심 요소이자 기본 구성 요소 (시험에서도 중요함)
+
+
+
+====================================
+
+## Subnets, Route Tables and Internet Gateway
+
+Subnet 이 생성될 때 두 가지 생성
+
+- Local Route Table: Local Router, VPC 내 모든 서브넷 간의 통신 책임
+- Main Route Table: Main Router, VPC 내 서브넷 사이에서 트래픽이 어떻게 흐를지 결정
+
+Subnet A - Subnet B 내에 있는 인스턴스가 서로 통신하려면?
+
+| Destination   | Target |
+|---------------|--------|
+| 10.10.0.0/16  | Local  |
+
+목적지가 Local 이니, Local Router 를 확인할 것
+
+기본 값으로 VPC 와 다수의 서브넷을 만들 때마다 모든 서브넷의 모든 인스턴스는 다른 서브넷의 다른 인스턴스와 통신할 수 있다는 것
+
+✅ 시험에 나올 수 있음
+
+서브넷 내의 모든 서브넷과 EC2 인스턴스는 기본 값으로 서로 통신할 수 있음
+
+<img src="./img/vpc_route_tables.png" width="40%">
+
+현재 EC2 인스턴스가 인터넷에 연결될 수 있을까?
+
+> NO.
+
+이유1. VPC 자체에 인터넷 게이트웨이가 없음 (VPC는 private IP 주소)
+이유2. 서브넷에도 Public IP 주소가 필요함
 
