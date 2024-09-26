@@ -109,11 +109,10 @@ EC2 인스턴스 레벨
 네트워크 액세스 제어 목록은 서브넷 레벨에서 작동
 
 #### 7. DNS, Domain Name Server
+
 aka. AWS DNS Server (Route53 Resolver)
 
 AWS 가 EC2 인스턴스에서 DNS 쿼리를 어떻게 해결하는지 알아보는 것은 중요 - VPC 의 핵심 요소이자 기본 구성 요소 (시험에서도 중요함)
-
-
 
 ====================================
 
@@ -121,10 +120,10 @@ AWS 가 EC2 인스턴스에서 DNS 쿼리를 어떻게 해결하는지 알아보
 
 Subnet 이 생성될 때 두 가지 생성
 
-- Local Route Table: Local Router, VPC 내 모든 서브넷 간의 통신 책임
-- Main Route Table: Main Router, VPC 내 서브넷 사이에서 트래픽이 어떻게 흐를지 결정
+- **Local Route Table**: Local Router, VPC 내 모든 서브넷 간의 통신 책임
+- **Main Route Table**: Main Router, VPC 내 서브넷 사이에서 트래픽이 어떻게 흐를지 결정
 
-Subnet A - Subnet B 내에 있는 인스턴스가 서로 통신하려면?
+`Subnet A` - `Subnet B` 내에 있는 인스턴스가 서로 통신하려면?
 
 | Destination   | Target |
 |---------------|--------|
@@ -140,10 +139,11 @@ Subnet A - Subnet B 내에 있는 인스턴스가 서로 통신하려면?
 
 <img src="./img/vpc_route_tables.png" width="40%">
 
-현재 EC2 인스턴스가 인터넷에 연결될 수 있을까?
-
+> Q. 현재 EC2 인스턴스가 인터넷에 연결될 수 있을까?
+> 
 > NO.
 
-이유1. VPC 자체에 인터넷 게이트웨이가 없음 (VPC는 private IP 주소)
-이유2. 서브넷에도 Public IP 주소가 필요함
+**이유1.** VPC 자체에 인터넷 게이트웨이가 없음 (VPC는 private IP 주소)
+
+**이유2.** 서브넷에도 Public IP 주소가 필요함
 
