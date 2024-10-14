@@ -145,36 +145,3 @@ Main Route Table를 수정할 수도 있고 Custom Route Table 을 생성할 수
 > 만약 당신이 EC2 인스턴스에 할당할 29개의 IP 주소가 필요하다면 Subnet 사이즈를 `/27` (총 32개) 로 결정해서는 안됨.
 > 
 > 최소 64개의 IP 범위인 `/26`을 선택해야 함 (64-5 = 59 > 29, but 32-5 = 27 < 29)
-
-
-
-### IP Address
-
-Subnet 하위에 EC2 인스턴스가 있을 때, Subnet 범위 내의 IP 주소를 할당
-
-만약, 명시적으로 IP를 할당하지 않았다면 동적으로 IP가 자동 할당됨
-
-이를 auto-assign public IP 라고 불림
-
-public IP와 Private IP를 함께 지정될 수 있음
-
-하지만 실제 동작할 public IP 주소를 지정할 수는 없는데, 이는 AWS의 Public IP Pool 내에서 지정될 것임
-
----
-
-이제 특정 상황을 가정해보자,
-
-만약 Public Subnet 하위에서 유저들에게 노출되고 있던 EC2 인스턴스를 중단했다가 다시 실행한다고 가정해보자
-
-당신의 Private IP는 유지되겠지만 당신의 Public IP는 날라가 버리고 재시동될 때 재할당 받게 됨 (AWS에 의해 할당되기 때문)
-
-이 때 해결법은 → **Elastic IP**
-
-Elastic IP는 일종의 Static IP 로, 당신의 AWS ACCOUNT 내에 위치하면서 당신이 해당 IP를 놓지 않는 이상 당신의 EC2 인스턴스에 붙어있음
-
-
-### 세 가지 종류의 IP 주소
-
-- Private
-- Public
-- Elastic
