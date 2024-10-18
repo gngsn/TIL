@@ -13,6 +13,8 @@
 - [CHAPTER 03. Embracing RiskEmbracing Risk](https://github.com/gngsn/TIL/tree/master/books/sre/chapter03)
 - [CHAPTER 04. Service Level Objectives](https://github.com/gngsn/TIL/tree/master/books/sre/chapter04)
 - [CHAPTER 05. Eliminating Toil](https://github.com/gngsn/TIL/tree/master/books/sre/chapter05)
+- [CHAPTER 06. Monitoring Distributed Systems](https://github.com/gngsn/TIL/blob/master/books/sre/chapter06)
+- [CHAPTER 07. The Evolution of Automation at Google](https://github.com/gngsn/TIL/tree/master/books/sre/chapter07)
 
 <details>
 <summary><b>✔️ TL;DR</b></summary>
