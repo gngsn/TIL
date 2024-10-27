@@ -14,7 +14,10 @@
 8. [Default VPC](./default_vpc.md)
 9. [Hands On: Creating VPC with Public Subnet](./hands_on_creating_vpc_with_public_subnet.md)
 10. [Hands On: Add Private subnet](./hands_on_add_private_subnet.md)
-10. [NAT Gateway](./nat_gateway.md)
+11. [NAT Gateway](./nat_gateway.md)
+12. [Hands On: Create NAT Gateway](./hands_on_create_nat_gateway.md)
+13. [NAT Gateway with High Availability](./nat_gateway_with_high_availability.md)
+14. [NAT Instance (EC2 based NAT)](./nat_instance.md)
 
 <br/>
 
