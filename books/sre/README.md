@@ -17,6 +17,7 @@
 - [CHAPTER 07. The Evolution of Automation at Google](./chapter07)
 - [CHAPTER 08. Release Engineering](./chapter08)
 - [CHAPTER 09. Simplicity](./chapter09)
+- [CHAPTER 10. Practical Alerting from Time-Series Data](./chapter10)
 
 <details>
 <summary><b>✔️ TL;DR</b></summary>
