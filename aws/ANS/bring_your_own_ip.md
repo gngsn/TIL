@@ -21,3 +21,10 @@
   - AWS 가 IP 를 외부로 홍보하기 위해선 이미 등록된 인터넷 리스트를 당신의 허가가 필요함 → ROA 생성
 - ROA (Route Origin Authorization) 을 생성해서 Amazon ASN 16509 와 14618 을 당신의 주소 범위에 유효하도록 허가 해주어야 함
 
+
+### Good to know
+
+- BYOIP 으로 인해 IP 소유권이 나 → AWS 으로 변경되는 건 아님 (여전히 본인이 소유·관리)
+- 당신의 주소 범위를 가져오면, AWS 계정에서는 그 Address Pool 인 것처럼 명시함
+- EC2 Instances, Network Load Balancers, 그리고 NATS gateways 로 IP 주소를 연결시킬 수 있음
+- 당신의 AWS 계정 내 각 리전마다 총 다섯 가지의 IPv4 와 IPv6 주소 범위를 들고 올 수 있음
