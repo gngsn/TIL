@@ -18,5 +18,7 @@
 - [CHAPTER 08. Release Engineering](./chapter08)
 - [CHAPTER 09. Simplicity](./chapter09)
 - [CHAPTER 10. Practical Alerting from Time-Series Data](./chapter10)
+- [CHAPTER 11. Being On-Call](./chapter11)
 
 <br/><br/>
+
