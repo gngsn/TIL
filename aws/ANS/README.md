@@ -25,5 +25,4 @@
 
 1. [Extending VPC address space](./extending_vpc_address_space.md)
 2. [Elastic Network Interface (ENI) deep dive](./elastic_network_interface.md)
-3. [Bring Your Own IP](./bring)
-4. Quiz 3: VPC features
+3. [Bring Your Own IP](./bring_your_own_ip.md)
