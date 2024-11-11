@@ -26,3 +26,6 @@
 1. [Extending VPC address space](./extending_vpc_address_space.md)
 2. [Elastic Network Interface (ENI) deep dive](./elastic_network_interface.md)
 3. [Bring Your Own IP](./bring_your_own_ip.md)
+4. [How DNS works?](./how_dns_works.md)
+5. [Amazon VPC DNS Server Route53 Resolver](./amazon_vpc_dns_server_route53_resolver.md)
+6. [VPC DHCP Option Sets](./vpc_dhcp_option_sets.md)
