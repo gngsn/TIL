@@ -19,6 +19,7 @@
 - [CHAPTER 09. Simplicity](./chapter09)
 - [CHAPTER 10. Practical Alerting from Time-Series Data](./chapter10)
 - [CHAPTER 11. Being On-Call](./chapter11)
+- [CHAPTER 12. Effective Troubleshooting](./chapter12)
 
 <br/><br/>
 
