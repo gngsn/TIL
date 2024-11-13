@@ -71,3 +71,63 @@ Amazon 에서 제공하는 DNS를 사용하는 대신, 커스텀 도메인 이�
 - DHCP 옵션 셋을 VPC에 할당한 이후, 인스턴스는 자동으로 새로운 옵션 셋을 사용하지만, 설정에 몇 시간이 걸릴 수 있음
 - 운영 체제 명령어로 DHCP 옵션 파라미터를 초기화할 수 있음
   - 가령 Linux 의 경우, `$sudo dhclient -r eth0` 을 사용할 수 있음
+
+---
+
+**_스터디 기록_**
+
+### ✍🏻 Domain Name Resolving
+#### 1️⃣ ELB의 Domain Name Resolving
+
+NLB/ALB의 DNS Name 는 Private/Public 에 관계없이 Resolving 할 수 있음
+
+`nslookup alb-or-nlb-domain-name.elb.ap-northeast-2.amazonaws.com`
+
+#### 2️⃣ 일반적인 AWS Resource의 Domain Name Resolving
+
+동일한 EC2 Domain Name Resolving 을 요청하려고 하면,
+
+<br>
+
+✔️ **권한 존재**
+
+```
+❯ nslookup ip-10-211-64-200.ap-northeast-2.compute.internal
+Server:        10.211.136.11
+Address:    10.211.136.11#53
+
+Non-authoritative answer:
+Name:    ip-10-211-64-200.ap-northeast-2.compute.internal
+Address: 10.211.64.200
+```
+
+**→ VPC Internal DNS**
+
+<br>
+
+✔️ **권한 미존재**
+
+```
+❯ nslookup ip-10-211-64-200.ap-northeast-2.compute.internal
+Server:        172.16.6.166
+Address:    172.16.6.166#53
+
+** server can't find ip-10-211-64-200.ap-northeast-2.compute.internal: NXDOMAIN
+```
+
+**→ Kakaobank DNS Server**
+
+<br>
+
+#### 3️⃣ AWS Global Service 의 Domain Name 할당
+
+S3, Dynamo, SQS 등 AWS Global Service 들은 사용자들이 가진 VPC가 아니라, AWS Global VPC 아래에 생기는데
+
+이때 할당되는 Domain Name은 <global-service-random-name>.ap-northeast-2.amazonaws.com 형식으로 생성됨
+
+
+#### ✔️ Reference - AWS Official docs
+
+🔗 [enableDnsHostnames & enableDnsSupport Options](https://docs.aws.amazon.com/ko_kr/vpc/latest/userguide/AmazonDNS-concepts.html#vpc-dns-support)
+
+🔗 [DHCP 옵션 세트 개념](https://docs.aws.amazon.com/ko_kr/vpc/latest/userguide/DHCPOptionSetConcepts.html)
