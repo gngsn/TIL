@@ -272,14 +272,14 @@
 - 조사를 체계적으로 진행할 수 있는 절차를 마련.
 
 #### 📌 장애 대응 절차:
-1. Problem Report (문제 보고)
-2. Triage (문제의 우선순위 판단)
-3. Examine (문제를 관찰하기)
+1. **Problem Report** (문제 보고)
+2. **Triage** (문제의 우선순위 판단)
+3. **Examine** (문제를 관찰하기)
    1. 모니터링 지표
    2. 로그
    3. 상태 외부 노출
    4. 요청/응답 확인
-4. Diagnose (진단)
+4. **Diagnose** (진단)
    1. Simplify and reduce
    2. Ask "what," "where," and "why"
    3. What touched it last
